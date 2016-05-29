@@ -232,11 +232,15 @@ $ip a show eth0
 
 ### 查看docker版本  
 
+```shell
 $docker version  
+```
 
 ### 查看docker系统的信息  
 
+```shell
 $docker info
+```
 
 Posted by: 大CC | 29MAY,2016
 博客：[blog.me115.com](http://blog.me115.com) [[订阅](http://blog.me115.com/feed)]
