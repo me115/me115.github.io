@@ -1,0 +1,166 @@
+---
+author: me115wp
+comments: true
+date: 2010-11-26 03:26:09+00:00
+layout: post
+link: http://blog.me115.com/2010/11/49
+slug: '%e5%8d%87%e7%ba%a7%e5%9f%ba%e4%ba%8eatl3-0%e7%9a%84%e9%a1%b9%e7%9b%ae%e5%88%b0atl7-0%ef%bc%88vc6-0-to-vs2008%ef%bc%89%e7%a7%bb%e6%a4%8d%e5%8f%98%e6%9b%b4%e7%82%b9'
+title: 升级基于ATL3.0的项目到ATL7.0（VC6.0 to VS2008）[移植变更点]
+wordpress_id: 49
+categories:
+- C++编程
+tags:
+- ATL3.0
+- ATL7.0
+- 程序移植
+---
+
+ATL3.0与7.0在实现细节方面改变比较多，其中对原来的模版类进行了拆分，实现更为细致。同时，从VC6移过来的程序，为了保证其后的兼容性，如果不是Unicode，最好在本次升级中一步到位。
+
+具体变更： 
+<table cellpadding="0" cellspacing="0" border="1" >
+<tbody >
+<tr >
+
+<td width="182" valign="top" >MyCom程序
+</td>
+
+<td width="350" valign="top" >ATL 3.0（VC6.0 / ANSI）
+</td>
+
+<td width="358" valign="top" >ATL 7.0 (Unicode)
+</td>
+</tr>
+<tr >
+
+<td width="182" valign="top" >主线程文件： class CMyComApp
+</td>
+
+<td width="350" valign="top" >MyCom.cpp中实现：
+</td>
+
+<td width="358" valign="top" >在dllmian.cpp中实现；
+
+涉及到主线程相关的函数都在此实现；
+</td>
+</tr>
+<tr >
+
+<td width="182" valign="top" >Dll注册函数：
+
+DllRegisterServer
+
+DllGetClassObject
+</td>
+
+<td width="350" valign="top" >MyCom.cpp中实现：
+</td>
+
+<td width="358" valign="top" >MyCom.cpp中实现；（该文件中只剩下注册相关的操作）
+</td>
+</tr>
+<tr >
+
+<td width="182" valign="top" >CComModule
+</td>
+
+<td width="350" valign="top" >ATL 3.0 提供了 CComModule 类。
+
+CComModule _module;
+</td>
+
+<td width="358" valign="top" >在 ATL 7.0 中，以前由 CComModule 提供的功能由若干新类处理：
+
+关于句柄相关：
+
+使用CAtlBaseModulet替换：
+
+关于DLL注册相关：
+
+使用CMyComModule：继承自CAtlDllModuleT
+</td>
+</tr>
+<tr >
+
+<td width="182" valign="top" >获取句柄
+</td>
+
+<td width="350" valign="top" >_Module.GetModuleInstance()
+</td>
+
+<td width="358" valign="top" >_AtlBaseModule.GetModuleInstance() （引用：在altcore.h:extern CAtlBaseModule _AtlBaseModule;
+</td>
+</tr>
+<tr >
+
+<td width="182" valign="top" >LPCSTR-》CString
+</td>
+
+<td width="350" valign="top" >直接赋值
+</td>
+
+<td width="358" valign="top" >LPCSTR str;
+
+CString s = CString(str);
+</td>
+</tr>
+<tr >
+
+<td width="182" valign="top" >字符串CString赋值
+</td>
+
+<td width="350" valign="top" >CString section = "IBECOM";
+</td>
+
+<td width="358" valign="top" >CString section = _T("IBECOM");
+</td>
+</tr>
+<tr >
+
+<td width="182" valign="top" >字符串、函数在unicode下的改变：
+</td>
+
+<td width="350" valign="top" >Char drive[_MAX_DRIVE];
+
+_splitpath( strFileName, drive, dir, fname, ext );
+</td>
+
+<td width="358" valign="top" >使用unicode，则相应的字符串变量申明都改为宽字符：
+
+wchar_t drive[_MAX_DRIVE];
+
+同样，使用对应的宽字符函数：
+
+_wsplitpath(strFileName, drive, dir, fname, ext );
+</td>
+</tr>
+<tr >
+
+<td width="182" valign="top" >字符串转换：
+
+CString->LPSTR
+</td>
+
+<td width="350" valign="top" >Cstring str; // ansi环境string
+
+LPSTR ls = str;
+</td>
+
+<td width="358" valign="top" >CString str;// unicode环境string
+
+LPSTR ls = new char[str.GetLength()+1];
+
+USES_CONVERSION;
+
+lps = W2A(str);
+
+当然，如果在源头都改为char_t更好，也就避免了这样的转换。
+</td>
+</tr>
+</tbody>
+</table>
+更多细节请参考：[http://msdn.microsoft.com/zh-cn/library/w1sc4t4k.aspx](http://msdn.microsoft.com/zh-cn/library/w1sc4t4k.aspx)
+
+OVER
+
+

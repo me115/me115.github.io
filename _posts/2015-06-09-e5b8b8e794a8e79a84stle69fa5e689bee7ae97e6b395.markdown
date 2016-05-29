@@ -1,0 +1,401 @@
+---
+author: me115wp
+comments: true
+date: 2015-06-09 14:06:30+00:00
+layout: post
+link: http://blog.me115.com/2015/06/849
+slug: '%e5%b8%b8%e7%94%a8%e7%9a%84stl%e6%9f%a5%e6%89%be%e7%ae%97%e6%b3%95'
+title: 常用的STL查找算法
+wordpress_id: 849
+categories:
+- C++编程
+tags:
+- c++
+- STL
+---
+
+# 常用的STL查找算法
+
+
+
+
+
+《effective STL》中有句忠告，尽量用算法替代手写循环；查找少不了循环遍历，在这里总结下常用的STL查找算法；
+
+
+
+
+
+查找有三种，即点线面：     
+点就是查找目标为单个元素；      
+线就是查找目标为区间；      
+面就是查找目标为集合；
+
+
+
+
+
+针对每个类别的查找，默认的比较函数是相等，为了满足更丰富的需求，算法也都提供了自定义比较函数的版本；
+
+
+
+
+
+## 单个元素查找
+
+
+
+
+
+### find() 比较条件为相等的查找
+
+
+
+
+
+find()从给定区间中查找单个元素,定义：
+
+
+
+
+    
+    <code>template <class InputIterator, class T>
+    InputIterator find (InputIterator first, InputIterator last, const T& val);</code>
+
+
+
+
+
+示例，从myvector中查找30：
+
+
+
+
+    
+    <code>int myints[] = { 10, 20, 30, 40 };
+    std::vector<int> myvector (myints,myints+4);
+    it = find (myvector.begin(), myvector.end(), 30);
+    if (it != myvector.end())
+        std::cout << "Element found in myvector: " << *it << '\n';
+    else
+        std::cout << "Element not found in myvector\n";</code>
+
+
+
+
+
+### find_if() 自定义比较函数
+
+
+
+
+
+std::find_if():从给定区间中找出满足比较函数的第一个元素；
+    
+示例,从myvector中查找能够被30整除的第一个元素：
+
+
+
+
+    
+    <code>bool cmpFunction (int i) {
+      return ((i%30)==0);
+    }
+    it = std::find_if (myvector.begin(), myvector.end(), cmpFunction);
+    std::cout << "first:" <<  *it <<std::endl;</code>
+
+
+
+
+
+### count() 统计元素出现次数
+
+
+
+
+
+std::count()：统计区间中某个元素出现的次数；
+    
+std:count_if()：count()的自定义比较函数版本
+
+
+
+
+
+### search_n() 查询单个元素重复出现的位置
+
+
+
+
+
+search_n(): find用来查询单个元素，search_n则用来查找区间中重复出现n次的元素；
+
+
+
+
+
+示例：查询myvector中30连续出现2次的位置：
+
+
+
+
+    
+    <code>int myints[]={10,20,30,30,20,10,10,20};
+    std::vector<int> myvector (myints,myints+8);
+    it = std::search_n (myvector.begin(), myvector.end(), 2, 30);</code>
+
+
+
+
+
+search_n() 支持自定义比较函数；
+
+
+
+
+
+### adjacent_find() 查询区间中重复元素出现的位置
+
+
+
+
+
+adjacent_find() 查询区间中重复元素出现的位置，该算法支持自定义比较函数；
+
+
+
+
+
+### lower_bound() 有序区间中查询元素边界
+
+
+
+
+
+lower_bound()用来在一个排序的区间中查找第一个不小于给定元素的值：
+    
+示例：查找容器v中不小于20的下界：
+
+
+
+
+    
+    <code>int myints[] = {10,20,30,30,20,10,10,20};
+    std::vector<int> v(myints,myints+8);           // 10 20 30 30 20 10 10 20
+    std::sort (v.begin(), v.end());                // 10 10 10 20 20 20 30 30
+    std::vector<int>::iterator low,up;
+    low=std::lower_bound (v.begin(), v.end(), 20); 
+    std::cout << "lower_bound at position " << (low- v.begin()) << '\n';</code>
+
+
+
+
+
+类似算法有upper_bound(),查找有序区间中第一个大于给定元素的值；
+    
+还有equal_range(),查找有序区间的上下边界；（一次返回lower_bound()和upper_bound());
+
+
+
+
+
+### binary_search() 有序区间的二分查找
+
+
+
+
+
+binary_search() 用来在一个有序区间中使用二分法查找元素是否在这个区间中，注，这个算法的返回值为bool，
+    
+不是下标位置，其内部的算法逻辑和lower_bound（）相似，行为表现为：
+
+
+
+
+    
+    <code>template <class ForwardIterator, class T>
+      bool binary_search (ForwardIterator first, ForwardIterator last, const T& val)
+    {
+      first = std::lower_bound(first,last,val);
+      return (first!=last && !(val<*first));
+    }</code>
+
+
+
+
+
+示例：从有序区间v中找3是否存在：
+
+
+
+
+    
+    <code>int myints[] = {1,2,3,4,5,4,3,2,1};
+    std::vector<int> v(myints,myints+9);                         // 1 2 3 4 5 4 3 2 1
+    std::sort (v.begin(), v.end());
+    if (std::binary_search (v.begin(), v.end(), 3))
+        std::cout << "found!\n"; else std::cout << "not found.\n";</code>
+
+
+
+
+
+### min_element() 查找最小元素
+
+
+
+
+
+min_element() 在给定区间中查找出最小值;
+
+
+
+
+    
+    <code>int myints[] = {3,7,2,5,6,4,9};
+    std::cout << "The smallest element is " << *std::min_element(myints,myints+7) << '\n';</code>
+
+
+
+
+
+类似算法有：max_element() 查找最大值；
+
+
+
+
+
+## 区间查找 search()
+
+
+
+
+
+### search() 查找子区间首次出现的位置
+
+
+
+
+
+find()用来查找单个元素，search()则用来查找一个子区间；
+    
+示例：从myvector中查找出现子区间[20，30]的位置:
+
+
+
+
+    
+    <code>  int needle1[] = {20,30};
+      it = std::search (myvector.begin(), myvector.end(), needle1, needle1+2);
+      if (it!=myvector.end())
+        std::cout << "needle1 found at position " << (it-myvector.begin()) << '\n';</code>
+
+
+
+
+
+search支持自定义比较函数；
+    
+示例：查询给定区间中每个元素比目标区间小1的子区间；
+
+
+
+
+    
+    <code>bool cmpFunction (int i, int j) {
+      return (i-j==1);
+    }
+    int myints[] = {1,2,3,4,5,1,2,3,4,5};
+    std::vector<int> haystack (myints,myints+10);
+    
+    int needle2[] = {1,2,3};
+    // using predicate comparison:
+    it = std::search (haystack.begin(), haystack.end(), needle2, needle2+3, cmpFunction);</code>
+
+
+
+
+
+### find_end() 查找子区间最后一次出现的位置
+
+
+
+
+
+search() 用来查找子区间第一次出现的位置，而find_end()用来查找子区间最后一次出现的位置：
+    
+find_end()支持自定义比较函数；
+
+
+
+
+
+### equal() 判断两个区间是否相等
+
+
+
+
+
+equal（）用来判断两个区间是否相等，该算法支持自定义比较函数；
+
+
+
+
+
+### mismatch() 查询两个区间首次出现不同的位置；
+
+
+
+
+
+mismatch() 查询两个区间首先出现不同的位置，这个算法也支持自定义比较函数；
+
+
+
+
+
+## 集合查找
+
+
+
+
+
+### find_first_of 查找集合中的任意一个元素
+
+
+
+
+
+find_first_of()用来查找给定集合中的任意一个元素:
+    
+示例：从haystack中查找A,B,C出现的位置：
+
+
+
+
+    
+    <code>  int mychars[] = {'a','b','c','A','B','C'};
+      std::vector<char> haystack (mychars,mychars+6);
+      int needle[] = {'C','B','A'};
+      // using default comparison:
+      it = find_first_of (haystack.begin(), haystack.end(), needle, needle+3);</code>
+
+
+
+
+
+find_first_of支持自定义比较函数；
+
+
+
+
+
+Posted by: 大CC | 09APR,2015
+    
+博客：[blog.me115.com](http://blog.me115.com) [[订阅](http://blog.me115.com/feed)]
+
+    
+微博：[大CC](http://weibo.com/bigcc115)
+
+
+

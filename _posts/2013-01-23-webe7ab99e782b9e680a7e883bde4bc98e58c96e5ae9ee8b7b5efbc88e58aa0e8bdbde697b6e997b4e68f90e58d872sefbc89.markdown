@@ -1,0 +1,182 @@
+---
+author: me115wp
+comments: true
+date: 2013-01-23 23:49:00+00:00
+layout: post
+link: http://blog.me115.com/2013/01/276
+slug: web%e7%ab%99%e7%82%b9%e6%80%a7%e8%83%bd%e4%bc%98%e5%8c%96%e5%ae%9e%e8%b7%b5%ef%bc%88%e5%8a%a0%e8%bd%bd%e6%97%b6%e9%97%b4%e6%8f%90%e5%8d%872s%ef%bc%89
+title: WEB站点性能优化实践（加载速度提升2s）
+wordpress_id: 276
+categories:
+- WEB开发
+---
+
+进行优化前，关键是剖析当前的web性能，找到性能瓶颈，从而确定最需改进的地方；如果精力有限，首先将精力放在能明显提升性能的改进点上；  
+
+《[高性能网站建设指南](http://www.me115.com/book/102.html)》提出了一个性能黄金法则：  
+
+只有10%-20%的最终用户响应时间花在了下载HTML文档上；其余的80%-90%的时间花在了下载页面中的所有组件上。  
+
+由于本文将实施一个完整的优化流程，所以，我们还是从后台开始；  
+
+**案例说明：**  
+
+优化之前的网站规模：  
+
+2个js、一个页头、一个页脚；3个css；  
+
+类型：博客类站点；后台逻辑简单；首页不到10个sql查询；  
+
+首页html文档52kb;  
+
+**第一步：后台优化，启用页面缓存；**  
+
+实验站点首页后台逻辑并不复杂，不超过10个Sql查询，通过查看时间线，本站在获取HTML文档时，花费的时间不到总响应时间的20%，优化之前没有使用缓存，所有的数据都是从数据库读取，这里，我们使用静态页面缓存，将首页整个页面完全的存放在缓存中（关于YII静态页面缓存的使用，**[参考这里](http://blog.me115.com/2013/01/246)**）；  
+
+通过查看html文档的生成时间来检测优化效果；  
+
+首字节时间为376ms；html生成的时间大大缩短，后台时间减少了一倍。  
+
+优化前：  
+
+[![wps_clip_image-20655](http://blog.me115.com/wp-content/uploads/2013/01/wps_clip_image206552.png)](http://blog.me115.com/wp-content/uploads/2013/01/wps_clip_image20655.png)  
+
+优化后：  
+
+[![wps_clip_image-4529](http://blog.me115.com/wp-content/uploads/2013/01/wps_clip_image45292.png)](http://blog.me115.com/wp-content/uploads/2013/01/wps_clip_image4529.png)  
+
+**第二步，DNS域名解析加速：**  
+
+DNS解析是用户访问站点的第一步，在此之前，你的网站无法做任何事情；  
+
+站点的DNS解析时间不应该超过500ms，如果站点原始DNS解析时间过长，就该考虑考虑使用第三方解析加速服务；  
+
+实验站点的原始DNS解析较慢，平均耗时1017ms，算是非常长的；对于DNS加速，可以使用DNS域名解析加速服务，本站点采用的国内的一款免费DNS加速服务DNSPOD，效果还不错，使用后平均耗时降到370ms；  
+
+加速前测试：  
+
+[![wps_clip_image-14761](http://blog.me115.com/wp-content/uploads/2013/01/wps_clip_image147611.png)](http://blog.me115.com/wp-content/uploads/2013/01/wps_clip_image14761.png)  
+
+使用DNS域名解析服务之后的测试：  
+
+[![wps_clip_image-16186](http://blog.me115.com/wp-content/uploads/2013/01/wps_clip_image161861.png)](http://blog.me115.com/wp-content/uploads/2013/01/wps_clip_image16186.png)  
+
+**第三步：使用CDN加速；**  
+
+采用第三方CDN加速，时间缩短到2.1s；从下图中看到主要的耗时在于并行下载的个数有些低，如果能够提升并行下载量的个数，那么整体加载时间就会降低；  
+
+注：个人建议，启用CDN最好放在最后一步，等将站点本身的优化都做完了之后，再启用CDN可以明显的看到优化效果。（开启CDN后，由于有CDN缓存的原因，观测站点的本身的优化就不是很方便了）；  
+
+[![wps_clip_image-15052](http://blog.me115.com/wp-content/uploads/2013/01/wps_clip_image150521.png)](http://blog.me115.com/wp-content/uploads/2013/01/wps_clip_image15052.png)  
+
+**第四步，采用多台服务器提高并行加载量：**  
+
+原理：一个浏览器对与同一域名的并行下载的个数默认是2个， HTTP.1.0中规定的是4个。这样，我们可以使用不同的域名来提升下载的速度；  
+
+观察上图中的下载数量，第一次并行下载的个数是4个，初始认为是浏览器对于同一个域名来源的下载所限导致；于是考虑将部分静态文件分别放在不同的服务器上；通过把css和js放在不同服务器上；结果并不理想，发现并未提高速度。  
+
+想到在哪曾看到过，浏览器必须得把放在页头的css和js下载完成了之后才会开始下载其它的静态组件；  
+
+关于并行下载这点上，后续将继续实验是否还有优化的空间。  
+
+[![wps_clip_image-21817](http://blog.me115.com/wp-content/uploads/2013/01/wps_clip_image218171.png)](http://blog.me115.com/wp-content/uploads/2013/01/wps_clip_image21817.png)  
+
+**第五步，合并脚本和样式表；**  
+
+本站首页使用了2个js和3个css。如果采用朴素复制的方式，将js和css都分别整合到一个文件中，不但操作麻烦，而且不方便后期的管理。网络上有不少合并的工具，本站采用了CSS和JS合并优化工具-minify（下载地址：[http://code.google.com/p/minify/](http://code.google.com/p/minify/)）。如果使用的YII框架，更有YII整合版（[minscript Extension](https://bitbucket.org/TeamTPG/minscript/wiki/Home)），简单几步的配置，就自动将页面所有的js和css文件合并；  
+
+关于[minscript Extension](https://bitbucket.org/TeamTPG/minscript/wiki/Home)的使用，请参考：[https://bitbucket.org/TeamTPG/minscript/wiki/Usage](https://bitbucket.org/TeamTPG/minscript/wiki/Usage)  
+
+**第六步，压缩css/js/html/xml；**  
+
+不同的web服务器设置方式有所差别，本站使用的Linux/apache,  
+
+在web根目录下的.htaccess文件中添加以下代码即可：  
+
+#set compress  
+
+<ifmodule mod_deflate.c>  
+
+AddOutputFilter DEFLATE html xml php js css  
+
+</ifmodule>  
+
+通过firefox工具可看到，压缩前，html文档的大小是25KB；合并后的js大小为138KB；  
+
+[![wps_clip_image-2227](http://blog.me115.com/wp-content/uploads/2013/01/wps_clip_image22271.png)](http://blog.me115.com/wp-content/uploads/2013/01/wps_clip_image2227.png)  
+
+压缩后，html文档大小为6.2KB。js大小为39.8KB；减少2/3的传输时间；  
+
+[![wps_clip_image-10096](http://blog.me115.com/wp-content/uploads/2013/01/wps_clip_image100961.png)](http://blog.me115.com/wp-content/uploads/2013/01/wps_clip_image10096.png)  
+
+**第六步，最大化的减少HTTP请求；**  
+
+添加Expires头, 启用静态内容缓存，将jpg、gif等文件缓存；  
+
+方法也是在.htaccess中添加：  
+
+# Image and Flash content Caching for One Month  
+
+<FilesMatch ".(flv|gif|jpg|jpeg|png|ico|swf)$">  
+
+Header set Cache-Control "max-age=2592360"  
+
+</FilesMatch>  
+
+**结论**  
+
+查看最终的测试结果，整体实现了较大的性能提升，最终页面展现时间为1.62s（测试使用的是一个第三方web测速工具，所有测试结果是在第三方本地无缓存的条件下进行）。仔细观察本站最后几个加载项：有一个第三方网站的广告（加载广告的时刻，页面已经全部呈现，对用户体验影响不大），以及cnzz的统计数据。这样看来，在第12项加载完后，整个页面就完整的呈现在用户面前，优化最终结果是1.1s，较优化前加载速度提升2s；由于物理条件（虚拟机、国外站点）所限，本次优化就到此为止（后续将在并行下载上做做文章，看是否有进一步提升空间）。  
+
+[![wps_clip_image-7016](http://blog.me115.com/wp-content/uploads/2013/01/wps_clip_image70161.png)](http://blog.me115.com/wp-content/uploads/2013/01/wps_clip_image7016.png)  
+
+本次优化主要使用的是前端优化，其中大部分规则来自于这本书的指导《[高性能网站建设指南](http://www.me115.com/book/102.html)》；如果你的web前端部分还没有充分优化，强烈建议读读这本书；  
+
+这是一本你只需画上三小时就能看完，但收获价值远远大于付出的一本书。  
+
+![image](http://blog.me115.com/wp-content/uploads/2013/01/image2.png)  
+
+附上本书的目录：  
+
+绪言A：前端性能的重要性  
+
+第1章：规则1——减少HTTP请求  
+
+第2章：规则2——使用内容发布网络  
+
+第3章：规则3——添加Expires头  
+
+第4章：规则4——压缩组件  
+
+第5章：规则5——将样式表放在顶部  
+
+第6章：规则6——将脚本放在底部  
+
+第7章：规则7——避免CSS表达式  
+
+第8章：规则8——使用外部JavaScript和CSS  
+
+第9章：规则9——减少DNS查找  
+
+第10章：规则10——精简JavaScript  
+
+第11章：规则11——避免重定向  
+
+第12章：规则12——移除重复脚本  
+
+第13章：规则13——配置ETag  
+
+第14章：规则14——使AjaX可缓存  
+
+第15章：析构十大网站  
+
+页面大小、响应时间、YSlow等级  
+
+如何进行测试  
+
+如果您认为这篇博客让您有些收获，请点击右下角的【推荐】按钮。
+
+**Posted by: 大CC | JAN24,2013**
+
+博客：[blog.me115.com](http://blog.me115.com/) **[**[**订阅**](http://feed.feedsky.com/me115)**]**
+
+微博：[新浪微博](http://weibo.com/bigcc115)

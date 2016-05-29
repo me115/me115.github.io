@@ -1,0 +1,75 @@
+---
+author: me115wp
+comments: true
+date: 2015-02-25 14:12:57+00:00
+layout: post
+link: http://blog.me115.com/2015/02/811
+slug: digitalocean-2015%e5%b9%b4%e4%bc%98%e6%83%a0%e7%a0%81
+title: DigitalOcean 2015年优惠码
+wordpress_id: 811
+categories:
+- 未分类
+- 社会杂谈
+---
+
+# DigitalOcean Coupon & Promo Codes for 2015
+
+
+
+
+
+## 优惠码
+
+
+
+
+
+又到了缴费的时间，上网搜了一圈，发现了不少优惠码，没有大额的，只有10美元；
+
+
+
+
+
+有需要的可以试试:
+
+
+
+
+
+
+
+  * SHIPITFAST
+
+
+  * SHIPITNOW10
+
+
+  * DODEPLOY
+
+
+  * WP10
+
+
+  * DEPLOY2DO
+
+
+  * radio-t
+
+
+  * TWITTER914
+
+
+
+
+
+## DigitalOcean地址
+
+
+
+
+
+使用以下地址注册，你将直接获得10美元（可用来支付2个月的VPS费用）,而我也可以获取推广收益：
+[DigitalOcean注册](https://www.digitalocean.com/?refcode=ee9c5a992d6f)
+
+
+

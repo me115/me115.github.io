@@ -1,0 +1,124 @@
+---
+author: me115wp
+comments: true
+date: 2010-10-10 13:44:00+00:00
+layout: post
+link: http://blog.me115.com/2010/10/18
+slug: '%e5%af%b9%e4%ba%8e%e6%97%b6%e9%97%b4%e7%ae%a1%e7%90%86%e7%9a%84%e4%b8%80%e7%82%b9%e6%8e%a2%e7%b4%a2'
+title: 对于时间管理的实践
+wordpress_id: 18
+categories:
+- 时间管理
+tags:
+- google cal
+- 时间管理
+---
+
+时间就像金钱，必须管理；
+
+通过将要做的事纳入时间管理，头脑将轻松很多，不用在刻意去记哪件事还没做（如果没有工具提醒，大脑潜意识就会一直记住这事，而在某一偶然时刻蹦出来提醒还未做此事，如此反复，让大脑疲惫不已）。
+
+我使用以下工具用于管理我的时间： 
+
+
+
+	
+  * MyLifeOrganized：简称（mlo），用于管理未来一段时间的活动安排 
+
+	
+  * Google cal:对确定日程活动的管理 
+
+	
+  * 财智：用于记录时间日志； 
+
+
+在平时，我的大部分时间都是在电脑旁，因此，信息的收集我都是使用Mlo的快捷视图完成。在每周末，对收集到的所有信息进行分类整理，需要在确定日程时间里做的事情提交到google日历日程表中（eg：10月15日上午10点开会）；而对于不具有具体时间要求特性的活动，将其加入到MLO中，给其分配一个具体场景和优先级；
+
+以下我将重点说明如何记录时间日志：
+
+记录时间日志必要性，我不多说，可参考[旅行无限](http://blog.vsharing.com/journeyman/A926574.html)的文章；
+
+个人觉得记录时间日志的重要作用在于后期的分析，而旅程无限所使用的是Outlook并不具有这方面的功能；因而他只能通过导出到excel，然后对数据进行一系列的处理，最后能生成图片化的报表；这一系列繁琐的操作对于一个精通Excel的人来说自然不成问题，但是，对于我们大多数人，只能望洋兴叹。
+
+财智是个理财软件，具有很完善的后期分析功能。该工具可为记录的财务数据生成漂亮的图表，更可对过去两个时间段的收入消费进行对比；看到自己时间在不知不觉中流逝，财智其完善的数据分析功能让我想到可以移植到时间的数据统计上来； 
+
+使用财智生成的时间统计日志图为:
+
+[![image](http://blog/wp-content/uploads/2010/10/image_thumb.png)](http://blog/wp-content/uploads/2010/10/image.png)
+
+我记录时间日志采用的工具是Google cal，其记录的最小单位为半小时，作为我们日常统计足矣。 
+
+google日志如下图【】 
+
+[ ](http://blog/wp-content/uploads/2010/10/clip_image0022.jpg)[![clip_image002](http://blog/wp-content/uploads/2010/10/clip_image002_thumb.jpg)](http://blog/wp-content/uploads/2010/10/clip_image0023.jpg)
+
+Google提供了导出数据功能，可以将个人的日历数据导出为ics文件。具体导出页面如下：
+
+[ ](http://blog/wp-content/uploads/2010/10/clip_image0042.jpg)[![clip_image004](http://blog/wp-content/uploads/2010/10/clip_image004_thumb.jpg)](http://blog/wp-content/uploads/2010/10/clip_image0043.jpg)
+
+该文件可导入到Outlook中直接使用；该文件以文本形式记录，编码为UTF-8；格式如下：
+
+    
+    <P>BEGIN:VCALENDAR
+    <P>PRODID:-//Google Inc//Google Calendar 70.9054//EN
+    <P>VERSION:2.0
+    <P>CALSCALE:GREGORIAN
+    <P>METHOD:PUBLISH
+    <P>X-WR-CALNAME:TimeRecord
+    <P>X-WR-TIMEZONE:Asia/Shanghai
+    <P>X-WR-CALDESC:时间日志
+    <P>BEGIN:VEVENT
+    <P>DTSTART:20101009T023000Z
+    <P>DTEND:20101009T033000Z
+    <P>DTSTAMP:20101009T051610Z
+    <P>UID:q1lpiaakuv2mv2bq0dl8qfn0oo@google.com
+    <P>CREATED:20101009T031439Z
+    <P>DESCRIPTION:
+    <P>LAST-MODIFIED:20101009T031439Z
+    <P>LOCATION:
+    <P>SEQUENCE:0
+    <P>STATUS:CONFIRMED
+    <P>SUMMARY:s:时间日志转换程序
+    <P>TRANSP:OPAQUE
+    <P>END:VEVENT</P>
+
+
+导入到财智软件需要转换为XML格式文件，为此，我写了一个程序，可连网提取google cal的日志，并将google ics文件转换为财智xml格式文件，如有朋友需要，可以加以改进;以下为截图：
+
+[![image](http://blog/wp-content/uploads/2010/10/image_thumb1.png)](http://blog/wp-content/uploads/2010/10/image1.png)
+
+在我的时间日志记录中，我分了9个类别；在google cal我记录每件事都是以一个规定类别的字母开头,这样在程序转换中,就可以使google cal带上类别属性。这9个类别分别对应9个字母。对应如下：
+
+
+<blockquote>case 'c':   action = "C-CTNET";
+
+case 'g': action = "G-社交";
+
+case 'h': action = "H-休闲娱乐";
+
+case 'i': action = "I-健身";
+
+case 'j': action = "J-家庭生活";
+
+case 'p': action = "P-个人生活";
+
+case 's': action = "S-学习";
+
+case 't': action = "T-交通";
+
+case 'w': action = "W-工作";</blockquote>
+
+
+在财智中生成的图表为:
+
+[![image](http://blog/wp-content/uploads/2010/10/image_thumb.png)](http://blog/wp-content/uploads/2010/10/image.png)
+
+以下是两段时间对比图：
+
+﻿[![](http://blog/wp-content/uploads/2010/10/tme688aae59bbee69caae591bde5908d.jpg)](http://blog/wp-content/uploads/2010/10/tme688aae59bbee69caae591bde5908d.jpg)
+
+通过对这9个类别的统计对比，我可以看见我上周乃至前几个月工作的重点及后面需要重点投资的方向；
+
+时间对我们每个人而言都是公平的，用一天就少一天；钱没了可以再赚，而时间，想要拥有更多，只能通过节省。 
+
+----珍惜时间，从时间管理开始。

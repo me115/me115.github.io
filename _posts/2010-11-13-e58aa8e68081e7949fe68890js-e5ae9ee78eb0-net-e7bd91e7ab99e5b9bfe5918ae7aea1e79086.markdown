@@ -1,0 +1,179 @@
+---
+author: me115wp
+comments: true
+date: 2010-11-13 15:27:39+00:00
+layout: post
+link: http://blog.me115.com/2010/11/46
+slug: '%e5%8a%a8%e6%80%81%e7%94%9f%e6%88%90js-%e5%ae%9e%e7%8e%b0-net-%e7%bd%91%e7%ab%99%e5%b9%bf%e5%91%8a%e7%ae%a1%e7%90%86'
+title: 动态生成JS 实现 .NET 网站广告管理
+wordpress_id: 46
+categories:
+- WEB开发
+tags:
+- .net
+- 广告管理
+---
+
+一般的网站，其中的广告都需要定期更换和管理。对于广告的存储，一般选用的数据源是数据库或者XML。而对于广告的显示，一般有两种方法：
+
+ 
+
+一是使用AdRotator广告组件。这样很容易实现，通过封装AdRotator控件，在需要显示广告的页面放置自定义控件并设置广告关键词：
+
+ 
+    
+    AdControl.ascx：
+
+
+
+
+    
+    <%@ Control Language="C#" AutoEventWireup="true" CodeFile="AdControl.ascx.cs" Inherits="Controls_AdControl" %>
+    <asp:AdRotator ID="Ror" runat="server" /> 
+
+
+
+
+    
+    AdControl.ascx.cs:
+
+
+
+
+    
+    public partial class Controls_AdControl : System.Web.UI.UserControl
+    {
+        private string keyWord;
+    
+        private string KeyWord
+        {
+            get { return keyWord; }
+            set { keyWord = value; }
+        }
+        private int height;
+    
+        public int Height
+        {
+            get { return height; }
+            set { height = value; }
+        }
+        private int width;
+    
+        public int Width
+        {
+            get { return width; }
+            set { width = value; }
+        }
+        private string city;
+    
+        public string City
+        {
+            get { return city; }
+            set { city = value; }
+        }
+    
+        //OnLoadComplete
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            //if (!IsPostBack)
+            //{
+    
+            //}
+        }
+        public void KeywordBind(string key){
+            keyWord = key;
+            if (height > 0) Ror.Height = height;
+            if (width > 0) Ror.Width = width;
+    
+            city = Profile.city;
+            if (string.IsNullOrEmpty(city))
+                city = "武汉";
+            Ror.KeywordFilter = keyWord;
+            Ror.DataSource = AdDA.GetAdList(keyWord, city);
+            Ror.DataBind();
+        }
+
+
+
+
+
+缺点：每显示一个广告，就需要数据库有一次连接;那一个页面过多的广告，对数据库的消耗太大；
+
+
+
+
+
+
+
+
+
+第二种方式，使用JS来管理广告，具体方法：
+
+
+
+
+
+广告信息存于数据库中（图片地址，alter信息等），使用C#读写文件生成ad.js:
+
+
+
+
+    
+    using (StreamWriter sw = new StreamWriter(url))//"d:\DJS\ad.js"
+            {
+                DataTable dt = AdDA.EnumAdList();
+                string src, keyword, alter, link;
+                sw.WriteLine("$(document).ready(function(){");
+                foreach (DataRow dr in dt.Rows)
+                {
+                    src = dr["ImageUrl"].ToString();
+                    keyword = dr["keyword"].ToString();
+                    alter = dr["AlternateText"].ToString();
+                    link = dr["NavigateUrl"].ToString();
+                    sw.WriteLine("$('#"+keyword+"i').attr({");
+                    sw.WriteLine("  'src': '" + src + "',  'alt': '" + alter + "'");
+                    sw.WriteLine("});");
+    
+                    sw.WriteLine("$('#" + keyword + "a').attr({");
+                    sw.WriteLine("'href':'"+link+"'");
+                    sw.WriteLine("});");
+                }
+                sw.WriteLine("});");
+            }
+
+
+
+
+
+在页面中包含该JS:
+
+
+
+
+    
+        <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/ad.js"></script>
+
+
+
+
+    
+    <font size="2" face="华文中宋">在需要显示广告的位置加上相应的标签:</font>
+
+
+
+
+    
+    <a id="iR1a"><img id="iR1i" width="165" height="120" /></a>
+
+
+
+
+
+如此,在更新广告信息后只需要重新生成ad.js即可实现网站的广告更新。
+
+
+
+
+
+OVER

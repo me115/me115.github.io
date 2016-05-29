@@ -1,0 +1,376 @@
+---
+author: me115wp
+comments: true
+date: 2015-09-02 03:00:35+00:00
+layout: post
+link: http://blog.me115.com/2015/09/866
+slug: c11%e4%b8%ad%e5%af%b9%e7%b1%bbclass%e6%96%b0%e5%a2%9e%e7%9a%84%e7%89%b9%e6%80%a7
+title: C++11中对类(class)新增的特性
+wordpress_id: 866
+categories:
+- C++编程
+tags:
+- c++
+- c++11
+---
+
+# C++11中对类(class)新增的特性
+
+
+
+
+
+## default/delete 控制默认函数
+
+
+
+
+
+在我们没有显式定义类的复制构造函数和赋值操作符的情况下，编译器会为我们生成默认的这两个函数：      
+默认的赋值函数以内存复制的形式完成对象的复制。       
+这种机制可以为我们节省很多编写复制构造函数和赋值操作符的时间，但是在某些情况下，比如我们不希望对象被复制，       
+在之前我们需要将复制构造函数和赋值操作符声明为private，现在可以使用delete关键字实现：
+
+
+
+
+    
+    <code>class X {
+        // …
+        X& operator=(const X&) = delete;   // 禁用类的赋值操作符
+        X(const X&) = delete;
+    };</code>
+
+
+
+
+
+显式地使用default关键字声明使用类的默认行为，对于编译器来说明显是多余的，但是对于代码的阅读者来说，使用default显式地定义复制操作，则意味着这个复制操作就是一个普通的默认的复制操作。
+
+
+
+
+
+## override /final 强制重写/禁止重写虚函数
+
+
+
+
+
+派生类中可以不实现基类虚函数，也可以实现，但不使用virtual关键字； 
+    
+这很容易给人造成混淆，有时为了确认某个函数是否是虚函数，我们不得不追溯到基类查看； 
+
+    
+C++11引入了两个新的标识符： override和final 
+
+    
+override，表示函数应当重写基类中的虚函数。（用于派生类的虚函数中） 
+
+    
+final，表示派生类不应当重写这个虚函数。（用于基类中）
+
+
+
+
+    
+    <code>struct B {
+           virtual void f();
+           virtual void g() const;
+           virtual void h(char);
+           void k();      // non-virtual
+           virtual void m() final; 
+    };
+    
+    struct D : B {
+           void f() override;     // OK: 重写 B::f()
+           void g() override;     // error: 不同的函数声明，不能重写
+           virtual void h(char);  // 重写 B::h( char ); 可能会有警告
+           void k() override;     // error: B::k() 不是虚函数
+           virtual void m();       // error: m()在基类中声明禁止重写
+    };</code>
+
+
+
+
+
+有了这对兄弟，我们的虚函数用起来更为安全，也更好阅读；
+
+
+
+
+
+## 委托构造函数 Delegating constructors
+
+
+
+
+
+在C++98中，如果你想让两个构造函数完成相似的事情，可以写两个大段代码相同的构造函数，或者是另外定义一个init()函数，让两个构造函数都调用这个init()函数。例如：
+
+
+
+
+    
+    <code>class X {
+            int a;
+            // 实现一个初始化函数
+            validate(int x) {
+                if (0<x && x<=max) a=x; else throw bad_X(x);
+            }
+        public:
+            // 三个构造函数都调用validate()，完成初始化工作
+            X(int x) { validate(x); }
+            X() { validate(42); }
+            X(string s) {
+                int x = lexical_cast<int>(s); validate(x);
+            }
+            // …
+        };</code>
+
+
+
+
+
+这样的实现方式重复罗嗦，并且容易出错。 
+    
+在C++0x中，我们可以在定义一个构造函数时调用另外一个构造函数：
+
+
+
+
+    
+    <code>class X {
+            int a;
+        public:
+            X(int x) { if (0<x && x<=max) a=x; else throw bad_X(x); }
+            // 构造函数X()调用构造函数X(int x)
+            X() :X{42} { }
+            // 构造函数X(string s)调用构造函数X(int x)
+            X(string s) :X{lexical_cast<int>(s)} { }
+            // …
+        };</code>
+
+
+
+
+
+## 继承的构造函数 Inheriting constructors
+
+
+
+
+
+C++11提供了将构造函数晋级的能力： 
+    
+比如以下这个示例，基类提供一个带参数的构造函数，而派生类没有提供； 
+
+    
+如果直接使用D1 d(6);将会报错；通过将基类构造函数晋级，派生类中会隐式声明构造函数D1(int)； 
+
+    
+需要注意的是，晋级后的基类构造函数是无法初始化派生类的成员变量的，所以如果派生类中有成员变量， 
+
+    
+需要使用初始化列表初始化；
+
+
+
+
+    
+    <code>struct B1 {
+            B1(int) { }
+        };
+        struct D1 : B1 {
+            using B1::B1; // 隐式声明构造函数D1(int)
+            // 注意：在声明的时候x变量已经被初始化
+            int  x{0};
+        };
+        void test()
+        {
+            D1 d(6);    // d.x的值是0
+        }</code>
+
+
+
+
+
+## 类内部成员的初始化 Non-static data member initializers
+
+
+
+
+
+在C++98标准里，只有static const声明的整型成员能在类内部初始化，并且初始化值必须是常量表达式。这些限制确保了初始化操作可以在编译时期进行。
+
+
+
+
+    
+    <code>class X {
+        static const int m1 = 7;   // 正确
+        const int m2 = 7;    // 错误：无static
+        static int m3 = 7;              // 错误：无const
+        static const string m5 = “odd”; //错误：非整型
+    };</code>
+
+
+
+
+
+C++11的基本思想是，允许非静态（non-static）数据成员在其声明处（在其所属类内部）进行初始化。这样，在运行时，需要初始值时构造函数可以使用这个初始值。现在，我们可以这么写：
+
+
+
+
+    
+    <code>class A {
+    public:
+        int a = 7;
+    };
+    它等同于使用初始化列表：
+    class A {
+    public:
+        int a;
+        A() : a(7) {}
+    };</code>
+
+
+
+
+
+单纯从代码来看，这样只是省去了一些文字输入，但在有多个构造函数的类中，其好处就很明显了：
+
+
+
+
+    
+    <code>class A {
+        public:
+             A(): a(7), b(5), hash_algorithm(“MD5″),
+               s(“Constructor run”) {}
+            A(int a_val) :
+              a(a_val), b(5), hash_algorithm(“MD5″),
+              s(“Constructor run”)
+              {}
+            A(D d) : a(7), b(g(d)),
+                hash_algorithm(“MD5″), s(“Constructor run”)
+                {}
+            int a, b;
+        private:
+            // 哈希加密函数可应用于类A的所有实例
+            HashingFunction hash_algorithm;
+            std::string s;  // 用以指明对象正处于生命周期内何种状态的字符串
+        };</code>
+
+
+
+
+
+可以简化为：
+
+
+
+
+    
+    <code>class A {
+        public:
+            A() {}
+            A(int a_val) : a(a_val) {}
+            A(D d) : b(g(d)) {}
+            int a = 7;
+            int b = 5;
+        private:
+            //哈希加密函数可应用于类A的所有实例
+            HashingFunction hash_algorithm{“MD5″};
+            //用以指明对象正处于生命周期内何种状态的字符串
+            std::string s{“Constructor run”};</code>
+
+
+
+
+
+多么优雅！
+
+
+
+
+
+## 移动构造和移动赋值
+
+
+
+
+
+在C++98中，我们自定义的类，会默认生成拷贝赋值操作符函数和拷贝赋值函数以及析构函数； 
+    
+在C++11中，依赖于新增的move语义，默认生成的函数多了2个移动相关的：移动赋值操作符（ move assignment ）和移动构造函数（ move constructor ）；
+
+
+
+
+
+BS建议，如果你显式声明了上述 5 个函数或操作符中的任何一个，你必须考虑其余的 4 个，并且显式地定义你需要的操作，或者使用这个操作的默认行为。
+
+
+
+
+
+一旦我们显式地指明（ 声明 , 定义 , =default , 或者 =delete ）了上述五个函数之中的任意一个，编译器将不会默认自动生成move操作。 
+    
+一旦我们显式地指明（ 声明 , 定义 , =default , 或者 =delete ）了上述五个函数之中的任意一个，编译器将默认自动生成所有的拷贝操作。但是，我们应该尽量避免这种情况的发生，不要依赖于编译器的默认动作。
+
+
+
+
+
+如果你声明了上述 5 个默认函数中的任何一个，强烈建议你显式地声明所有这 5 个默认函数。例如：
+
+
+
+
+    
+    <code>template<class T>
+    class Handle {
+        T* p;
+    public:
+        Handle(T* pp) : p{pp} {}
+        // 用户定义构造函数： 没有隐式的拷贝和移动操作
+            ~Handle() { delete p; }
+        Handle(Handle&& h) :p{h.p}
+            { h.p=nullptr; }; // transfer ownership
+        Handle& operator=(Handle&& h)
+            { delete p; p=h.p; h.p=nullptr; } // 传递所有权
+        Handle(const Handle&) = delete;  // 禁用拷贝构造函数
+        Handle& operator=(const Handle&) = delete;
+        // ...
+    };</code>
+
+
+
+
+
+## 参考
+
+
+
+
+
+[http://www.stroustrup.com/C++11FAQ.html](http://www.stroustrup.com/C++11FAQ.html) 
+
+    
+[https://www.chenlq.net/books/cpp11-faq](https://www.chenlq.net/books/cpp11-faq)
+
+
+
+
+
+Posted by: 大CC | 02SEP,2015 
+    
+博客：[blog.me115.com](http://blog.me115.com) [[订阅](http://blog.me115.com/feed)] 
+
+    
+Github：[大CC](https://github.com/me115)
+
+
+

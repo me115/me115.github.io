@@ -1,0 +1,55 @@
+---
+author: me115wp
+comments: true
+date: 2011-02-10 08:30:35+00:00
+layout: post
+link: http://blog.me115.com/2011/02/116
+slug: mapreduce%e7%9a%84%e5%ba%94%e7%94%a8%e5%9c%ba%e6%99%af
+title: MapReduce的应用场景
+wordpress_id: 116
+categories:
+- 并行计算
+tags:
+- Hadoop
+- MapReduce
+---
+
+MapReduce的典型应用场景中，目前日志分析用的比较多，还有做搜索的索引，机器学习算法包mahout也是之一，当然它能做的东西还有很多，比如数据挖掘、信息提取。
+
+ 
+
+MapReduce得到广泛的应用，主要集中在分布排序、Web连接图反转和Web访问日志分析。
+
+ 
+
+<blockquote>  
+> 
+> Google建立了基于MapReduce的搜索索引系统。从本质上而言，这个索引是由序列的批处理操作组成的。它通过把对数据集的大规模操作分发给网络上的每个节点进行运算，而每个节点会周期性的把完成的工作和状态的更新报告回主计算.
+> 
+> </blockquote>
+
+ 
+
+Lipkovitz首先谈到了Google基于MapReduce文件索引系统处理方式。“我们必须面对一个非常庞大的数据系统，在这之前，我们需要等待8个小时的计算时间我们才能够得到计算的全结果，然后我们就会把它发布到索引系统中去。过去我们一直在不停地重复这个耗时耗力的工作。”
+
+ 
+
+MapReduce仅仅是一个批处理操作方式.Google之所以放弃MapReduce，是因为它并不能为谷歌提供它所想要的索引速度，特别是随着实时检索时代的到来，谷歌需要的是在几秒内刷新索引内容，而非8小时。
+
+ 
+
+**索引系统是谷歌最大的MapReduce的应用程序。 **
+
+ 
+
+我们看看Doug Cutting的对于Hadoop在业务上的使用：
+
+ 
+
+Doug Cutting(DC):Yahoo定期在搜索业务上使用Hadoop来提高其产品和服务，如排名功能和目标广告等。除此之外，也有一些直接使用Hadoop进行数据生成的案例。Hadoop的长期目标是提供世界级的分布式计算工具，也是对下一代业务（如搜索结果分析等）提供支持的Web扩展（web-scale）服务。
+
+ 
+
+总的来说，MapReduce可用于包括“分布grep，分布排序，web访问日志分析，反向索引构建，文档聚类，机器学习，基于统计的机器翻译，生成Google的整个搜索的索引”等大规模数据处理工作。而对于实时的并行计算，比如对耗时的计算进行并行处理，MapReduce可能不是一个理想的选择，这时，可能就需要考虑其它方向，比如：MPI、OpenMP、Hybrid CUDA等。
+
+ 

@@ -1,0 +1,208 @@
+---
+author: me115wp
+comments: true
+date: 2011-01-26 06:18:26+00:00
+layout: post
+link: http://blog.me115.com/2011/01/98
+slug: windows%e5%a4%9a%e7%ba%bf%e7%a8%8b%e5%ba%94%e7%94%a8%e7%a8%8b%e5%ba%8f%e7%9a%84%e7%bc%96%e8%af%91%e5%92%8c%e9%93%be%e6%8e%a5
+title: Windows多线程应用程序的编译和链接
+wordpress_id: 98
+categories:
+- C++编程
+tags:
+- 多线程
+---
+
+编译多线程应用程序的第一步是要确保编译器使用了正确的运行时库：MS为C运行时库提供了几个不同的实现。这些版本在以下3个标准上有所不同：链接方式（静态or动态）、是否可再入（有一个库是为单线程应用程序设计的，是不可再入的；另一个库是为多线程设计的，是可再入的）、以及是否包含调试符号。   <table cellpadding="0" border="1" cellspacing="0" ><tbody >       <tr >         
+<td width="80" valign="top" >           
+
+开关
+
+        
+</td>          
+<td width="269" valign="top" >           
+
+含义
+
+        
+</td>       </tr>        <tr >         
+<td width="80" valign="top" >           
+
+/MT
+
+        
+</td>          
+<td width="269" valign="top" >           
+
+使用静态链接的多线程应用程序
+
+        
+</td>       </tr>        <tr >         
+<td width="80" valign="top" >           
+
+/MTd
+
+        
+</td>          
+<td width="269" valign="top" >           
+
+多线程应用程序调试使能
+
+        
+</td>       </tr>        <tr >         
+<td width="80" valign="top" >           
+
+/MD
+
+        
+</td>          
+<td width="269" valign="top" >           
+
+多线程动态链接库
+
+        
+</td>       </tr>        <tr >         
+<td width="80" valign="top" >           
+
+/MDd
+
+        
+</td>          
+<td width="269" valign="top" >           
+
+多线程动态链接库调试 使能
+
+        
+</td>       </tr>     </tbody></table>
+
+ 
+
+支持C程序的微软多线程库：   <table cellpadding="0" border="1" cellspacing="0" ><tbody >       <tr >         
+<td width="196" valign="top" >           
+
+程序类型
+
+        
+</td>          
+<td width="312" valign="top" >           
+
+C运行时库
+
+        
+</td>       </tr>        <tr >         
+<td width="196" valign="top" >           
+
+多线程程序
+
+        
+</td>          
+<td width="312" valign="top" >           
+
+LIBCMT.LIB
+
+        
+</td>       </tr>        <tr >         
+<td width="196" valign="top" >           
+
+支持调试的多线程程序
+
+        
+</td>          
+<td width="312" valign="top" >           
+
+LIBCMTD.LIB
+
+        
+</td>       </tr>        <tr >         
+<td width="196" valign="top" >           
+
+多线程DLL程序
+
+        
+</td>          
+<td width="312" valign="top" >           
+
+MSVCRT.LIB(MSVCRT.DLL的引入库）
+
+        
+</td>       </tr>        <tr >         
+<td width="196" valign="top" >           
+
+支持调试的DLL程序
+
+        
+</td>          
+<td width="312" valign="top" >           
+
+MSVCRTD.LIB(MSVCRTD.DLL的引入库）
+
+        
+</td>       </tr>     </tbody></table>
+
+ 
+
+支持C++程序的微软多线程库：   <table cellpadding="0" border="1" cellspacing="0" ><tbody >       <tr >         
+<td width="196" valign="top" >           
+
+程序类型
+
+        
+</td>          
+<td width="302" valign="top" >           
+
+C++运行时库
+
+        
+</td>       </tr>        <tr >         
+<td width="196" valign="top" >           
+
+多线程程序
+
+        
+</td>          
+<td width="302" valign="top" >           
+
+LIBCPMT.LIB
+
+        
+</td>       </tr>        <tr >         
+<td width="196" valign="top" >           
+
+支持调试的多线程程序
+
+        
+</td>          
+<td width="302" valign="top" >           
+
+LIBCPMTD.LIB
+
+        
+</td>       </tr>        <tr >         
+<td width="196" valign="top" >           
+
+多线程DLL程序
+
+        
+</td>          
+<td width="302" valign="top" >           
+
+MSVCPRT.LIB(也使用MSVCRT.DLL）
+
+        
+</td>       </tr>        <tr >         
+<td width="196" valign="top" >           
+
+支持调试的DLL程序
+
+        
+</td>          
+<td width="302" valign="top" >           
+
+MSVCPRTD.LIB(也使用MSVCRTD.DLL）
+
+        
+</td>       </tr>     </tbody></table>
+
+ 
+
+开发人员不能在单个进程空间中混合使用静态和动态库。当一个exe文件用到一个dll时，需要有开发人员保证使用相同版本的C运行时库来正确的构建exe和dll。

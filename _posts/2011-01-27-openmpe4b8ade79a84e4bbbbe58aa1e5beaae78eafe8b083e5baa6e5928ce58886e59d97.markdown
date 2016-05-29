@@ -1,0 +1,81 @@
+---
+author: me115wp
+comments: true
+date: 2011-01-27 05:12:17+00:00
+layout: post
+link: http://blog.me115.com/2011/01/99
+slug: openmp%e4%b8%ad%e7%9a%84%e4%bb%bb%e5%8a%a1%e5%be%aa%e7%8e%af%e8%b0%83%e5%ba%a6%e5%92%8c%e5%88%86%e5%9d%97
+title: 《多核程序设计》PART 6:OpenMP 一种可移植的多线程解决方案 (1)
+wordpress_id: 99
+categories:
+- 并行计算
+- 读书笔记
+tags:
+- OpenMP
+- 任务调度
+---
+
+**OpenMP中的任务循环调度和分块**
+
+对于内存利用比较好的情况下，对于负载平衡可能是不利的；同样，**有利于负载平衡的策略也有可能对访存的性能不利**。因此，在对性能优化时，必须在优化内存利用和优化负载平衡之间进行折中，通过对性能的测量找到能够得到最佳结果的方法。
+
+在OpenMP for结构中，使用schedule子句将循环调度和分开信息传达给编译器和运行时库：
+
+#pragma omp for schedule (kind [, chunk-size])
+
+如果指定可选的chunk-size（块大小），则该参数必须是不随循环变化的正整数常量或整数表达式。
+
+（注：调整块大小时要特别注意，因为它可能对性能带来负面影响。随着块大小的减小，线程用于从任务队列中获取任务的时间增加，结果使访问任务队列的开销增加，而降低性能，并有可能抵消负载平衡带来的性能提升。
+
+OpenMP的四种调度方案
+<table cellpadding="0" cellspacing="0" border="1" >
+<tbody >
+<tr >
+
+<td width="150" valign="top" >调度类型
+</td>
+
+<td width="604" valign="top" >描述
+</td>
+</tr>
+<tr >
+
+<td width="150" valign="top" >static( 默认不指定块大小）
+</td>
+
+<td width="604" valign="top" >将所有循环划分成大小相等的块，或在循环迭代次数不能整除线程数与块大小的乘积时划分成尽可能相等大小的块。
+</td>
+</tr>
+<tr >
+
+<td width="150" valign="top" >dynamic
+</td>
+
+<td width="604" valign="top" >使用一个内部队列，当线程可用时，为其分配由块大小所指定的一定数量的循环迭代。线程完成分配后，将从任务队列头取出下一组迭代。块默认大小为1.
+
+（注：这种调度需要额外的开销）
+</td>
+</tr>
+<tr >
+
+<td width="150" valign="top" >guided
+</td>
+
+<td width="604" valign="top" >与dynamic类似，但块大小刚开始较大，然后逐渐减少，从而减少了线程用于访问任务队列的时间。（chunk可指定所使用的块大小的最小值，默认为1）
+</td>
+</tr>
+<tr >
+
+<td width="150" valign="top" >runtime
+</td>
+
+<td width="604" valign="top" >在运行时使用OMP_SCHEDULE环境变量来确定使用上述三种调度策略中的某一种。
+</td>
+</tr>
+</tbody>
+</table>
+More：
+
+《多核程序设计》，
+
+OpenMP**中的任务调度**：[http://blog.csdn.net/drzhouweiming/archive/2007/10/26/1844762.aspx](http://blog.csdn.net/drzhouweiming/archive/2007/10/26/1844762.aspx)
