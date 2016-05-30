@@ -552,7 +552,6 @@ auto x = max({x,y,z},Nocase());
     
     <code>int arr[3]{1, 2, 3};
     vector<int> iv{1, 2, 3};
-    map<int, string>  m{{1, "a"}, {2, "b"}};
     string str{"Hello World"};</code>
 
 
