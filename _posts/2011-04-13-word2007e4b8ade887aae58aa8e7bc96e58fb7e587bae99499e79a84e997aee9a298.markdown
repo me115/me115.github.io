@@ -1,0 +1,79 @@
+---
+author: me115wp
+comments: true
+date: 2011-04-13 08:13:22+00:00
+layout: post
+link: http://blog.me115.com/2011/04/149
+slug: word2007%e4%b8%ad%e8%87%aa%e5%8a%a8%e7%bc%96%e5%8f%b7%e5%87%ba%e9%94%99%e7%9a%84%e9%97%ae%e9%a2%98
+title: word2007中自动编号出错的问题
+wordpress_id: 149
+categories:
+- Beautiful Life
+tags:
+- Word
+---
+
+在word中，有时遇到以下自动编号情景：        
+1.title         
+1.1***         
+1.2***         
+2.title         
+1.3***         
+1.4***
+
+ 
+
+    
+使用标题样式表的功能，怎么调整其自动格式都无济于事：
+
+ 
+
+![image](http://blog/wp-content/uploads/2011/04/image.png)
+
+ 
+
+ 
+
+解决方法：
+
+ 
+
+1.右击-段落，设置段落级别；
+
+ 
+
+使用功能栏中的编号，对每一级中大标题进行编号，选择想要编号的格式（比如2.1）
+
+ 
+
+[![image](http://blog/wp-content/uploads/2011/04/image_thumb.png)](http://blog/wp-content/uploads/2011/04/image1.png)
+
+ 
+
+2.右击，设置编号值，对子级别修正；
+
+ 
+
+对于数值比较大的编号等级（如4、5.、6.等），则可采用新建：
+
+ 
+
+右击-》编号—定义新的编号格式：
+
+ 
+
+![image](http://blog/wp-content/uploads/2011/04/image2.png)
+
+ 
+
+ 
+
+完毕。
+
+ 
+
+ 
+
+此方法适用编号10以内的，如果有几十章的编号，还得另寻高招。
+
+ 

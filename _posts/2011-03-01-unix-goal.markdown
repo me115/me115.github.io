@@ -1,0 +1,14 @@
+---
+author: me115wp
+comments: true
+date: 2011-03-01 08:53:22+00:00
+layout: post
+link: http://blog.me115.com/2011/03/138
+slug: unix-goal
+title: Unix Goal
+wordpress_id: 138
+categories:
+- Linux&amp;Unix
+---
+
+![](http://mindmap-editor.mindpin.com/mindmaps/31069.jpg)

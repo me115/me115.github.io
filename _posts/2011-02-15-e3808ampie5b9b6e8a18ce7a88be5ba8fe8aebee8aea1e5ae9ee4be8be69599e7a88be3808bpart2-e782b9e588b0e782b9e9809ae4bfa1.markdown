@@ -1,0 +1,370 @@
+---
+author: me115wp
+comments: true
+date: 2011-02-15 05:50:27+00:00
+layout: post
+link: http://blog.me115.com/2011/02/129
+slug: '%e3%80%8ampi%e5%b9%b6%e8%a1%8c%e7%a8%8b%e5%ba%8f%e8%ae%be%e8%ae%a1%e5%ae%9e%e4%be%8b%e6%95%99%e7%a8%8b%e3%80%8bpart2-%e7%82%b9%e5%88%b0%e7%82%b9%e9%80%9a%e4%bf%a1'
+title: 《MPI并行程序设计实例教程》PART2.点到点通信
+wordpress_id: 129
+categories:
+- 并行计算
+- 读书笔记
+tags:
+- MPI
+---
+
+点到点通信要求必须有send和recv配对。
+
+ 
+
+点到点通信共12对 ，分别对应阻塞式方式1组（4个）和非阻塞式方式2组    <table cellpadding="0" border="1" cellspacing="0" ><tbody >       <tr >         
+<td width="129" valign="top" >           
+
+分类
+
+        
+</td>          
+<td width="132" valign="top" >           
+
+发送
+
+        
+</td>          
+<td width="138" valign="top" >           
+
+接受
+
+        
+</td>          
+<td width="385" valign="top" >           
+
+说明
+
+        
+</td>       </tr>        <tr >         
+<td width="129" valign="top" >           
+
+阻塞通信
+
+        
+</td>          
+<td width="132" valign="top" >           
+
+MPI_Send
+
+           
+
+MPI_Bsend
+
+           
+
+MPI_Rsend
+
+           
+
+MPI_SSend
+
+        
+</td>          
+<td width="138" valign="top" >           
+
+MPI_Recv
+
+           
+
+MPI_Irecv
+
+           
+
+MPI_Recv_Init
+
+        
+</td>          
+<td width="385" valign="top" >           
+
+如果接受动作使用了
+
+           
+
+MPI_Irecv
+
+           
+
+MPI_Recv_Init，则要使用MPI_Request对象测试
+
+        
+</td>       </tr>        <tr >         
+<td width="129" valign="top" >           
+
+非阻塞式通信
+
+           
+
+（非重复）
+
+        
+</td>          
+<td width="132" valign="top" >           
+
+MPI_Isend
+
+           
+
+MPI_IBSend
+
+           
+
+MPI_IRSend
+
+           
+
+MPI_ISSend
+
+        
+</td>          
+<td width="138" valign="top" >           
+
+MPI_Recv
+
+           
+
+MPI_Irecv
+
+           
+
+MPI_Recv_Init
+
+        
+</td>          
+<td width="385" valign="top" >           
+
+需要用到MPI_Request对象进行相关测试及运行
+
+        
+</td>       </tr>        <tr >         
+<td width="129" valign="top" >           
+
+非阻塞式通信
+
+           
+
+（重复）
+
+        
+</td>          
+<td width="132" valign="top" >           
+
+MPI_Send_Init
+
+           
+
+MPI_Bsend_Init
+
+           
+
+MPI_Rsend_Init
+
+           
+
+MPI_Ssend_Init
+
+        
+</td>          
+<td width="138" valign="top" >           
+
+MPI_Recv
+
+           
+
+MPI_Irecv
+
+           
+
+MPI_Recv_Init
+
+        
+</td>          
+<td width="385" valign="top" >           
+
+同上
+
+        
+</td>       </tr>     </tbody></table>
+
+ 
+
+其中发送函数模式均为MPI_**Send，B标识缓存模式（Buffer），R表示就绪模式（Ready），S标识同步模式（Synchronous），I表示立即发送（Imediately）。不带任何修饰的，MPI_Send方式发送的称为标准模式。
+
+ 
+
+消息通信的数据传递流程：
+
+ 
+
+a. 发送端发送数据调用MPI _**Send；
+
+ 
+
+b. MPI环境从发送缓冲区提取要发送的数据，据此组装发送消息；
+
+ 
+
+c. 将组装的消息发送给目标；
+
+ 
+
+d. 接受端收取可匹配的消息，并将其解析到接受缓冲区。
+
+ 
+
+_**2.1****阻塞通信******_
+
+ 
+
+阻塞通信是指消息发送方的send调用需要接受方的recv调用的配合才可完成。
+
+ 
+
+· 标准通信模式
+
+ 
+
+详见示例：标准阻塞模式调用(代码code）
+
+ 
+    
+    //eg2:标准阻塞模式调用
+        int myid,numprocs,proId,sb[BUF_SIZE],rb[BUF_SIZE];
+        MPI_Status status;
+        MPI_Init(&argc,&argv);
+        MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
+        MPI_Comm_rank(MPI_COMM_WORLD,&myid); 
+    
+        for(int i = 0 ; i < BUF_SIZE;i++){
+            sb[i] = myid +1;
+        }
+        if(myid == 0 ) proId = 1;
+        if(myid == 1 ) proId = 0;
+        if(myid == 0 ){
+            cout << "process " << myid << "of " << numprocs << "trying send ..." <<endl;
+            MPI_Send(sb,BUF_SIZE,MPI_INT,proId,1,MPI_COMM_WORLD);
+            cout << "process " << myid << "of " << numprocs << "trying recv ..." <<endl;
+            MPI_Recv(rb,BUF_SIZE,MPI_INT,proId,1,MPI_COMM_WORLD,&status);
+        }
+        if(myid == 1){
+            cout << "process " << myid << "of " << numprocs << "trying recv ..." <<endl;
+            MPI_Recv(rb,BUF_SIZE,MPI_INT,proId,1,MPI_COMM_WORLD,&status);
+            cout << "process " << myid << "of " << numprocs << "trying send ..." <<endl;
+            MPI_Send(sb,BUF_SIZE,MPI_INT,proId,1,MPI_COMM_WORLD);
+        }
+        cout << "Hello, process " << myid << "of " << numprocs << endl;
+        MPI_Finalize();
+
+
+
+
+
+· 缓冲通信模式
+
+
+
+
+
+该模式主要用于解开阻塞通信的发送和接受之间的耦合。
+
+
+
+
+
+使用到的API:
+
+
+
+
+
+MPI_Pack_size:为每个消息计算其使用buffer的大小；
+
+
+
+
+
+MPI_Buffer_attach:装配用于通信的缓冲区；
+
+
+
+
+
+MPI_Bsend/MPI_Recv:发送接受数据
+
+
+
+
+
+MPI_Buffer_detach:卸载用于通信的缓冲区；
+
+
+
+
+
+· 就绪通信模式
+
+
+
+
+
+仅当对方的接受操作启动并准备就绪时，才可发送数据。（其发送方式与标准发送完全一致，只不过向MPI环境传递一个额外信息：接收动作已经就绪，直接发就是。
+
+
+
+
+
+使用到的MPI：MPI_Rsend;
+
+
+
+
+
+在必要时，需要在某个时间点同步：MPI_Barrier(MPI_COMM_WORLD);
+
+
+
+
+
+· 同步通信模式
+
+
+
+
+
+不论接收端是否启动了接收动作，发送端都可在任何时机启动发送动作。但发送端需等待接收端的接收动作发送并开始接收数据之后才可以结束。
+
+
+
+
+
+使用到的API：MPI_Ssend;
+
+
+
+
+
+注：各种通信模式，其发送方式不同，但接收都是使用的MPI_Recv。
+
+
+
+
+
+选择通信模式的建议：发送短消息可使用就绪发送模式，而发送长消息，可使用同步发送模式。如果忽略性能改进措施则就绪模式可实现为标准通信模式。
+
+
+
+
+
+_**2.2****非阻塞通信******_
+
+
+
+
+
+将通信和计算重叠将极大的改善性能，特别是那些具有独立通信控制硬件的系统上，更能发挥其优势。采取多线程是实现这种重叠的一个重要方法，此外就是使用非阻塞的通信操作。

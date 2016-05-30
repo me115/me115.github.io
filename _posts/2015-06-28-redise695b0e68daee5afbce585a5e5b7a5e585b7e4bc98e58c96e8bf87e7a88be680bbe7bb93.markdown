@@ -1,0 +1,269 @@
+---
+author: me115wp
+comments: true
+date: 2015-06-28 02:56:25+00:00
+layout: post
+link: http://blog.me115.com/2015/06/856
+slug: redis%e6%95%b0%e6%8d%ae%e5%af%bc%e5%85%a5%e5%b7%a5%e5%85%b7%e4%bc%98%e5%8c%96%e8%bf%87%e7%a8%8b%e6%80%bb%e7%bb%93
+title: Redis数据导入工具优化过程总结
+wordpress_id: 856
+categories:
+- C++编程
+tags:
+- c++
+- 性能优化
+---
+
+# Redis数据导入工具优化过程总结
+
+ 
+
+## 背景
+
+ 
+
+使用C++开发了一个Redis数据导入工具     
+从oracle中将所有表数据导入到redis中；      
+不是单纯的数据导入，每条oracle中的原有记录，需要经过业务逻辑处理，      
+并添加索引（redis集合）；      
+工具完成后，性能是个瓶颈；
+
+ 
+
+## 优化效果
+
+ 
+
+使用了2个样本数据测试：     
+样本数据a表8763 条记录；      
+b表940279 条记录；
+
+ 
+
+优化前，a表耗时11.417s；     
+优化后，a表耗时1.883s； 
+
+ 
+
+## 用到的工具
+
+ 
+
+gprof, pstrace,time
+
+ 
+
+使用time工具查看每次执行的耗时，分别包含用户时间和系统时间；     
+使用pstrace打印实时运行，查询进程主要的系统调用，发现耗时点；      
+使用gprof统计程序的耗时汇总，集中精力优化最耗时的地方；      
+使用简介：      
+1.对g++的所有编辑和连接选项都必须要加上-pg（第一天由于没有在连接处加上-pg选项，导致无法出统计报告）；      
+2.执行完程序后，本目录会产生gmon.out文件；      
+3.gprof redistool gmou.out > report,生成可读文件report，打开report集中优化最耗时的函数；
+
+ 
+
+## 优化过程
+
+ 
+
+优化前11.417s：
+
+ 
+    
+    <code>time ./redistool im a a.csv
+    real    0m11.417s
+    user    0m6.035s
+    sys     0m4.782s （发现系统调用时间过长）</code>
+
+
+
+
+
+### 文件内存映射
+
+
+
+
+
+系统调用时间过长，主要是文件读写，初步考虑是读取文件时，调用api次数过于频繁；
+    
+读取样本采用的是文件fgets一行行的读取，采用文件内存映射mmap后，可直接使用指针操作整个文件内存快；
+
+
+
+
+
+### 日志开关提前
+
+
+
+
+
+改进了文件读写后，发现优化效果比较有限（提高了2s左右）；fgets是C的文件读取库函数，相比系统read()，是带了缓冲区了，应该不会太慢（网上有人测试，文件内存映射相比fgets()能快上一个数量级，感觉场景应该比较特殊）；
+
+
+
+
+
+之后通过pstrace工具发现log.dat打开次数过多；原来是调试日志的开关写到了后面，导致 调试日志都是会打开日志文件open("log.dat")；
+    
+将日志开关提前；改进后，3.53s
+
+
+
+
+    
+    <code>time ./redistool im a a.csv
+    real    0m3.530s
+    user    0m2.890s
+    sys     0m0.212s</code>
+
+
+
+
+
+### vector空间预先分配
+
+
+
+
+
+后续通过gprof分析，某个函数的vector内存分配次数多，并有不少复制次数：
+    
+改进以下这行代码：
+
+
+
+
+    
+    <code>vector <string> vSegment;</code>
+
+
+
+
+
+使用静态vector变量，并预先分配内存：
+
+
+
+
+    
+    <code>static vector <string> vSegment;
+    vSegment.clear();
+    static int nCount = 0;
+    if( 0 == nCount)
+    {
+        vSegment.reserve(64);
+    }
+    ++nCount;</code>
+
+
+
+
+
+优化后，提升至2.286s
+
+
+
+
+    
+    <code>real    0m2.286s
+    user    0m1.601s
+    sys     0m0.222s</code>
+
+
+
+
+
+同样，另外一个类中的成员vector也使用预先分配空间（在构造函数中)：
+
+
+
+
+    
+    <code>m_vtPipecmd.reserve(256);</code>
+
+
+
+
+
+优化后，提升至2.166s;
+
+
+
+
+    
+    <code>real    0m2.166s
+    user    0m1.396s
+    sys     0m0.204s</code>
+
+
+
+
+
+### 函数改写 && 内联
+
+
+
+
+
+继续执行程序，发现SqToolStrSplitByCh()函数消耗过大，改写整个函数逻辑，并将改写后的函数内联：
+    
+优化后，提升至1.937s
+
+
+
+
+    
+    <code>real    0m1.937s
+    user    0m1.301s
+    sys     0m0.186s</code>
+
+
+
+
+
+### 去除调试符和优化监测符号
+
+
+
+
+
+最后，去掉debug和pg调试符号后，最终效果为1.883s；
+
+
+
+
+    
+    <code>real    0m1.883s
+    user    0m1.239s
+    sys     0m0.191s</code>
+
+
+
+
+
+## 满足生产要求
+
+
+
+
+
+以上最后几步看似毫秒级的提升，扩大到全表数据后，效果就很明显了；
+    
+优化后，生产上a表为152w，导入耗时大约326s（~6分钟）；
+
+    
+b表数据420w，导入耗时大约1103s（~18分钟）
+
+
+
+
+
+Posted by: 大CC | 28JUN,2015
+    
+博客：[blog.me115.com](http://blog.me115.com) [[订阅](http://blog.me115.com/feed)]
+
+    
+Github：[大CC](https://github.com/me115)

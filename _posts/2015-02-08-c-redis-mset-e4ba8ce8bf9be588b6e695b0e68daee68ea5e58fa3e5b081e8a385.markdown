@@ -1,0 +1,343 @@
+---
+author: me115wp
+comments: true
+date: 2015-02-08 04:12:50+00:00
+layout: post
+link: http://blog.me115.com/2015/02/804
+slug: c-redis-mset-%e4%ba%8c%e8%bf%9b%e5%88%b6%e6%95%b0%e6%8d%ae%e6%8e%a5%e5%8f%a3%e5%b0%81%e8%a3%85
+title: C++ Redis mset 二进制数据接口封装方案
+wordpress_id: 804
+categories:
+- C++编程
+- Redis
+tags:
+- redis
+---
+
+C++ Redis mset 二进制数据接口封装方案
+
+
+
+
+
+## 需求
+
+
+
+
+
+C++中使用hiredis客户端接口访问redis；      
+需要使用mset一次设置多个二进制数据
+
+
+
+
+
+以下给出三种封装实现方案；
+
+
+
+
+
+## 简单拼接方案
+
+
+
+
+
+在redis-cli中，mset的语法是这样的：
+
+
+
+
+    
+    <code>/opt/colin$./redis-cli mset a 11 b 22 c 333
+    OK</code>
+
+
+
+
+
+按照这样的语法拼接后，直接使用hiredis字符串接口redisCommand传递：
+
+
+
+
+    
+    <code>void msetNotBinary(redisContext *c, const vector<string> &vtKey, const vector<string> & vtVal )
+    {
+        if(vtKey.size() != vtVal.size())
+        {
+            throw runtime_error( "Redis error" );
+        }
+    
+        string strCmd = "MSET";
+        for(int i = 0; i < vtKey.size(); i++)
+        {
+            strCmd += " "+vtKey[i]+" "+vtVal[i];
+        }
+        cout << "strCmd:" << strCmd << endl;
+    
+        void * r =  redisCommand(c, strCmd.c_str() );
+        if ( !r )
+            throw runtime_error( "Redis error" );
+        freeReplyObject( r );
+    }
+    
+    void do_test( redisContext *c )
+    {    
+        vector<string> vtKey;
+        vector<string> vtVal;
+    
+        vtKey.push_back("A");
+        vtVal.push_back("AAAA");
+        vtKey.push_back("B");
+        vtVal.push_back("BBBB");
+        vtKey.push_back("C");
+        vtVal.push_back("CCCC");
+        //add a binary data
+        vtKey.push_back("D");
+        vtVal.push_back("");
+        char a[] = "ABCDE";
+        a[2] = 0;
+        vtVal[3].assign(a,5);
+    
+        try
+        {
+            msetNotBinary(c, vtKey, vtVal );
+            //mset1( c, vtKey, vtVal );
+            //mset2( c, vtKey, vtVal );
+        }
+        catch ( runtime_error & )
+        {
+            cout << "Error" << endl;
+        }
+    }
+    
+    int main(int argc, char *argv[])
+    {
+        redisContext *c;
+    
+        c = redisConnect("127.0.0.1",6379);
+        if (c->err)
+         {
+            cout << "Connection error: " << c->errstr << endl;
+            return -1;
+        }
+    
+        do_test(c);
+    
+        redisFree(c);
+    
+        return 0;
+    }</code>
+
+
+
+
+
+这种方式可以处理mset多个字符串数据，但对于数据内容为二进制数据的无能为力；
+
+
+
+
+
+## redisCommandArgv接口传递 方案
+
+
+
+
+
+对于多个参数传递，hiredis提供了以下接口，这个接口中最后一个参数是所有的传入数据的内容长度， 
+    
+就是说这个接口是二进制安全的：
+
+
+
+
+    
+    <code>void *redisCommandArgv(redisContext *c, int argc, const char **argv, const size_t *argvlen);</code>
+
+
+
+
+
+主要工作就是构造一个动态的二维数组_char ** argv_,其中涉及到_char **_到_const char **_的转换，有一定的风险， 
+
+    
+关于这一点前一篇文章已经谈到；
+
+
+
+
+    
+    <code>void mset1( redisContext *c, const vector<string> &vtKey, const vector<string> & vtVal )
+    {
+        if(vtKey.size() != vtVal.size())
+        {
+            throw runtime_error( "Redis error" );
+        }
+    
+        char ** argv = new char*[vtKey.size() + vtVal.size() + 1 ];
+        size_t * argvlen = new size_t[vtKey.size() + vtVal.size() + 1 ];
+    
+        int j = 0;
+        argv[j] = new char[5];
+        memcpy(argv[j],"MSET",4);
+        argvlen[j] = 4;
+        ++j;
+    
+    
+        for(int i = 0 ; i < vtKey.size();i++)
+        {    
+            argvlen[j] = vtKey[i].length();
+            argv[j] = new char[argvlen[j]];
+             memset((void*)argv[j],0,argvlen[j] );
+            memcpy((void*)argv[j],vtKey[i].data(),vtKey[i].length());
+            j++;
+    
+            argvlen[j] = vtVal[i].length();
+            argv[j] = new char[argvlen[j]];
+            memset((void*)argv[j],0,argvlen[j]);
+            memcpy((void*)argv[j],vtVal[i].data(),vtVal[i].length());
+            j++;
+        }
+    
+        //if not use const_cast<const char**> ,compile error
+        //for why assign from char** to const char** error, see my blog ...
+         void *r = redisCommandArgv(c, vtKey.size() + vtVal.size() + 1, const_cast<const char**>(argv), argvlen );
+        if ( !r )
+            throw runtime_error( "Redis error" );
+        freeReplyObject( r );
+    
+        for(int i = 0;i < vtKey.size();i++)
+        {
+            delete [] argv[i];
+            argv[i] = NULL;
+        }
+    
+        delete []argv;
+        delete []argvlen;
+        argv = NULL;
+    }</code>
+
+
+
+
+
+## redisCommandArgv接口传递的Vector方案
+
+
+
+
+
+还是使用redisCommandArgv接口，使用vector来构造这个const char **，这个方法是从参考资料1中学到的：
+
+
+
+
+    
+    <code>void mset2( redisContext *c, const vector<string> &vtKey, const vector<string> & vtVal)
+    {
+        if(vtKey.size() != vtVal.size())
+        {
+            throw runtime_error( "Redis error" );
+        }
+    
+        vector<const char *> argv( vtKey.size() + vtVal.size() + 1 );
+        vector<size_t> argvlen( vtKey.size() +  vtVal.size() + 1 );
+        int j = 0;
+    
+        static char msetcmd[] = "MSET";
+        argv[j] = msetcmd;
+        argvlen[j] = sizeof(msetcmd)-1;
+        ++j;
+    
+        for(int i = 0;i< vtKey.size();++i)
+        {
+            argvlen[j] = vtKey[i].length();
+            argv[j] = new char[argvlen[j]];
+             memset((void*)argv[j],0,argvlen[j] );
+            memcpy((void*)argv[j],vtKey[i].data(),vtKey[i].length());
+            j++;
+    
+            argvlen[j] = vtVal[i].length();
+            argv[j] = new char[argvlen[j]];
+            memset((void*)argv[j],0,argvlen[j]);
+            memcpy((void*)argv[j],vtVal[i].data(),vtVal[i].length());
+            j++;
+        }
+    
+        void *r = redisCommandArgv(c, argv.size(), &(argv[0]), &(argvlen[0]) );
+    
+        for(int i = 0 ;i < argv.size();i++)
+        {
+            delete argv[i];
+            argv[i] = NULL;
+        }
+    
+        if ( !r )
+            throw runtime_error( "Redis error" );
+        freeReplyObject( r );
+    }</code>
+
+
+
+
+
+这样，就实现二进制数据的传递；
+
+
+
+
+
+## 二进制校验
+
+
+
+
+
+程序执行后，可以用redis-cli来验证：
+
+
+
+
+    
+    <code>对于非二进制安全的实现，二进制内容是截断的：
+    /opt/app/colin$./redis-cli get D
+    "AB"
+    而二进制安全的实现接口，二进制数据的0通过转义方式显示：
+    /opt/app/colin$./redis-cli get D
+    "AB\x00DE"</code>
+
+
+
+
+
+完整可执行的代码详见github：[](https://github.com/me115/cppset/tree/master/2DimArray)[https://github.com/me115/cppset/tree/master/2DimArray](https://github.com/me115/cppset/tree/master/2DimArray)
+
+
+
+
+
+## 参考资料
+
+
+
+
+
+[](https://gist.github.com/dspezia/1455082)[https://gist.github.com/dspezia/1455082](https://gist.github.com/dspezia/1455082)
+
+
+
+
+
+Posted by: 大CC | 8JAN,2015 
+    
+博客：[blog.me115.com](http://blog.me115.com) [[订阅](http://feed.feedsky.com/me115)] 
+
+    
+微博：[新浪微博](http://weibo.com/bigcc115)
+
+
+

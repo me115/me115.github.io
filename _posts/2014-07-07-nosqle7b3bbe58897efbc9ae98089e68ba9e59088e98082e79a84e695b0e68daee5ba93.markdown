@@ -1,0 +1,250 @@
+---
+author: me115wp
+comments: true
+date: 2014-07-07 01:53:51+00:00
+layout: post
+link: http://blog.me115.com/2014/07/693
+slug: nosql%e7%b3%bb%e5%88%97%ef%bc%9a%e9%80%89%e6%8b%a9%e5%90%88%e9%80%82%e7%9a%84%e6%95%b0%e6%8d%ae%e5%ba%93
+title: NoSQL系列：选择合适的数据库
+wordpress_id: 693
+categories:
+- CC书评
+- Redis
+tags:
+- NOSQL
+---
+
+# NoSQL系列：选择合适的数据库
+
+
+
+
+
+## 为什么使用NoSQL数据库？
+
+
+
+
+
+  
+  *     
+
+阻抗失衡         
+关系模型和内存中的数据结构不匹配          
+采用更为方便的数据交互方式提升开发效率
+
+  
+   
+  *     
+
+待处理的数据量很大         
+数据量超过关系型数据库的承载能力          
+大集群的出现          
+在成本方面，集群中应用关系数据库，许可费用是一笔很大的支出；          
+横向扩展和纵向扩展：关系数据库一般只能是纵向扩展，通过对单机服务器的性能换代增强而实现；而对于扩展到多个服务器，          
+DBMS先天不足；（DBMS不是设计给集群使用的）
+
+  
+   
+  *     
+
+对数据的访问效率要求高
+
+  
+
+
+
+
+#  NoSQL数据库的分类
+
+
+
+
+
+## 键值数据库
+
+
+
+
+
+  
+  *     
+
+产品         
+Redis          
+BerkerleyDB          
+Memcached          
+Project Voldemort          
+Riak          
+LevelDB
+
+  
+   
+  *     
+
+适用场景         
+存放会话信息          
+用户配置信息          
+购物车数据
+
+  
+   
+  *     
+
+不适合的场景         
+数据间有大量关系          
+含有多项操作的事务          
+根据键值的部分来查询数据          
+操作关键字集合
+
+  
+
+
+
+
+## 文档数据库
+
+
+
+
+
+  
+  *     
+
+产品         
+MongoDB          
+CouchDB          
+RavenDB          
+Terrastore          
+OrientDB
+
+  
+   
+  *     
+
+适用场景         
+事件记录          
+内容管理系统及博客平台          
+网站分析及实时分析          
+电子商务应用程序          
+（需要较灵活的模式，低成本建立数据模型）
+
+  
+   
+  *     
+
+不适合场景         
+包含多项操作的复杂查询          
+查询持续变化的聚合结构
+
+  
+
+
+
+
+## 列族数据库
+
+
+
+
+
+  
+  *     
+
+产品         
+HBase          
+Amazon SimpleDB          
+Cassdndra          
+Hypertable          
+BigTable（google）
+
+  
+   
+  *     
+
+适用场景         
+事件记录          
+（保存应用程序状态，运行中遇到的错误）          
+CMS及博客平台          
+计数器
+
+  
+   
+  *     
+
+不适用场景         
+需要ACID事务          
+查询模式变化频繁的场合
+
+  
+
+
+
+
+## 图数据库
+
+
+
+
+
+  
+  *     
+
+产品         
+FlockDB          
+HyperGraphDB          
+Infinite Graph          
+Neo4J          
+OrientDB
+
+  
+   
+  *     
+
+适用场景         
+互联数据          
+推荐引擎          
+基于位置的服务
+
+  
+   
+  *     
+
+不适用场景         
+更新全部或某个子集的实体
+
+  
+
+
+
+
+## 附思维导图
+
+
+
+
+
+[![NoSQL：选择合适的数据库](http://blog.me115.com/wp-content/uploads/2014/07/NoSQL_thumb.png)](http://blog.me115.com/wp-content/uploads/2014/07/NoSQL.png)
+
+
+
+
+
+## 参考
+
+
+
+
+
+[《NoSQL精粹》](http://www.amazon.cn/NoSQL%E7%B2%BE%E7%B2%B9-%E5%A1%9E%E5%BE%97%E6%8B%89%E5%90%89/dp/B00EEQ2GPS?SubscriptionId=AKIAJOMEZLLKFEWYT4PQ&tag=z08-23&linkCode=xm2&camp=2025&creative=165953&creativeASIN=B00EEQ2GPS)
+
+
+
+
+
+Posted by: 大CC | 07JUL,2014     
+博客：[blog.me115.com](http://blog.me115.com) [[订阅](http://feed.feedsky.com/me115)]      
+微博：[新浪微博](http://weibo.com/bigcc115)
+
+
+

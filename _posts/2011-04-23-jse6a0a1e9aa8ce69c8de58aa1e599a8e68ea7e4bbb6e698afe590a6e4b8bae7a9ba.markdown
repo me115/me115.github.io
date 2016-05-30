@@ -1,0 +1,146 @@
+---
+author: me115wp
+comments: true
+date: 2011-04-23 03:41:58+00:00
+layout: post
+link: http://blog.me115.com/2011/04/151
+slug: js%e6%a0%a1%e9%aa%8c%e6%9c%8d%e5%8a%a1%e5%99%a8%e6%8e%a7%e4%bb%b6%e6%98%af%e5%90%a6%e4%b8%ba%e7%a9%ba
+title: js校验服务器控件是否为空
+wordpress_id: 151
+categories:
+- WEB开发
+tags:
+- JavaScript
+---
+
+控件检验分两步：选择和校验；对于服务器控件的选择，需要通过服务器id转换为客户端id之后，才能在js中操作。以下说明：
+
+ 
+
+**_1 选择_**
+
+ 
+
+html代码：
+
+ 
+    
+    <body>
+    
+    显示位置：
+    <asp:DropDownList ID="channelSel" runat="server">
+         <asp:ListItem Value="" Selected>频道选择</asp:ListItem>       
+        <asp:ListItem Value="Pro_NoteBook">笔记本频道</asp:ListItem>
+        <asp:ListItem Value="Pro_Camera">数码相机频道</asp:ListItem>
+        <asp:ListItem Value="Pro_Desktop">台式机频道</asp:ListItem>
+    
+    …
+    </asp:DropDownList>
+    </body>
+
+
+
+
+
+JS操作：
+
+
+
+
+    
+        <script type="text/javascript"> 
+            function ValidDrpList(){
+                var chId = '<%=channelSel.ClientID %>';
+                var chSel = document.getElementById(chId).value;
+            }
+        </script>
+
+
+
+
+
+使用ClientID属性转换为客户端ID，再通过document对象选中该元素；
+
+
+
+
+
+**_2 校验_**
+
+
+
+
+
+之后的校验没什么特别的，都一样：
+
+
+
+
+    
+        <script type="text/javascript"> 
+            function ValidDrpList(){
+                var chId = '<%=channelSel.ClientID %>';
+                var chSel = document.getElementById(chId).value;
+                if(chSel == ''){
+                     alert("请选择频道");
+                     return false;
+                }
+                return true;
+            }
+        </script>
+
+
+
+
+
+**_3 独立js文件_**
+
+
+
+
+
+只有在本页面中才可以使用ClientID属性，因此，为了独立js文件，我们需要将ID值的转换与选择校验操作分离开来：
+
+
+
+
+    
+           <script type="text/javascript">
+            function getNetID()
+            {
+            var proID = '<%=ProBtn.ClientID %>';//.net控件：用户名输入框
+            var couID='<%=CBtn.ClientID %>';//.net控件：密码输入框
+            var sellerID='<%=SBtn.ClientID %>';
+            return {Id1:proID,Id2:couID,Id3:sellerID};//生成访问器,在.js文件中进行函数调用；
+            }   
+         </script>
+
+
+
+
+
+在页面中有了上述访问器，即可在js校验文件中操作：
+
+
+
+
+
+**.js:
+
+
+
+
+    
+    <script type="text/javascript">
+            function ValidNull() {
+              var con=document.getElementById(getNetID().Id1).value;
+              ...
+              return false;
+            }
+    </script>
+
+
+
+
+
+OVER!

@@ -1,0 +1,195 @@
+---
+author: me115wp
+comments: true
+date: 2014-07-31 02:17:49+00:00
+layout: post
+link: http://blog.me115.com/2014/07/712
+slug: '%e7%90%86%e6%b8%85%e6%96%87%e4%bb%b6%e7%bc%96%e7%a0%81%ef%bc%8c%e5%91%8a%e5%88%ab%e4%b8%ad%e6%96%87%e4%b9%b1%e7%a0%81'
+title: 理清文件编码，告别中文乱码
+wordpress_id: 712
+categories:
+- 程序员
+tags:
+- 文件编码
+---
+
+# 理清文件编码，告别中文乱码
+
+
+
+
+![image](http://images.cnitblog.com/blog/90573/201407/311028463995310.png)
+
+
+
+
+在工作中少不了碰到文件乱码的问题，面对这么多的中文汉字编码，真不知该选哪个好，不如彻底搞清楚，让乱码灰飞烟灭；以下介绍文本编码中常用到的几种：iso8859-1、GDK/GB2312、ANSI、unicode 以及UTF ；
+
+
+
+
+## iso8859-1
+
+
+
+
+iso8859-1 通常叫做Latin-1，属于单字节编码，最多能表示的字符范围是0-255，应用于英文系列。比如，字母a的编码为0x61=97。 很明显，iso8859-1编码表示的字符范围很窄，无法表示中文字符。但是，由于是单字节编码，和计算机最基础的表示单位一致，所以很多时候，仍旧使用iso8859-1编码来表示。而且在很多协议上，默认使用该编码。比如，虽然"中文"两个字不存在iso8859-1编码，以gb2312编码为例，应该是"d6d0 cec4"两个字符，使用iso8859-1编码的时候则将它拆开为4个字节来表示："d6 d0 ce c4"（事实上，在进行存储的时候，也是以字节为单位处理的）。
+
+
+
+
+## GDK/GB2312
+
+
+
+
+GB2312是汉字的国标码，是简体中文的字符集编码;专门用来表示汉字，是双字节编码，而英文字母和iso8859-1一致（兼容iso8859-1编码）。   
+苹果OS以GB2312为基本汉字编码;       
+GBK 是 GB2312的扩展,除了兼容GB2312外，它还能显示繁体中文，还有日文的假名;       
+Windows 95/98以GBK为基本汉字编码、但兼容支持GB2312。
+
+
+
+
+## ANSI
+
+
+
+
+不同的国家和地区制定了不同的标准，由此产生了 GB2312, BIG5, JIS 等各自的编码标准。这些使用 2 个字节来代表一个字符的各种汉字延伸编码方式，称为 ANSI 编码。在简体中文操作系统下，ANSI 编码代表 GB2312 编码，在日文操作系统下，ANSI 编码代表 JIS 编码。（BIG5：台湾标准）      
+不同 ANSI 编码之间互不兼容，当信息在国际间交流时，无法将属于两种语言的文字，存储在同一段 ANSI 编码的文本中。       
+ANSI编码表示英文字符时用一个字节，表示中文用两个字节，而unicode不管表示英文字符还是中文都是用两个字节来表示。
+
+
+
+
+## unicode
+
+
+
+
+Unicode（统一码、万国码、单一码、标准万国码）是业界的一种标准，它可以使电脑得以呈现世界上数十种文字的系统。
+
+
+
+
+大概来说，Unicode 编码系统可分为**编码方式**和**实现方式**两个层次。  
+Unicode 的编码方式与 ISO 10646 的通用字符集（Universal Character Set，UCS）概念相对应，目前实际应用的 Unicode 版本对应于 UCS-2，使用16位的编码空间。也就是每个字符占用2个字节。这样理论上一共最多可以表示 2 即 65536 个字符。基本满足各种语言的使用。实际上目前版本的 Unicode 尚未填充满这16位编码，保留了大量空间作为特殊使用或将来扩展。
+
+
+
+
+Unicode 的实现方式不同于编码方式。一个字符的 Unicode 编码是确定的。但是在实际传输过程中，由于不同系统平台的设计不一定一致，以及出于节省空间的目的，对 Unicode 编码的实现方式有所不同。Unicode 的实现方式称为Unicode转换格式（Unicode Translation Format，简称为 UTF）。  
+	  
+目前通用的实现方式是 UTF-16小尾序（BOM）、UTF-16大尾序（BOM）和 UTF-8。在微软公司Windows XP操作系统附带的记事本中，"另存为"对话框可以选择的四种编码方式除去非 Unicode 编码的 ANSI 外，其余三种"Unicode"、"Unicode big endian"和"UTF-8"即分别对应这三种实现方式。
+
+
+
+
+**注：通常我们看到的编码选项中，和UTF-8放在一块的"Unicode编码"指的是UTF-16 小端编码；**
+
+
+
+
+## UTF-8
+
+
+
+
+UTF-8是UNICODE的一种变长字符编码，由Ken Thompson于1992年创建。      
+UTF-8, 8bit编码, ASCII不作变换, 其他字符做变长编码, 每个字符1-3 byte(英文字母用一个字节，汉字使用3个字节），有以下优点:
+
+
+
+
+
+
+  * 与CPU字节顺序无关, 可以在不同平台之间交流 
+
+
+  * 容错能力高, 任何一个字节损坏后, 最多只会导致一个编码码位损失, 不会链锁错误(如GB码错一个字节就会整行乱码)        
+UTF-16, 16bit编码, 是变长码, 大致相当于20位编码, 值在0到0x10FFFF之间, 基本上就是unicode编码的实现. 它是变长码, 与CPU字序有关, 但因为最省空间, 常作为网络传输的外码. 
+
+
+ 
+
+
+### UTF-8与UTF-16的区别
+
+
+
+
+UTF8 和 UTF16 都是变长表示的，欧美程序员会觉得太浪费，因为欧美字符 0x0000 - 0x00FF 就搞定了，UTF8 最小变长是 1 个字节，而 UTF16 变长是 2 个字节，      
+utf-8 与 uft-16 表示 'a' a的ascii是0X61       
+utf-8为[0X61]       
+uft-16 [0x00,0X61]
+
+
+
+
+注意，虽然说utf-8是为了使用更少的空间而使用的，但那只是相对于utf-16编码来说，如果已经知道是汉字，则使用GB2312/GBK无疑是最节省的。
+
+
+
+
+## 
+
+
+
+
+## 查看文件编码
+
+
+
+
+windows系统下将文件用记事本打开，然后文件--另存为 在对话框最下面的编码那一栏就有文件对应的编码。
+
+
+
+
+## source insight中的中文编码问题
+
+
+
+
+代码开发经常用到source insight，这个软件的注释是支持ANSI的代码编写、但是如果是UTF-8的中文（在Linux下默认的生成文件，编码都是UTF-8编码的），在source insight下显示的就是乱码文件；      
+解决的方法详见附录参考文章；
+
+
+
+
+## 附录：参考链接
+
+
+
+
+1.关于编码ansi、GB2312、unicode与utf-8的区别      
+[http://blog.csdn.net/chruan/article/details/8812110](http://blog.csdn.net/chruan/article/details/8812110)
+
+
+
+
+2.source insight中文注释乱码问题的解决方案      
+[http://blog.csdn.net/ccf19881030/article/details/8987759](http://blog.csdn.net/ccf19881030/article/details/8987759)
+
+
+
+
+3.Source Insight完美转换UTF-8 到 GB2312      
+[http://blog.csdn.net/e0sys1/article/details/4670188](http://blog.csdn.net/e0sys1/article/details/4670188)
+
+
+
+
+4.UNICODE wiki  
+[http://www.baike.com/wiki/Unicode](http://www.baike.com/wiki/Unicode)
+
+
+
+
+
+
+
+Posted by: 大CC | 31JUL,2014      
+博客：[blog.me115.com](http://blog.me115.com) [[订阅](http://feed.feedsky.com/me115)]       
+微博：[新浪微博](http://weibo.com/bigcc115)
