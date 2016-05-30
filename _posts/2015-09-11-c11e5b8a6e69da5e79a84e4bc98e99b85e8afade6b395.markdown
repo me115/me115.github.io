@@ -569,7 +569,7 @@ auto x = max({x,y,z},Nocase());
     f({23,345,4567,56789});
     f({});  // 以空列表为参数调用f()
     f{1,2}; // 错误：缺少函数调用符号( )
-    years.insert({{"Bjarne","Stroustrup"},{1950, 1975, 1985}});</code>
+    years.insert({1950, 1975, 1985});</code>
 
 
 
