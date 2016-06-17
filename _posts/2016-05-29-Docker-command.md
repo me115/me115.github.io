@@ -22,8 +22,16 @@ $docker run -i -t <image_name/continar_id> /bin/bash
 ```shell
 $docker run -d -it  image_name
 ```
-
 ps：这里的 image_name 包含了tag：hello.demo.kdemo:v1.0
+
+
+- 启动容器并做端口映射
+
+```shell
+# Bind TCP port 8080 of the container to TCP port 80 on 127.0.0.1 of the # host machine. 
+# -p  <host_ip>:<container_ip>
+$docker run -p 127.0.0.1:80:8080 <image> <cmd>
+```
 
 
 ### 附着到容器
