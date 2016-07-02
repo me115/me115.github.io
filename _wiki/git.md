@@ -32,6 +32,13 @@ keywords: Git, 版本控制
 
 ### Q&A
 
+
+#### 生成ssh key
+
+```shell
+ssh-keygen -t rsa -C "me115@126.com"
+```
+
 #### 如何解决gitk中文乱码，git ls-files 中文文件名乱码问题？
 
 在~/.gitconfig中添加如下内容
