@@ -1,0 +1,14 @@
+﻿.widget h2 {
+	cursor: pointer;
+	padding-left: 17px;
+	background: transparent url('images/minus2.png') no-repeat scroll left center;
+}
+.active h2 {
+	background-image: url('images/plus2.png');
+}
+.widget_tag_cloud div {
+	text-align: center;
+}
+#calendar_wrap {
+	color: #444;
+}

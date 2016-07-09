@@ -1,0 +1,812 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>大CC &#187; STL</title>
+	<atom:link href="http://blog.me115.com/tag/stl/feed" rel="self" type="application/rss+xml" />
+	<link>http://blog.me115.com</link>
+	<description>关注 Nosql/架构/时间管理/阅读分享</description>
+	<lastBuildDate>Wed, 25 May 2016 13:08:34 +0000</lastBuildDate>
+	<language>zh-CN</language>
+	<sy:updatePeriod>hourly</sy:updatePeriod>
+	<sy:updateFrequency>1</sy:updateFrequency>
+	<generator>http://wordpress.org/?v=3.5</generator>
+		<item>
+		<title>STL区间成员函数及区间算法总结</title>
+		<link>http://blog.me115.com/2015/06/855</link>
+		<comments>http://blog.me115.com/2015/06/855#comments</comments>
+		<pubDate>Sun, 28 Jun 2015 02:47:50 +0000</pubDate>
+		<dc:creator>大CC</dc:creator>
+				<category><![CDATA[C++编程]]></category>
+		<category><![CDATA[c++]]></category>
+		<category><![CDATA[STL]]></category>
+
+		<guid isPermaLink="false">http://blog.me115.com/?p=855</guid>
+		<description><![CDATA[STL区间成员函数及区间算法总结 在这里总结下可替代循环的区间成员函数和区间算法 &#8230;<p class="read-more"><a href="http://blog.me115.com/2015/06/855">继续阅读 &#187;</a></p>]]></description>
+				<content:encoded><![CDATA[<h1 id="stl-">STL区间成员函数及区间算法总结</h1>
+<p>在这里总结下可替代循环的区间成员函数和区间算法；</p>
+<p>相比单元素遍历操作，使用区间成员函数的优势在于：   <br />1）更少的函数调用    <br />2）更少的元素移动    <br />3）更少的内存分配</p>
+<p>在区间成员函数不适用的情况下也应该使用区间算法，至少，相比手写循环而言，它更加简单，有效，并且不容易出错；</p>
+<h2 id="-">区间成员函数</h2>
+<h4 id="-">区间构造</h4>
+<p>标准容器都支持区间构造函数：</p>
+<pre><code>container::container(InputIterator begin, // 区间的起点
+                  InputIterator end); // 区间的终点</code></pre>
+<p>例如：</p>
+<pre><code>int myints[] = { 10, 20, 30, 30, 20, 10, 10, 20 };
+std::vector&lt;int&gt; myvector (myints, myints+8); </code></pre>
+<p>以上是c++98中常用法，在C++11中，vector可以直接初始化了：</p>
+<pre><code>std::vector&lt;int&gt; second ={10, 20, 30, 30, 20, 10, 10, 20};  
+或者：
+std::vector&lt;int&gt; second ({10, 20, 30, 30, 20, 10, 10, 20});   </code></pre>
+<h3 id="-">区间插入</h3>
+<p>标准序列容器提供这种形式的insert：</p>
+<pre><code>void container::insert(iterator position, // 区间插入的位置
+                    InputIterator begin, // 插入区间的起点
+                    InputIterator end); // 插入区间的终点</code></pre>
+<p>例如：</p>
+<pre><code>int myints[] = { 10, 20, 30, 30, 20, 10, 10, 20 };
+std::vector&lt;int&gt; myvector;
+myvector.push_back(100);
+myvector.insert(myvector.begin(),myints,myints+8); //10 20 30 30 20 10 10 20 100</code></pre>
+<p>关联容器也支持区间插入，但由于其插入后的位置由其比较函数来决定，所以没有区间插入的位置这个参数；</p>
+<h3 id="-">区间删除</h3>
+<p>标准序列容器提供的erase:</p>
+<pre><code>iterator container::erase(iterator begin, iterator end); </code></pre>
+<p>c++98的标准关联容器提供的erase为：</p>
+<pre><code>void container::erase(iterator begin, iterator end);</code></pre>
+<p>序列容器调用erase之后，返回一个迭代器（被删除的那个元素的下一个），<br />
+  <br />而关联容器的erase删除之后并不返回迭代器.【官方解释说如果实现成序列容器那样返回指向下一个迭代器，会导致无法接收的性能下降】；</p>
+<p>这一区别在c++11中终于统一了；c++11中，对关联容器调用erase之后会返回一个迭代器（指向被删除元素的下一个）；</p>
+<pre><code>iterator container::erase(const_iterator first, const_iterator last);</code></pre>
+<h3 id="-">区间赋值</h3>
+<p>所有标准容器提供了区间赋值的成员函数：</p>
+<pre><code>void container::assign(InputIterator begin, InputIterator end);</code></pre>
+<p>这个函数用于给容器赋值，会替代现有值，并根据需要分配空间；<br />
+  <br />与copy()算法的区别在于它不需要预先分配空间，并有更高的性能；</p>
+<pre><code>int myints[]={10,20,30,40,50,60,70};
+std::vector&lt;int&gt; myvector;
+myvector.assign(myints,myints+7);</code></pre>
+<h2 id="-">通用区间算法</h2>
+<h3 id="for_each-">for_each 区间迭代</h3>
+<p>for_each:遍历，对每个元素都执行一个动作；<br />
+  <br />C++98只支持最原始的for循环，很多语言（java、python等）都实现了foreach区间迭代语法，这让C++程序员眼馋了很久；</p>
+<p>在没有foreach区间迭代的时代，我们可以用for_each()算法来代替：</p>
+<p>例：对每个元素都加5：</p>
+<pre><code>void myfunction (int&amp; i) {
+    i += 5;
+}
+
+std::vector&lt;int&gt; myvector;
+myvector.push_back(10);
+myvector.push_back(20);
+myvector.push_back(30);
+for_each(myvector.begin(),myvector.end(),myfunction); //15 25 35</code></pre>
+<p>c++11中新增了区间迭代，使得我们对for_each的依赖降低了，使用也更加方便：</p>
+<pre><code>for(auto &amp;i : myvector )
+{
+    i+=5;
+}</code></pre>
+<h3 id="transform-">transform() 区间迭代后新值另存为其它地方</h3>
+<p>对区间中每个元素执行操作后，将修改后的值写入到新区间中；<br />
+  <br />可以认为这个是for_each()算法不修改原区间的版本；</p>
+<p>还是for_each中的例子：</p>
+<pre><code>int addfunction(int i ){
+    return i+5;
+}
+
+void output (int i) {  // output function
+    std::cout &lt;&lt; ' ' &lt;&lt; i;
+}
+
+std::vector&lt;int&gt; myvector;
+myvector.push_back(10);
+myvector.push_back(20);
+myvector.push_back(30);
+std::vector&lt;int&gt; bvector;
+bvector.resize(myvector.size());
+transform(myvector.begin(),myvector.end(),bvector.begin(),addfunction);
+//输出
+for_each(bvector.begin(),bvector.end(),output); //bvector: 15 25 35</code></pre>
+<h3 id="copy-">copy() 区间复制</h3>
+<p>区间复制，一般用于多个容器间的数据传值；<br />
+  <br />这个算法被用的很普遍，其实，很多使用copy的场景，都可以使用区间成员函数来替代（也建议这么做）；</p>
+<p>例：复制数组到vector：</p>
+<pre><code>int myints[]={10,20,30,40,50,60,70};
+std::vector&lt;int&gt; myvector (7);
+std::copy ( myints, myints+7, myvector.begin() );</code></pre>
+<h3 id="fill-">fill() 区间填充</h3>
+<p>用一个元素来重复填充区间；<br />
+  <br />这个算法使用频率较低；</p>
+<p>例：用5填充vector前4个元素：</p>
+<pre><code>std::vector&lt;int&gt; myvector (8);                       // myvector: 0 0 0 0 0 0 0 0
+std::fill (myvector.begin(),myvector.begin()+4,5);   // myvector: 5 5 5 5 0 0 0 0</code></pre>
+<h3 id="replace-">replace() 区间替换</h3>
+<p>遍历区间，进行值替换：<br />
+  <br />例：将以下区间中所有20替换为99：</p>
+<pre><code>int myints[] = { 10, 20, 30, 30, 20, 10, 10, 20 };
+std::vector&lt;int&gt; myvector (myints, myints+8);            // 10 20 30 30 20 10 10 20
+std::replace (myvector.begin(), myvector.end(), 20, 99); // 10 99 30 30 99 10 10 99</code></pre>
+<p>更复杂的版本（使用仿函数）replace_if<br />
+  <br />例：将以下区间中所有大于20替换为99：</p>
+<pre><code>bool bigerThen20 (int i) { return i &gt; 20; }
+
+int myints[] = { 10, 20, 30, 30, 20, 10, 10, 20 };
+std::vector&lt;int&gt; myvector (myints, myints+8);            // 10 20 30 30 20 10 10 20
+std::replace_if (myvector.begin(), myvector.end(), bigerThen20, 99); //10 20 99 99 20 10 10 20</code></pre>
+<p>由于用到了仿函数，通过replace_if实现的，用for_each()也很容易实现；</p>
+<h3 id="remove-">remove() 区间删除</h3>
+<p>从区间中删除指定元素；</p>
+<pre><code>int myints[] = { 10, 20, 30, 30, 20, 10, 10, 20 };
+std::vector&lt;int&gt; myvector (myints, myints+8);            // 10 20 30 30 20 10 10 20
+std::remove(myvector.begin(), myvector.end(), 20); // 10 30 30 10 10 ? ? ? </code></pre>
+<p>注意，remove并不会真正删除元素，而只是将需要删除的元素放到到最后，同时返回一个新的尾部迭代器，<br />
+  <br />比如，上述例子中,调用完remove后，vector中的值一般为 //10 30 30 10 10 10 10 20</p>
+<p>而如果希望真的删除元素，需要加上成员函数erase()来实现删除 【remove-erase惯用法】：</p>
+<pre><code>myvector.erase(std::remove(myvector.begin(), myvector.end(), 20),myvector.end()); // 10 30 30 10 10</code></pre>
+<h3 id="unique-">unique() 区间去重</h3>
+<p>从区间中删除相邻相同的元素，同样，这个算法也不会真正的删除元素，而是将待删除的元素移到区间尾部；<br />
+  <br />使用【unique-erase惯用法】：</p>
+<pre><code>int myints[] = {10,20,20,20,30,30,20,20,10};           // 10 20 20 20 30 30 20 20 10
+std::vector&lt;int&gt; myvector (myints,myints+9);
+std::vector&lt;int&gt;::iterator it;
+it = std::unique (myvector.begin(), myvector.end());   // 10 20 30 20 10 ?  ?  ?  ?
+myvector.erase(it,myvector.end());</code></pre>
+<p>Posted by: 大CC | 28JUN,2015<br />
+  <br />博客：<a href="http://blog.me115.com">blog.me115.com</a> [<a href="http://blog.me115.com/feed">订阅</a>]</p>
+<p>微博：<a href="http://weibo.com/bigcc115">新浪微博</a></p>
+<div class="ujian-hook"></div>
+<div style='clear:both;'></div>
+<p>		<script type="text/javascript">
+		var ujian_config = {
+			'num':5,
+			'showType':2,
+			'bgColor':"",
+			'mouseoverColor':"#E6F3DE",
+			'textColor':"#333333",
+			'hoverTextColor':"#333333",
+			'borderColor':"#dddddd",
+			'picSize':96,
+			'target':1,
+			'textHeight':60,
+			'defaultPic':"",
+			'itemTitle':"您可能喜欢："
+		}</script><br />
+	<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js"></script></p>
+]]></content:encoded>
+			<wfw:commentRss>http://blog.me115.com/2015/06/855/feed</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+		</item>
+		<item>
+		<title>高效的使用STL</title>
+		<link>http://blog.me115.com/2015/06/853</link>
+		<comments>http://blog.me115.com/2015/06/853#comments</comments>
+		<pubDate>Tue, 23 Jun 2015 15:06:48 +0000</pubDate>
+		<dc:creator>大CC</dc:creator>
+				<category><![CDATA[C++编程]]></category>
+		<category><![CDATA[c++]]></category>
+		<category><![CDATA[STL]]></category>
+
+		<guid isPermaLink="false">http://blog.me115.com/?p=853</guid>
+		<description><![CDATA[高效的使用STL 仅仅是个选择的问题，都是STL，可能写出来的效率相差几倍； 熟 &#8230;<p class="read-more"><a href="http://blog.me115.com/2015/06/853">继续阅读 &#187;</a></p>]]></description>
+				<content:encoded><![CDATA[<h1 id="-stl">高效的使用STL</h1>
+<p>仅仅是个选择的问题，都是STL，可能写出来的效率相差几倍；   <br />熟悉以下条款，高效的使用STL；</p>
+<h2 id="-">当对象很大时，建立指针的容器而不是对象的容器</h2>
+<p>1）STL基于拷贝的方式的来工作，任何需要放入STL中的元素，都会被复制；   <br />这也好理解，STL工作的容器是在堆内开辟的一块新空间，而我们自己的变量一般存放在函数栈或另一块堆空间中；为了能够完全控制STL自己的元素，为了能在自己的地盘随心干活；这就涉及到复制；    <br />而如果复制的对象很大，由复制带来的性能代价也不小 ；    <br />对于大对象的操作，使用指针来代替对象能消除这方面的代价；    <br />2）只涉及到指针拷贝操作， 没有额外类的构造函数和赋值构造函数的调用；</p>
+<pre><code>vecttor &lt;BigObj&gt; vt1;
+vt1.push_bach(myBigObj);
+
+vecttor &lt;BigObj* &gt; vt2;
+vt2.push_bach(new BigObj());</code></pre>
+<p>注意事项：<br />
+  <br />1）容器销毁前需要自行销毁指针所指向的对象；否则就造成了内存泄漏；</p>
+<p>2）使用排序等算法时，需要构造基于对象的比较函数，如果使用默认的比较函数，其结果是基于指针大小的比较，而不是对象的比较；</p>
+<h2 id="-empty-size-">用empty() 代替size()来检查是否为空</h2>
+<p>因为对于list，size()会遍历每一个元素来确定大小，时间复杂度 o（n），线性时间；而empty总是保证常数时间；</p>
+<h2 id="-">尽量用区间成员函数代替单元素操作</h2>
+<p>使用区间成员函数有以下好处：<br />
+  <br />1）更少的函数调用</p>
+<p>2）更少的元素移动</p>
+<p>3）更少的内存分配</p>
+<p>例：将v2后半部的元素赋值给v1：<br />
+  <br />单元式操作：</p>
+<pre><code>for (vector&lt;Widget&gt;::const_iterator ci = v2.begin() + v2.size() / 2;
+ci != v2.end();
+++ci)
+v1.push_back(*ci)</code></pre>
+<p>使用区间成员函数assign()：</p>
+<pre><code>v1.assign(v2.begin() + v2.size() / 2, v2.end()); </code></pre>
+<h2 id="-reserver-for-vector-">使用reserver避免不必要的内存分配(for vector)</h2>
+<p>新增元素空间不够时，vector会进行如下操作：<br />
+  <br />1）分配当前空间的两倍空间；</p>
+<p>2）将当前元素拷贝到新的空间中；</p>
+<p>3）释放之前的空间；</p>
+<p>4）将新值放入新空间指定位置；</p>
+<p>如果预先知道空间的大小，预先分配了空间避免了重新分配空间和复制的代价；<br />
+  <br />注：reserve()只是修改了容量，并非大小，向vector中增加元素还是需要通过push_back加入；</p>
+<h2 id="-vector-">使用有序的vector代替关联容器(阶段性的操作适用)</h2>
+<p>对阶段性操作的定义：<br />
+  <br />先做一系列插入、完成之后，后续操作都是查询；</p>
+<p>在阶段性的操作下，使用vector有以下优势：<br />
+  <br />1）因为vector有序，关联容器带来的有序优势散失；</p>
+<p>2）都是使用二分法查找的前提下，查询算法对连续的内存空间的访问要快于离散的空间；</p>
+<h2 id="-map-insert-operator-">在map的insert()和operator［］中仔细选择</h2>
+<p>插入时，insert效率高；因为operator会先探查是否存在这个元素，如果不存在就构造一个临时的，然后才涉及到赋值，多了一个临时对象的构造；<br />
+  <br />更新时，［］效率更高，insert会创造一个对象，然后覆盖一个原有对象；而［］是在原有的对象上直接赋值操作；</p>
+<p>散列函数的默认比较函数是equal＿to，因为不需要保持有序；</p>
+<h2 id="-">尽量用算法替代手写的循环</h2>
+<p>1）效率相比手写更高；<br />
+  <br />STL的代码都是C++专家写出来的，专家写出来的代码在效率上很难超越；</p>
+<p>除非我们放弃了某些特性来满足特定的需求，可能能快过stl；比如，基于特定场合下的编程，放弃通用性，可移植性；</p>
+<p>2）不容易出错；</p>
+<p>3）使用高层次思维编程</p>
+<p>相比汇编而言，C是高级语言；一条C语言语句，用汇编写需要好几条；</p>
+<p>同样的，在STL的世界中，我们也有高层次的术语：</p>
+<p>高层次的术语：insert／find／for＿each（STL算法）</p>
+<p>低层次的词汇：for ／while（C++语法）</p>
+<p>用高层次术语来思考编程，会更简单；</p>
+<h2 id="-">尽量用成员函数代替同名的算法</h2>
+<p>1）基于效率考虑，成员函数知道自己这个容器和其他容器有哪些特有属性，能够利用到这些特性；而通用算法不可以；<br />
+  <br />2）对于关联容器，成员函数find基于等价搜索；而通用算法find基于相等来搜索；可能导致结果不一样；</p>
+<h2 id="-">使用函数对象代替裸函数作为算法的输入参数</h2>
+<p>因为内联，在函数对象的方式中，内联有效，而作为函数指针时，一般编译器都不会内联函数指针指向的函数；即使指定了inline；<br />
+  <br />比如：</p>
+<pre><code>inline bool doubleGreater(double d1, double d2)
+{
+    return dl &gt; d2;
+}
+vector&lt;double&gt; v;
+...
+sort(v.begin(), v.end(), doubleGreater);</code></pre>
+<p>这个调用不是真的把doubleGreater传给sort，它传了一个doubleGreater的指针。<br />
+  <br />更好的方式是使用函数对象：</p>
+<pre><code>sort(v.begin(), v.end(), greater&lt;double&gt;())</code></pre>
+<p>注：《effcient c＋＋》中的实验结论，使用函数对象一般是裸函数的1.5倍，最多能快2倍多</p>
+<h2 id="-">选择合适的排序算法</h2>
+<p>需要排序前思考我们的必要需求，可能我们只是需要前多少个元素，这时并不需要使用sort这种线性时间的工具，性能消耗更少的parttition可能是更好的选择；<br />
+  <br />以下算法的效率从左到右依次递减：</p>
+<pre><code>partition &gt; stable_partition / nth_element / patical_sort / sort / stable_sort</code></pre>
+<p>功能说明：<br />
+  <br />partition ：将集合分隔为满足和不满足某个标准两个区间；</p>
+<p>stable_partition ：partition的稳定版本；</p>
+<p>nth_element ：获取任意顺序的前N个元素；</p>
+<p>patical_sort ：获取前N个元素，这个N个元素已排序；</p>
+<p>sort：排序整个区间；</p>
+<p>stable_sort：sort的稳定版本；</p>
+<h2 id="-">选择合适的容器</h2>
+<p>为什么vector不提供push_front()成员方法？因为效率太差，如果有太多从前面插入的需求，就不应该使用vector，而用list；<br />
+  <br />关心查找速度，首先应该考虑散列容器（非标准STL容器,如：unordered_map,unordered_set)；其次是排序的vector，然后是标准的关联容器；</p>
+<h2 id="-">参考</h2>
+<p>《effictive STL》<br />
+  <br />《Efficient C++》</p>
+<p>Posted by: 大CC | 23JUN,2015<br />
+  <br />博客：<a href="http://blog.me115.com">blog.me115.com</a> [<a href="http://blog.me115.com/feed">订阅</a>]</p>
+<p>微博：<a href="http://weibo.com/bigcc115">新浪微博</a></p>
+<div class="ujian-hook"></div>
+<div style='clear:both;'></div>
+<p>		<script type="text/javascript">
+		var ujian_config = {
+			'num':5,
+			'showType':2,
+			'bgColor':"",
+			'mouseoverColor':"#E6F3DE",
+			'textColor':"#333333",
+			'hoverTextColor':"#333333",
+			'borderColor':"#dddddd",
+			'picSize':96,
+			'target':1,
+			'textHeight':60,
+			'defaultPic':"",
+			'itemTitle':"您可能喜欢："
+		}</script><br />
+	<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js"></script></p>
+]]></content:encoded>
+			<wfw:commentRss>http://blog.me115.com/2015/06/853/feed</wfw:commentRss>
+		<slash:comments>1</slash:comments>
+		</item>
+		<item>
+		<title>常用的STL查找算法</title>
+		<link>http://blog.me115.com/2015/06/849</link>
+		<comments>http://blog.me115.com/2015/06/849#comments</comments>
+		<pubDate>Tue, 09 Jun 2015 14:06:30 +0000</pubDate>
+		<dc:creator>大CC</dc:creator>
+				<category><![CDATA[C++编程]]></category>
+		<category><![CDATA[c++]]></category>
+		<category><![CDATA[STL]]></category>
+
+		<guid isPermaLink="false">http://blog.me115.com/?p=849</guid>
+		<description><![CDATA[常用的STL查找算法 《effective STL》中有句忠告，尽量用算法替代手 &#8230;<p class="read-more"><a href="http://blog.me115.com/2015/06/849">继续阅读 &#187;</a></p>]]></description>
+				<content:encoded><![CDATA[<h1 id="-stl-">常用的STL查找算法</h1>
+
+<p>《effective STL》中有句忠告，尽量用算法替代手写循环；查找少不了循环遍历，在这里总结下常用的STL查找算法；</p>
+
+<p>查找有三种，即点线面：   <br />点就是查找目标为单个元素；    <br />线就是查找目标为区间；    <br />面就是查找目标为集合；</p>
+
+<p>针对每个类别的查找，默认的比较函数是相等，为了满足更丰富的需求，算法也都提供了自定义比较函数的版本；</p>
+
+<h2 id="-">单个元素查找</h2>
+
+<h3 id="find-">find() 比较条件为相等的查找</h3>
+
+<p>find()从给定区间中查找单个元素,定义：</p>
+
+<pre><code>template &lt;class InputIterator, class T&gt;
+InputIterator find (InputIterator first, InputIterator last, const T&amp; val);</code></pre>
+
+<p>示例，从myvector中查找30：</p>
+
+<pre><code>int myints[] = { 10, 20, 30, 40 };
+std::vector&lt;int&gt; myvector (myints,myints+4);
+it = find (myvector.begin(), myvector.end(), 30);
+if (it != myvector.end())
+    std::cout &lt;&lt; &quot;Element found in myvector: &quot; &lt;&lt; *it &lt;&lt; '\n';
+else
+    std::cout &lt;&lt; &quot;Element not found in myvector\n&quot;;</code></pre>
+
+<h3 id="find_if-">find_if() 自定义比较函数</h3>
+
+<p>std::find_if():从给定区间中找出满足比较函数的第一个元素；
+  <br />示例,从myvector中查找能够被30整除的第一个元素：</p>
+
+<pre><code>bool cmpFunction (int i) {
+  return ((i%30)==0);
+}
+it = std::find_if (myvector.begin(), myvector.end(), cmpFunction);
+std::cout &lt;&lt; &quot;first:&quot; &lt;&lt;  *it &lt;&lt;std::endl;</code></pre>
+
+<h3 id="count-">count() 统计元素出现次数</h3>
+
+<p>std::count()：统计区间中某个元素出现的次数；
+  <br />std:count_if()：count()的自定义比较函数版本</p>
+
+<h3 id="search_n-">search_n() 查询单个元素重复出现的位置</h3>
+
+<p>search_n(): find用来查询单个元素，search_n则用来查找区间中重复出现n次的元素；</p>
+
+<p>示例：查询myvector中30连续出现2次的位置：</p>
+
+<pre><code>int myints[]={10,20,30,30,20,10,10,20};
+std::vector&lt;int&gt; myvector (myints,myints+8);
+it = std::search_n (myvector.begin(), myvector.end(), 2, 30);</code></pre>
+
+<p>search_n() 支持自定义比较函数；</p>
+
+<h3 id="adjacent_find-">adjacent_find() 查询区间中重复元素出现的位置</h3>
+
+<p>adjacent_find() 查询区间中重复元素出现的位置，该算法支持自定义比较函数；</p>
+
+<h3 id="lower_bound-">lower_bound() 有序区间中查询元素边界</h3>
+
+<p>lower_bound()用来在一个排序的区间中查找第一个不小于给定元素的值：
+  <br />示例：查找容器v中不小于20的下界：</p>
+
+<pre><code>int myints[] = {10,20,30,30,20,10,10,20};
+std::vector&lt;int&gt; v(myints,myints+8);           // 10 20 30 30 20 10 10 20
+std::sort (v.begin(), v.end());                // 10 10 10 20 20 20 30 30
+std::vector&lt;int&gt;::iterator low,up;
+low=std::lower_bound (v.begin(), v.end(), 20); 
+std::cout &lt;&lt; &quot;lower_bound at position &quot; &lt;&lt; (low- v.begin()) &lt;&lt; '\n';</code></pre>
+
+<p>类似算法有upper_bound(),查找有序区间中第一个大于给定元素的值；
+  <br />还有equal_range(),查找有序区间的上下边界；（一次返回lower_bound()和upper_bound());</p>
+
+<h3 id="binary_search-">binary_search() 有序区间的二分查找</h3>
+
+<p>binary_search() 用来在一个有序区间中使用二分法查找元素是否在这个区间中，注，这个算法的返回值为bool，
+  <br />不是下标位置，其内部的算法逻辑和lower_bound（）相似，行为表现为：</p>
+
+<pre><code>template &lt;class ForwardIterator, class T&gt;
+  bool binary_search (ForwardIterator first, ForwardIterator last, const T&amp; val)
+{
+  first = std::lower_bound(first,last,val);
+  return (first!=last &amp;&amp; !(val&lt;*first));
+}</code></pre>
+
+<p>示例：从有序区间v中找3是否存在：</p>
+
+<pre><code>int myints[] = {1,2,3,4,5,4,3,2,1};
+std::vector&lt;int&gt; v(myints,myints+9);                         // 1 2 3 4 5 4 3 2 1
+std::sort (v.begin(), v.end());
+if (std::binary_search (v.begin(), v.end(), 3))
+    std::cout &lt;&lt; &quot;found!\n&quot;; else std::cout &lt;&lt; &quot;not found.\n&quot;;</code></pre>
+
+<h3 id="min_element-">min_element() 查找最小元素</h3>
+
+<p>min_element() 在给定区间中查找出最小值;</p>
+
+<pre><code>int myints[] = {3,7,2,5,6,4,9};
+std::cout &lt;&lt; &quot;The smallest element is &quot; &lt;&lt; *std::min_element(myints,myints+7) &lt;&lt; '\n';</code></pre>
+
+<p>类似算法有：max_element() 查找最大值；</p>
+
+<h2 id="-search-">区间查找 search()</h2>
+
+<h3 id="search-">search() 查找子区间首次出现的位置</h3>
+
+<p>find()用来查找单个元素，search()则用来查找一个子区间；
+  <br />示例：从myvector中查找出现子区间[20，30]的位置:</p>
+
+<pre><code>  int needle1[] = {20,30};
+  it = std::search (myvector.begin(), myvector.end(), needle1, needle1+2);
+  if (it!=myvector.end())
+    std::cout &lt;&lt; &quot;needle1 found at position &quot; &lt;&lt; (it-myvector.begin()) &lt;&lt; '\n';</code></pre>
+
+<p>search支持自定义比较函数；
+  <br />示例：查询给定区间中每个元素比目标区间小1的子区间；</p>
+
+<pre><code>bool cmpFunction (int i, int j) {
+  return (i-j==1);
+}
+int myints[] = {1,2,3,4,5,1,2,3,4,5};
+std::vector&lt;int&gt; haystack (myints,myints+10);
+
+int needle2[] = {1,2,3};
+// using predicate comparison:
+it = std::search (haystack.begin(), haystack.end(), needle2, needle2+3, cmpFunction);</code></pre>
+
+<h3 id="find_end-">find_end() 查找子区间最后一次出现的位置</h3>
+
+<p>search() 用来查找子区间第一次出现的位置，而find_end()用来查找子区间最后一次出现的位置：
+  <br />find_end()支持自定义比较函数；</p>
+
+<h3 id="equal-">equal() 判断两个区间是否相等</h3>
+
+<p>equal（）用来判断两个区间是否相等，该算法支持自定义比较函数；</p>
+
+<h3 id="mismatch-">mismatch() 查询两个区间首次出现不同的位置；</h3>
+
+<p>mismatch() 查询两个区间首先出现不同的位置，这个算法也支持自定义比较函数；</p>
+
+<h2 id="-">集合查找</h2>
+
+<h3 id="find_first_of-">find_first_of 查找集合中的任意一个元素</h3>
+
+<p>find_first_of()用来查找给定集合中的任意一个元素:
+  <br />示例：从haystack中查找A,B,C出现的位置：</p>
+
+<pre><code>  int mychars[] = {'a','b','c','A','B','C'};
+  std::vector&lt;char&gt; haystack (mychars,mychars+6);
+  int needle[] = {'C','B','A'};
+  // using default comparison:
+  it = find_first_of (haystack.begin(), haystack.end(), needle, needle+3);</code></pre>
+
+<p>find_first_of支持自定义比较函数；</p>
+
+<p>Posted by: 大CC | 09APR,2015
+  <br />博客：<a href="http://blog.me115.com">blog.me115.com</a> [<a href="http://blog.me115.com/feed">订阅</a>]
+
+  <br />微博：<a href="http://weibo.com/bigcc115">大CC</a></p>
+
+<div class="ujian-hook"></div><div style='clear:both;'></div>
+
+ 
+		<script type="text/javascript">
+		var ujian_config = {
+			'num':5,
+			'showType':2,
+			'bgColor':"",
+			'mouseoverColor':"#E6F3DE",
+			'textColor':"#333333",
+			'hoverTextColor':"#333333",
+			'borderColor':"#dddddd",
+			'picSize':96,
+			'target':1,
+			'textHeight':60,
+			'defaultPic':"",
+			'itemTitle':"您可能喜欢："
+		}</script>
+	<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js"></script>]]></content:encoded>
+			<wfw:commentRss>http://blog.me115.com/2015/06/849/feed</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+		</item>
+		<item>
+		<title>[译]2010新版STL修订内容（VC2010）</title>
+		<link>http://blog.me115.com/2010/11/34</link>
+		<comments>http://blog.me115.com/2010/11/34#comments</comments>
+		<pubDate>Mon, 01 Nov 2010 07:02:59 +0000</pubDate>
+		<dc:creator>大CC</dc:creator>
+				<category><![CDATA[C++编程]]></category>
+		<category><![CDATA[C++0x]]></category>
+		<category><![CDATA[STL]]></category>
+		<category><![CDATA[修订]]></category>
+
+		<guid isPermaLink="false">http://blog.donews.com/me1105/archive/2010/11/01/34.aspx</guid>
+		<description><![CDATA[揭示STL重要更改 预备知识: l 理解标准C++ 0x 的concepts，例 &#8230;<p class="read-more"><a href="http://blog.me115.com/2010/11/34">继续阅读 &#187;</a></p>]]></description>
+				<content:encoded><![CDATA[<p>揭示STL重要更改 </p>
+<p>预备知识: </p>
+<p>l 理解标准C++ 0x 的concepts，例如：auto 关键字，lambda 表达式、右值引用等。 </p>
+<p>l 熟练使用STL。熟悉2个及以上STL容器的使用。 </p>
+<p>l 你手上必须有有VC2010的编译器，或者其它支持最新的C++标准和更新Stl的编译器。</p>
+<p>这篇文章介绍了新版STL修订内容。这些变化是TR1中最为关注的内容（译注1）；以下是STL的新增特性： </p>
+<p>l Constant迭代器 </p>
+<p>l array类 </p>
+<p>l tuple类 </p>
+<p>l &lt;algorithm&gt;中新增函数 </p>
+<p>l 随机生成器类(&lt;random&gt;) </p>
+<p>l 对sets及无序sets容器的改进 </p>
+<p>l 对maps及无序maps的改进 </p>
+<p>l 正则表达式 </p>
+<p>l 功能的改进及实用的头文件 </p>
+<p>l 加强指针管理类</p>
+<p><font color="#ff8040"><b>Constant </b><b>迭代器</b><b></b> </font></p>
+<p>首先说明，constant迭代器并不等于const迭代器。constant迭代器是const_iterator。 将const关键字加在 iterator前时，其所指的变量是无法修改的。而const_iterator则在首次赋值后不再可指向其它变量（类似：常量指针和指向常量的指针）看了下面代码后，你应该会有一个清晰的认识：</p>
+<pre>using namespace std;
+vector&lt;int&gt; IntVector;
+...
+// Normal iterator
+vector&lt;int&gt;::iterator iter_nc = IntVector.begin();
+*iter_nc = 100; // Valid
+iter_nc = IntVector.end(); // Valid
+
+// Constant Iterator
+vector&lt;int&gt;::const_iterator iter_c = IntVector.begin();
+*iter_c = 100; // INVALID!
+iter_c = IntVector.end(); // Valid
+
+// The 'const' iterator
+const vector&lt;int&gt;::iterator iter_const = IntVector.begin();
+*iter_const = 100; // Valid
+iter_const = IntVector.end(); // Invalid (Why? Learn C++!)
+
+// The 'const' Constant Iterator
+const vector&lt;int&gt;::const_iterator iter_const_c = IntVector.begin();
+*iter_const_c = 100; // Invalid!
+iter_const_c = IntVector.end(); // Invalid</pre>
+<p><b>新特性</b> </p>
+<p>容器中新增函数可以明确返回Constant迭代器。在此之前，我们先了解一下迭代器返回规则： </p>
+<p>1. 如果容器是constant，或者类方法前申明const，则将返回const_iterator。 </p>
+<p>2. 如果左值是const_iterator,普通的iterator将被返回，但会向下转型为const_iterator； </p>
+<p>3. 其它情况，将返回普通iterator； </p>
+<p>注：大多数迭代器访问方法（eg：begin，end）有相应的重载版本以返回constant 或non-const迭代器 ； </p>
+<p>因此，你可明确指明返回的是constant还是普通迭代器； </p>
+<p>以下为新增方法： </p>
+<table cellspacing="0" cellpadding="0" border="1">
+<tbody>
+<tr>
+<td valign="top" width="106">
+<p>访问方法</p>
+</td>
+<td valign="top" width="560">
+<p><b>含义</b></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="106">
+<p><b>cbegin</b></p>
+</td>
+<td valign="top" width="560">
+<p>返回容器第一个元素的const_iterator .</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="106">
+<p>cend</p>
+</td>
+<td valign="top" width="560">
+<p>返回容器最后一个元素后一位的 const_iterator .</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="106">
+<p><b>crbegin</b></p>
+</td>
+<td valign="top" width="560">
+<p>返回rbegin 的 const_iterator 。即最后一个元素的constant迭代器. </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="106">
+<p><b>crend</b></p>
+</td>
+<td valign="top" width="560">
+<p>返回rend的 const_iterator 。即第一个元素前一位的constant迭代器.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>以上所有方法都在相应的容器类中申明为const。 </p>
+<p><b></b></p>
+<p><b>为什么要引入这些方法？</b> </p>
+<p>你当然可以指定你需要那种迭代器，可能你根本就不需要这些新的方法； </p>
+<p>加入这些方法的主要原因是因为新修订的auto关键词的引入；如果你已经了解auto关键词的含义，你应该知道我们可以在变量申明时不用明确指定类型。编译器会根据表达式的右值推导变量类型；当有如下调用：</p>
+<pre>auto iter = IntVector.begin();</pre>
+<p>可以指定是普通还是constant迭代器被返回。因此，为了返回一个constant迭代器（const_iterator），你可以使用：</p>
+<pre>auto iter = IntVector.cbegin(); // cbegin
+// The return type is: vector&lt;int&gt;::const_iterator</pre>
+<p>这样，这个迭代器以只读模式遍历vector，可以写出如下代码：</p>
+<pre>for(auto iter = IntVector.cbegin(); iter != IntVector.cend(); ++iter) { }</pre>
+<p>需要说明的是，constant迭代器可以访问 非const成员方法（我不敢保证，我只是在源码中看到）。因此，最好使用cend来代替end检查有效性。 </p>
+<p><b></b></p>
+<p><b>在sets和maps集合中又是如何？</b> </p>
+<p>对于所有的集合类（set,multiset, unordered_set, and unordered_multiset),其迭代器总是constant的。也就是说，当调用方法begin/end,find 以及下标操作符[]，都是返回的constant 迭代器。像begin,find这些方法，虽然它们返回的数据类型都是非constant迭代器，但其行为是constant迭代器。 </p>
+<p>看以下代码：</p>
+<pre>set&lt;int&gt; is;
+is.insert(10);
+
+*is.begin() = 120;
+
+wcout &lt;&lt; is.count(10) &lt;&lt; &quot;, &quot; &lt;&lt; is.count(120);</pre>
+<p>以上例子首先插入10到set中，然后试图修改第一个元素的值。 </p>
+<p>因为只有一个元素插入进来，begin将返回指向该元素的迭代器；在vc9及之前的编译器中，可成功修改值为120； </p>
+<p>但从vc10开始，第三行将不能编译通过，编译器报错为： </p>
+<p>error C3892: &#8216;std::**::begin&#8217; : you cannot assign to a variable that is const </p>
+<p>对于map，键不可修改，值可修改。以下是代码示例： </p>
+<pre>map&lt;int, int&gt; imap; 
+imap.insert( make_pair( 1, 1028 ));
+imap.insert( make_pair( 2, 2048 ));
+imap.find(1)-&gt;second = 1024; // Compiles
+imap.find(2)-&gt;first = 4; // Error
+
+imap[2] = 2000;
+*imap.begin()-&gt;first = 10; // Error
+*imap.begin()-&gt;second= 10; // Compiles
+
+*imap.cbegin()-&gt;second= 10;
+// Error on VC10, since iterator is constant. NA for VC9 </pre>
+<p><font color="#ff8040"><b>数组类</b><b>array</b> </font></p>
+<p>array类是STL新增容器类，用于在存储一个固定大小的数组。数组大小与数据元素类型一同由模版参数指出。其指定的大小数值必须是一个常量运行时的（与其它C/c++数组一样）。不像其它容器能够增加或减少容器大小，array支持其它标准方法-如迭代，随机访问，交换数据，赋值等。 </p>
+<p>头文件：&lt;array&gt; </p>
+<p>命名空间：tr1.但由于&#8217;using tr1::array&#8217; 已被头文件包含。所有，在使用中，申明std就可以了。 </p>
+<p>示例： </p>
+<p>array&lt;int, 64&gt; IntArray; </p>
+<p>第一个参数指定模版数据类型，第二个是一个常量编译时的整型。定义之后，IntArray的大小不能再改变。当然，除了int，可以使用其它的基本数据类型。如果要使用自定义类，则要实现复制构造函数，重载赋值操作符，比较操作符。同时，默认构造函数必须为公有。 </p>
+<p>这个类的引入是为了和其它STL容器进行无缝整合。例如，你使用vector或list，需要调用begin/end方法来访问元素。当你想将其作为普通数组使用时，代码会编译失败。这必须改变。用array类，你可以同时获得STL的灵活性和普通数据的性能。 </p>
+<p>依据最近的编译器报告（tr1 增刊），可以使用以下方式来初始化array: </p>
+<p>array&lt;int, 64&gt; IntArray; </p>
+<p>如果忽略1个或多个元素没赋值，它们将被置为0. </p>
+<p>如果对array没有做任何初始化操作，其所有元素处于未初始化状态。 </p>
+<p>array类支持以下STL标准方法： </p>
+<blockquote>
+<p>l at, operator [] &#8211; 返回指定位置元素引用. </p>
+<p>l back, front &#8211; 各自返回第一及最后一个元素位置引用； </p>
+<p>l begin, cbegin, rbegin, crbegin -返回第一个元素迭代器； </p>
+<p>l end, cend, rend, crend &#8211; 返回最后一个元素后一位的迭代器； </p>
+<p>l empty &#8211; 判断容器是否为空。仅当数组大小为0时返回true； </p>
+<p>l size, max_size &#8211; 返回array对象大小，该大小在编译期间确定； </p>
+</blockquote>
+<p>以下方法需要重点说明： </p>
+<p><b>array::assign</b> 和 <b>array:fill</b> </p>
+<p>这2个方法功能相同，实现将array所有元素赋值为一个给定值。此方法也可用来通过指定值替换array对象的所有元素。例如： </p>
+<pre>array&lt;int,10&gt; MyArray;
+MyArray.fill(40); // or 'assign'
+
+for_each(MyArray.cbegin(), MyArray.cend(), 
+[](int n) { std::wcout &lt;&lt; n &lt;&lt; &quot;t&quot;;} ); </pre>
+<p>将10个元素赋值为40，之后输出到控制台。 </p>
+<p><b>array::data</b> </p>
+<p>此方法返回数组第一个元素地址。与普通数组相比（eg：int_array[N]),此方法类似于表达式&amp;int_array[0] 或者int_array。 此方法是由指针直接操作。const及非const方法都可用。例如： </p>
+<pre>int* pArray = MyArray.data();
+// Or
+auto pArray = MyArray.data(); </pre>
+<p><b>array::swap(array&amp;)</b> 和swap(array&amp;, array&amp;) </p>
+<p>交换两个数组大小和类型相同的array对象。第一个方法是非静态方法，实现将本数组内容与参数中的指定数组交换。第二个方法，携带2个array&amp;参数，互换内容。例如： </p>
+<pre>typedef array&lt;int,10&gt; MyArrayType;
+MyArrayType Array1 = {1,2,4,8,16};
+MyArrayType Array2;
+Array2.assign(64);
+Array1.swap(Array2);
+// Or - swap(Array1, Array2);
+
+// Array1 - 64, 64...64
+// Array2 - 1,2,4,....0 </pre>
+<p>如果试图交换不同类型数组，编译器会报错： </p>
+<pre>array&lt;int,5&gt; IntArrayOf5 = {1,2,3,4,5};
+array&lt;int,4&gt; IntArrayOf4 = {10,20,40};
+array&lt;float,4&gt; FloatArrayOf4; 
+IntArrayOf5.swap(IntArrayOf4); // ERROR! 
+swap(IntArrayOf4, FloatArrayOf4); // ERROR! </pre>
+<p>六种比较操作符 </p>
+<p>作为全局函数的==, !=, &lt;, &gt;, &lt;=, 及&gt;=可用来比较2个相同类型的数组对象： </p>
+<pre>typedef array&lt;int,10&gt; MyArrayType;
+MyArrayType Array1 = {1,2,4,8,16};
+MyArrayType Array2;
+Array2.assign(64);
+if (Array2 == Array1)
+wcout &lt;&lt; &quot;Same&quot;;
+else
+wcout &lt;&lt; &quot;Not Same&quot;; </pre>
+<p>结果输出&quot;Not Same&quot; . </p>
+<p><font color="#ff8040"><b>元组类</b><b>tuple </b><b></b></font></p>
+<p>STL程序员都知道pair 结构，它用来包装2个任意类型的元素。除了maps，在其它地方这个结构也非常有用，我们可以用来包装2个元素，而不用定义一个结构体。我们可通过first、 second变量取得这2个元素的值。 </p>
+<pre>pair&lt;string,int&gt; NameAndAge;
+NameAndAge.first = &quot;Intel&quot;;
+NameAndAge.second = 40; </pre>
+<p>程序员经常typedef 它们，这样变量就可以容易的申明并可将pair 传给函数。 </p>
+<p>但是，如果你需要保证多于2个的元素，该怎么做呢？ </p>
+<p>通常，你会定义一个结构体，或使用多重pair。这样的格式并不能与STL无缝整合。 </p>
+<p><b>tuple</b> 类就是为此而生。这个类允许将2至10个元素包装在一起。 </p>
+<p>所有元素类型都可不同，如果要加入自定义，其依赖的操作必须事先定义。tuple类通过模版重载具体如何工作，已超出我的理解，这里我只说明它可以完成什么，以及我们可以在哪里使用。 </p>
+<p>l 头文件: &lt;tuple&gt; </p>
+<p>l 命名空间: tr1. &#8216;using tr1::tuple&#8217; 已包含在 std . </p>
+<p>申明2个元素元组： </p>
+<p>tuple&lt;int,int&gt; TwoElements; </p>
+<p>在构造函数中初始化： </p>
+<p>tuple&lt;int,int&gt; TwoElement (400, 800); </p>
+<p>如果初始化，则必须初始化所有元素，以下方式报错： </p>
+<p>tuple&lt;int,int&gt; TwoElement (400); <i>// Second initializer missing</i> </p>
+<p>这个错误可能不那么明显，但是你应该明白这个原则：必须初始化所有成员。 </p>
+<p>构造之后的初始化并不简单。在pair中，有make_pair 来辅助pair的初始化。自然的，tuple也有相应的辅助函数make_tuple。如果你已经读过或将要读VC2010并行编程，你会发现C++库中类似的完成类似的功能有其它新的make_函数。（译注2：并行编程地址） </p>
+<p>下面例子说明如何初始化tuple对象： </p>
+<pre>TwoElement = make_tuple(400, 800); </pre>
+<p>跟tuple模版类一样，make_tuple 有传入2至10个参数的重载函数版本。make_tuple充分利用C++0x中右值引用的思想，完美的支持STL新特性。它允许复用同一对象而不是调用复制构造函数和赋值操作，以此提升整体性能。 </p>
+<p>我们可以结合make_tuple和auto关键词来灵活的定义一个tuple： </p>
+<pre>auto Elements = make_tuple(20, 'X', 3.14159);
+// Eq: tuple&lt;int, char, double&gt; Elements(20, 'X', 3.14159); </pre>
+<p>如何访问tuple中的元素？ </p>
+<p>对于pair对象，我们都是简单的使用其内部定义的变量first/second来访问元素。但是tuple类中并没有定义这样的变量，我们需要通过辅助函数get来访问这些未命名变量。例如： </p>
+<pre>tuple&lt;string, int, char&gt; NameAgeGender(&quot;Gandhi&quot;, 52, 'M');
+int nAge = get&lt;1&gt;(NameAgeGender); </pre>
+<p>get&lt;index&gt;()中的可用索引必须在对象初始化的元素范围之内。索引以0为起点。在上述例子中，索引范围为[0,2]，get&lt;1&gt;用于访问NameAgeGender对象中的第二个元素，返回一个整型给nAge。 </p>
+<p>get函数的索引必须是一个常量编译时的整型并在有效范围内。返回类型的推导也是常量时；以下代码编译器会报错： </p>
+<pre>int nAge = get&lt;0&gt;(NameAgeGender);
+// ERROR - cannot convert from 'string' to 'int' </pre>
+<p>这样也有助与发现潜在的代码缺陷： </p>
+<pre>char cGender = get&lt;1&gt;(NameAgeGender); // Leve 4 C4244 warning - 'int' to 'char'
+// Should be get&lt;2&gt; </pre>
+<p>更重要的是，get可以赋值给auto关键词： </p>
+<pre>auto sName = get&lt;0&gt;(NameAgeGender); // Type deduction - 'string' </pre>
+<p>对于非const类型tuple对象，返回类型为元组元素的引用，这样，可以修改元素值： </p>
+<pre>// Modify Age
+get&lt;1&gt;(NameAgeGender) = 79; </pre>
+<p>也可以将这个返回类型放在另一个引用中，并在之后修改。使用auto关键词也可行： </p>
+<pre>auto &amp; rnAge = get&lt;1&gt;(NameAgeGender) ;
+rnAge = 79 </pre>
+<p>需要指出的是，get函数同样适用于array类： </p>
+<pre>array&lt;char, 5&gt; Vowels = {'A','E','I','o','U'};
+char c = get&lt;1&gt;(Vowels); // 'E'
+get&lt;3&gt;(Vowels) = 'O'; // Modify
+get&lt;10&gt;&lt;Vowels); // ERROR - Out of range! </pre>
+<p><strong>tie函数 </strong></p>
+<p>这个函数实现make_tuple函数的逆操作。使用这个函数，你可以用一个tuple对象来初始化一组变量。看例子： </p>
+<pre>tuple&lt;string, int, char&gt; NameAgeGender(&quot;Gandhi&quot;, 52, 'M');
+string sName;
+int nAge;
+char cSex;
+tie(sName, nAge, cSex) = NameAgeGender; </pre>
+<p>以上代码将这3个变量对应的设置为值 &quot;Gandhi&quot;, 52, and &#8216;M&#8217;。我想tie是否可以用于取代make_tuple？结果证明不行： </p>
+<pre>tuple&lt;string, int, char&gt; NameAgeGender;
+NameAgeGender = tie(&quot;Gates&quot;, 46, 'M'); // make_tuple
+
+string sName; int nAge; char cSex;
+make_tuple(sName, nAge, cSex) = NameAgeGender; // NO error. See below. </pre>
+<p>tie函数返回tuple对象的引用；make_tuple则是创建一个对象，返回的并非引用。上面最后一行试图修改一个临时创建的tuple对象,编译器不报错，却并不能得到正确结果。因此，最好还是按照它们设计的功能来使用这2个函数。 </p>
+<p><b>六种关系操作符</b> </p>
+<p>与array类一样，tuple类中同样实现了6种操作符的功能。所有的重载版本都要求作关系操作的两个tuple对象必须是同类型的（所包含的元素的对应位置的类型必须相同）。 </p>
+<p>（未完待续） </p>
+<p>【注1】TR1: </p>
+<p>C++ Technical Report 1 (TR1)是ISO/IEC TR 19768, C++ Library Extensions（函式库扩充）的一般名称。TR1是一份文件，内容提出了对C++标准函式库的追加项目。这些追加项目包括了正则表达式、智能指针、哈希表、随机数生成器等。TR1自己并非标准，他是一份草稿文件。然而他所提出的项目很有可能成为下次的官方标准。这份文件的目标在于「为扩充的C++标准函式库建立更为广泛的现成实作品」。 </p>
+<p>原文：<a href="http://www.codeproject.com/KB/stl/stl2010.aspx">http://www.codeproject.com/KB/stl/stl2010.aspx</a></p>
+<div class="ujian-hook"></div>
+<div style='clear:both;'></div>
+<p>		<script type="text/javascript">
+		var ujian_config = {
+			'num':5,
+			'showType':2,
+			'bgColor':"",
+			'mouseoverColor':"#E6F3DE",
+			'textColor':"#333333",
+			'hoverTextColor':"#333333",
+			'borderColor':"#dddddd",
+			'picSize':96,
+			'target':1,
+			'textHeight':60,
+			'defaultPic':"",
+			'itemTitle':"您可能喜欢："
+		}</script><br />
+	<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js"></script></p>
+]]></content:encoded>
+			<wfw:commentRss>http://blog.me115.com/2010/11/34/feed</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+		</item>
+	</channel>
+</rss>
+
+<!-- Dynamic page generated in 0.157 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2016-06-30 13:55:22 -->

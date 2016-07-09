@@ -1,0 +1,557 @@
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/prettify.css" />
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/github.css"/>
+<script src="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/jquery.js" type="text/javascript"></script> 
+<script src="http://files.cnblogs.com/xguo/google-code-prettify.js"></script>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+<head profile="http://gmpg.org/xfn/11">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>网络编程中的关键问题总结大CC | 大CC</title>
+	<link rel="stylesheet" type="text/css" media="all" href="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/style.css" />
+	<link rel="pingback" href="http://blog.me115.com/xmlrpc.php" />
+	<link rel="alternate" type="application/rss+xml" title="大CC &raquo; Feed" href="http://blog.me115.com/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; 评论 Feed" href="http://blog.me115.com/comments/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; 网络编程中的关键问题总结 评论 Feed" href="http://blog.me115.com/2015/12/924/feed" />
+<script type="text/javascript">
+var duoshuoQuery = {"short_name":"me115","sso":{"login":"http:\/\/blog.me115.com\/wp-login.php?action=duoshuo_login","logout":"http:\/\/blog.me115.com\/wp-login.php?action=logout&_wpnonce=8e3639c0cf"},"theme":"default","stylePatch":"wordpress\/zBench"};
+duoshuoQuery.sso.login += '&redirect_to=' + encodeURIComponent(window.location.href);
+duoshuoQuery.sso.logout += '&redirect_to=' + encodeURIComponent(window.location.href);
+</script>
+<script type="text/javascript" src="http://static.duoshuo.com/embed.js" charset="UTF-8" async="async"></script>
+<script type='text/javascript' src='http://blogcc.u.qiniudn.com/wp-includes/js/comment-reply.min.js?ver=3.5'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://blog.me115.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://blog.me115.com/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='Reactor事件驱动的两种实现：面向对象 VS 函数式编程' href='http://blog.me115.com/2015/12/907' />
+<link rel='next' title='从C++到GO' href='http://blog.me115.com/2016/01/926' />
+<meta name="generator" content="WordPress 3.5" />
+<link rel='shortlink' href='http://blog.me115.com/?p=924' />
+
+<!-- All in One SEO Pack 1.6.15.3 by Michael Torbert of Semper Fi Web Design[629,680] -->
+<meta name="keywords" content="epoll,网络编程" />
+<link rel="canonical" href="http://blog.me115.com/2015/12/924" />
+<!-- /all in one seo pack -->
+</head>
+<body class="single single-post postid-924 single-format-standard">
+<div id="nav">
+	<div id="menus">
+		<ul><li><a href="http://blog.me115.com/">首页</a></li></ul>
+		<ul id="menu-linux-2" class="menu"><li id="menu-item-566" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-566"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1">Linux工具箱</a></li>
+<li id="menu-item-493" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-493"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84">书评和笔记</a>
+<ul class="sub-menu">
+	<li id="menu-item-495" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-495"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0">读书笔记</a></li>
+	<li id="menu-item-494" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-494"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91">CC评网</a></li>
+</ul>
+</li>
+<li id="menu-item-560" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-560"><a href="http://blog.me115.com/%e9%98%85%e8%af%bb%e8%ae%a1%e5%88%92">阅读计划</a></li>
+<li id="menu-item-461" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-461"><a href="http://blog.me115.com/%e5%85%b3%e4%ba%8e%e6%9c%a8%e4%b9%a6%e6%9e%b6">关于木书架</a></li>
+<li id="menu-item-462" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-462"><a href="http://blog.me115.com/sample-page">关于我</a></li>
+</ul>	</div>
+	<div id="search">
+		<form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form>	</div>
+</div>
+<div id="wrapper">
+	<div id="header">		<h1><a href="http://blog.me115.com/">大CC</a></h1>
+		<h2>关注 Nosql/架构/时间管理/阅读分享</h2>
+		<div class="clear"></div>
+			</div>
+<div id="content">
+		<div class="post-924 post type-post status-publish format-standard hentry category-137 tag-epoll tag-137 post-single" id="post-924"><!-- post div -->
+		<h2 class="title">网络编程中的关键问题总结</h2>
+		<div class="post-info-top">
+			<span class="post-info-date">
+				作者: <a href="http://blog.me115.com/author/me115wp" title="查看 大CC 的所有文章" rel="author">大CC</a>
+				日期:				2015 年 12 月 31 日							</span>
+						<span class="addcomment"><a href="#respond"  rel="nofollow" title="发表评论？">发表评论</a><span class="ds-thread-count" data-thread-key="924" data-replace="1"> (0)</span></span>
+			<span class="gotocomments"><a href="#comments"  rel="nofollow" title="查看评论？">查看评论</a></span>
+					</div>
+		<div class="clear"></div>
+		<div class="entry">
+			<h1 id="-">网络编程中的关键问题总结</h1>
+
+<p>总结下网络编程中关键的细节问题，包含连接建立、连接断开、消息到达、发送消息等等；</p>
+
+<h2 id="-">连接建立</h2>
+
+<p>包括服务端接受 (accept) 新连接和客户端成功发起 (connect) 连接。    <br />accept接受连接的问题在本文最后会聊到，这里谈谈connect的关键点；     <br />使用非阻塞连接建立需要注意：     <br />connect/select返回后，可能没有连接上；需要再次确认是否成功连接；</p>
+
+<p>步骤为：</p>
+
+<ol>   <li>使用异步connect直接连接一次，因为使用了非阻塞，函数立刻返回； </li>    <li>检查返回值，为0成功连接，否则加入到select/epoll中监控； </li>    <li>当有写事件时，连接成功；当即可读又可写时，可能是有错误或者连接成功后有数据已经发过来；所以，此时，需要用getsockopt()读取socket的错误选项，二次确认是否真的连接成功: </li> </ol>
+
+<pre><code>Fcntl(sockfd, F_SETFL, flags | O_NONBLOCK);
+error = 0;
+if ( (n = connect(sockfd, saptr, salen)) &lt; 0)
+    if (errno != EINPROGRESS)
+        return(-1);
+
+/* Do whatever we want while the connect is taking place. */
+if (n == 0)
+    goto done;    /* connect completed immediately */
+
+if ( (n = Select(sockfd+1, &amp;rset, &amp;wset, NULL,
+                 nsec ? &amp;tval : NULL)) == 0) {
+    close(sockfd);        /* timeout */
+    errno = ETIMEDOUT;
+    return(-1);
+}
+
+if (FD_ISSET(sockfd, &amp;rset) || FD_ISSET(sockfd, &amp;wset)) {
+    len = sizeof(error);
+            //二次确认是否真的连接成功
+    if (getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &amp;error, &amp;len) &lt; 0)
+        return(-1);            /* Solaris pending error */
+} else
+    err_quit(&quot;select error: sockfd not set&quot;);</code></pre>
+
+<h2 id="-">连接断开</h2>
+
+<p>包括主动断开 (close 或 shutdown) 和被动断开 (read 返回 0)。 </p>
+
+<p>当打算关闭网络连接时，如何能知道对方已经发送了数据自己还没有收到？ 
+  <br />在TCP层面解决：主动关闭的时候只使用半关闭shutdown(), 这样，服务端这边之时关闭了写端，还可以正常读；客户端收到关闭的信号后（read返回0），会再调用shutdown关闭整个连接； 
+
+  <br />在应用层面解决：双方通过某个标记协商，在标记之后不再读写数据，这样就可以完全的关闭连接了；</p>
+
+<p>关闭连接时需要注意的： 
+  <br />是否还有未发送的数据，需要保证应用缓冲区中的数据都发送完毕之后再关闭缓冲区； 
+
+  <br />TCP缓存区不用我们考虑，因为在调用shutdown或close的时候，TCP的实现是会将TCP的发送缓冲区中的数据都发送出去，然后再发送FIN报文(也可能是组合成一个报文发送）；</p>
+
+<h2 id="-">消息到达</h2>
+
+<p>消息到达是最重要的事件；对它的处理决定了网络编程的风格:是阻塞还是非阻塞、分包的处理、应用层的缓冲如何设计等等；</p>
+
+<h3 id="-">处理分包</h3>
+
+<p>所谓分包，就是在一个个字节流消息中如何区分出一个个消息来； 
+  <br />常见的分包方法有：</p>
+
+<ol>
+  <li>固定长度； </li>
+
+  <li>特殊的结尾符，比如字符串的 ，或者回车换行等； </li>
+
+  <li>固定的消息头中指定后续的消息的长度，然后跟上一个消息体内容； </li>
+
+  <li>使用协议本身的格式，比如json格式头尾配对（XML也一样）； </li>
+</ol>
+
+<h3 id="-">字节序转换注意字节对齐</h3>
+
+<p>如果传输的是二进制类型，在字节流的缓存区中直接强转可能core dump；因为有的系统访问地址需要字节对齐，不能在任意地址上访问二进制类型（如整形），合理的方式是将其copy到一个本地变量中，然后再做字节序的转换：</p>
+
+<pre><code>int32_t peekInt32() const
+{
+    assert(readableBytes() &gt;= sizeof(int32_t));
+    int32_t be32 = 0;
+    ::memcpy(&amp;be32,readerIndex_, sizeof(be32) );
+    return be32toh(be32);
+}</code></pre>
+
+<h3 id="-">应用层缓存区的实现</h3>
+
+<p>数据到达时处理需要注意： 
+  <br />socket读事件来到，必须一次将所有的数据都读完，否则会造成一直有可读事件，造成busy-loop；读到的数据当然就需要有个应用层的缓冲区来存放； 
+
+  <br />因为应用的缓存区是有限的，可以默认设置一个大小，比如2kb，或者根本就不设置初始大小，用多少分配多少；muduo中使用的是vector<char> 来作为缓存区，可以动态增长；</p>
+
+<p>muduo buffer使用的技巧： 
+  <br />buffe采用了vector<char>自动增长的数据结构； 
+
+  <br />从系统内核中调用的时候，在应用层需要有足够大的缓冲区，最好能一次将系统recv到的缓冲区给读空，一次系统调用就搞定一切事情； 
+
+  <br />而应用缓冲区考虑到有很多个并发的可能，针对每个连接一次都分配较大的缓冲区浪费严重，陈硕推荐使用readv一次读入到两个地址中，首先将第一个地址填满，如果还有更多数据，就写入到临时缓冲区中，然后append到应用缓冲区；</p>
+
+<p>读的时候使用readv，局部使用一个足够大的额外空间（64KB），这样，一次读取就足以将socket中的缓存区读空（一般不会超过64K，tcp buffer如果确实要设置大的缓存区，需要调整系统参数）；如果数据不多，可能内部buffer就装下了，没有额外操作，否则，多的数据读到了外部的缓存区，再append到内部缓存区：</p>
+
+<pre><code>ssize_t Buffer::readFd(int fd, int* savedErrno)
+{
+  // saved an ioctl()/FIONREAD call to tell how much to read
+  char extrabuf[65536];
+  struct iovec vec[2];
+  const size_t writable = writableBytes();
+  vec[0].iov_base = begin()+writerIndex_;
+  vec[0].iov_len = writable;
+  vec[1].iov_base = extrabuf;
+  vec[1].iov_len = sizeof extrabuf;
+  // when there is enough space in this buffer, don't read into extrabuf.
+  // when extrabuf is used, we read 128k-1 bytes at most.
+  const int iovcnt = (writable &lt; sizeof extrabuf) ? 2 : 1;
+  //只有一次系统调用：这里的实现比较巧妙
+  const ssize_t n = sockets::readv(fd, vec, iovcnt);
+  if (n &lt; 0)
+  {
+    *savedErrno = errno;
+  }
+  else if (implicit_cast&lt;size_t&gt;(n) &lt;= writable)
+  {
+    writerIndex_ += n;
+  }
+  else
+  {
+    writerIndex_ = buffer_.size();
+    append(extrabuf, n - writable);
+  }
+  // if (n == writable + sizeof extrabuf)
+  // {
+  //   goto line_30;
+  // }
+  return n;
+}</code></pre>
+
+<h2 id="-">发送消息</h2>
+
+<p>网络编程中数据发送比数据接受要难处理； 
+  <br />数据的接收，只需要peek足够的数据后，就可以从应用缓冲区接收出来，然后处理；而数据的发送，还需要考虑对方接受缓慢的情况，导致tcp发送缓冲区累积，最终导致应用缓冲区累积；</p>
+
+<p>举个例子：某客户端对echo服务器只发送，但故意不接收； 
+  <br />客户端如果只是发送，但从不接收的话，那么这边发送过去的报文，首先会导致客户端的tcp接收缓冲区满，然后通过ack报文告诉服务器端，这边的滑动窗口为0了，不能再发了；后续客户端发送的报文就把服务器端TCP发送缓冲区积满，然后累积应用层的发送缓冲区（因为是非阻塞），最终导致服务端的应用缓存区满或者内存撑爆；</p>
+
+<p>需要发送数据的时候，优先直接调用write()发送，如果发送不成功，或没有全部发送完毕，才加入到发送缓存区,等待可写事件到来后发送； 
+  <br />直接调用write()发送数据时，需要先将本次需要发送的数据添加到缓存区，然后发送缓存区，不可直接发送本次数据（因为缓存区中可能有遗留的数据未发送完）</p>
+
+<pre><code>void TcpConnection::handleWrite()
+{
+  loop_-&gt;assertInLoopThread();
+  if (channel_-&gt;isWriting())
+  {
+      //注意，这里只调用了一次write,而没有反复调用write直到出现EAGAIN错误，
+      //原因是如果第一次调用没有发送完全部的数据，第二次调用几乎肯定是EAGAIN错误，
+      //因此这里减少了一次系统调用，这么做不影响正确性，却能够降低系统时延
+    ssize_t n = sockets::write(channel_-&gt;fd(),
+                               outputBuffer_.peek(),
+                               outputBuffer_.readableBytes());
+    if (n &gt; 0)
+    {
+      outputBuffer_.retrieve(n);
+      if (outputBuffer_.readableBytes() == 0)
+      {
+          //如果发送缓存区为空，不再关注写事件，避免 busy loop 
+        channel_-&gt;disableWriting();
+        //如果还有写完成之后的回调，加入待执行回调队列
+        if (writeCompleteCallback_)
+        {
+          loop_-&gt;queueInLoop(boost::bind(writeCompleteCallback_, shared_from_this()));
+        }
+        //如果此时正在关闭，调用shutdownInLoop 继续执行关闭过程
+        if (state_ == kDisconnecting)
+        {
+          shutdownInLoop();
+        }
+      }
+    }
+    else
+    {
+      LOG_SYSERR &lt;&lt; &quot;TcpConnection::handleWrite&quot;;
+      // if (state_ == kDisconnecting)
+      // {
+      //   shutdownInLoop();
+      // }
+    }
+  }
+  else
+  {
+    LOG_TRACE &lt;&lt; &quot;Connection fd = &quot; &lt;&lt; channel_-&gt;fd()
+              &lt;&lt; &quot; is down, no more writing&quot;;
+  }
+}</code></pre>
+
+<h2 id="-">消息发送完毕</h2>
+
+<p>对于低流量的服务，可以不必关心这个事件；另外，这里“发送完毕”是指将数据写入操作系统的缓冲区，后续由 TCP 协议栈负责数据的发送与重传，不代表对方已经收到数据。</p>
+
+<h2 id="-">其它问题</h2>
+
+<h3 id="io-multiplexing-">IO multiplexing 是否可以配合阻塞套接字使用？</h3>
+
+<p>一般都配合非阻塞socket使用，如果使用阻塞IO，可能在读写事件上阻塞当前线程，造成无法继续处理已经就绪的事件； 
+  <br />初学网络编程可能都会有这个想法，select返回后，如果是读事件，那么这时候tcp读缓冲区肯定是有数据，这时即使使用阻塞套接字来read，应该也不会阻塞；但这样忽略了一个点，缓冲区确实是有数据，但是很可能到达的数据并不满足你要求读的数据大小，这样read调用还是会阻塞，直到有足够的数据才返回； 
+
+  <br />那么，对于数据读不可以，对accept()总可以吧，连接事件返回，一般都是有新用户接入，这时候阻塞的accept()应该总是能够返回；但在某些情况下，可能对方刚连接上就断开了，并给服务端发送了一个RST请求，造成服务端这边将已经就绪的连接请求又移除了，这样的场景下，select返回，但是accept却无法获取新的连接，造成阻塞，直到下一个连接请求到来；(这方面的例子详见《UNIX网络编程卷1：套接字联网API》16.6节非阻塞accept() ) 
+
+  <br />所以任何时候，IO multiplexing都需要配合非阻塞IO使用；</p>
+
+<h3 id="-">零拷贝的实现</h3>
+
+<p>对于内核层的实现，底层调用的是系统调用sendFile()方法； 
+  <br />zerocopy技术省去了将操作系统的read buffer拷贝到程序的buffer, 以及从程序buffer拷贝到socket buffer的步骤, 直接将 read buffer 拷贝到 socket buffer； 
+
+  <br /><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="image" border="0" alt="image" src="http://blogcc.u.qiniudn.com/wp-content/uploads/2015/12/image5.png" width="350" height="312" /> 
+
+  <br />详见：<a href="http://www.cnblogs.com/zemliu/p/3695549.html">http://www.cnblogs.com/zemliu/p/3695549.html</a></p>
+
+<p>应用层上的实现，对于自定义的结构，一般是交换内部指针（使用C++11，可以使用move操作来实现高效交换结构体） 
+  <br />如果是vector等结构，使用其成员函数swap()就能达到高效的交换（类似C++11中的move操作）； 
+
+  <br />例如muduo中buffer实现：通过swap实现了缓存区的指针交换，从而达到数据交换的目的，而不用拷贝缓冲区；</p>
+
+<pre><code>void swap(Buffer&amp; rhs)
+{
+    buffer_.swap(rhs.buffer_); // std::vector&lt;char&gt; buffer_;
+    std::swap(readerIndex_, rhs.readerIndex_);
+    std::swap(writerIndex_, rhs.writerIndex_);
+}</code></pre>
+
+<h3 id="epoll-lt">epoll使用LT</h3>
+
+<p>epoll使用是LT而非ET，原因如下：</p>
+
+<ol>
+  <li>LT编程方便，select的经验都可同样适用； </li>
+
+  <li>读的时候只需要一次系统调用，而ET必须读到EAGAIN错误；减少一次系统调用，降低时延； </li>
+</ol>
+
+<p>一般认为 edge-trigger 模式的优势在于能够减少 epoll 相关系统调用，这话不假，但网络服务程序里可不是只有 epoll 相关系统调用，为了绕过饿死问题，edge-trigger 模式下用户要自行进行 read/write 循环处理，这其中增加的系统调用和减少的 epoll 系统调用加起来，总体性能收益究竟如何？只有实际测量才知道，无法一概而论。为了降低处理逻辑复杂度，常用的事件处理库大部分都选择了 level-trigger 模式（如 libevent、boost::asio、muduo等）</p>
+
+<h2 id="-">参考</h2>
+
+<p>《UNIX网络编程卷1：套接字联网API》 
+  <br />《Linux多线程服务端编程：使用muduo网络库》 
+
+  <br /><a href="http://www.cnblogs.com/zemliu/p/3695549.html">http://www.cnblogs.com/zemliu/p/3695549.html</a></p>
+
+<p>Posted by: 大CC | 31DEC,2015 
+  <br />博客：<a href="http://blog.me115.com">blog.me115.com</a> [<a href="http://blog.me115.com/feed">订阅</a>] 
+
+  <br />Github：<a href="https://github.com/me115">大CC</a></p>
+
+<div class="ujian-hook"></div><div style='clear:both;'></div>
+
+ 
+		<script type="text/javascript">
+		var ujian_config = {
+			'num':5,
+			'showType':2,
+			'bgColor':"",
+			'mouseoverColor':"#E6F3DE",
+			'textColor':"#333333",
+			'hoverTextColor':"#333333",
+			'borderColor':"#dddddd",
+			'picSize':96,
+			'target':1,
+			'textHeight':60,
+			'defaultPic':"",
+			'itemTitle':"您可能喜欢："
+		}</script>
+	<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js"></script>					</div><!-- END entry -->
+		<div class="add-info">
+					</div>
+		<div class="post-info-bottom">
+			<span class="post-info-category"><a href="http://blog.me115.com/category/%e7%bd%91%e7%bb%9c%e7%bc%96%e7%a8%8b" title="查看 网络编程 中的全部文章" rel="category tag">网络编程</a></span><span class="post-info-tags"><a href="http://blog.me115.com/tag/epoll" rel="tag">epoll</a>, <a href="http://blog.me115.com/tag/%e7%bd%91%e7%bb%9c%e7%bc%96%e7%a8%8b" rel="tag">网络编程</a></span>
+		</div>
+		<div id="nav-below">
+			<div class="nav-previous"><a href="http://blog.me115.com/2015/12/907" rel="prev"><span class="meta-nav">&larr;</span> Reactor事件驱动的两种实现：面向对象 VS 函数式编程</a></div>
+			<div class="nav-next"><a href="http://blog.me115.com/2016/01/926" rel="next">从C++到GO <span class="meta-nav">&rarr;</span></a></div>
+		</div><!-- #nav-below -->					
+	</div><!-- END post -->
+	<a name="comments"></a>
+
+<div class="ds-thread" data-thread-key="924" data-author-key="1" data-title="网络编程中的关键问题总结" data-url="http://blog.me115.com/2015/12/924"></div>
+
+<script type="text/javascript">
+	if (typeof DUOSHUO !== 'undefined')
+		DUOSHUO.EmbedThread('.ds-thread');
+</script>
+	<div id="ds-ssr">
+
+		
+            <ol id="commentlist">
+                            </ol>
+
+		            
+    </div></div><!--content-->
+<div id="sidebar-border">
+	<div id="rss_border">
+		<div class="rss_border">
+			<div id="rss_wrap">
+				<div class="rss_wrap">
+										<a class="rss rss_text" href="http://blog.me115.com/feed" rel="bookmark" title="RSS 订阅">RSS 订阅</a>
+																													</div>
+			</div>
+		</div>
+	</div>
+	<div id="sidebar">
+
+<div id="search-2" class="widget widget_search"><form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form></div>		<div id="recent-posts-2" class="widget widget_recent_entries">		<h3 class="widgettitle">近期文章</h3>		<ul>
+					<li>
+				<a href="http://blog.me115.com/2016/01/926" title="从C++到GO">从C++到GO</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/12/924" title="网络编程中的关键问题总结">网络编程中的关键问题总结</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/12/907" title="Reactor事件驱动的两种实现：面向对象 VS 函数式编程">Reactor事件驱动的两种实现：面向对象 VS 函数式编程</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/12/891" title="单线程你别阻塞，Redis时延问题分析及应对">单线程你别阻塞，Redis时延问题分析及应对</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/11/886" title="负载均衡的几种常用方案">负载均衡的几种常用方案</a>
+						</li>
+				</ul>
+		</div><div id="text-3" class="widget widget_text"><h3 class="widgettitle">广告</h3>			<div class="textwidget">本站使用digitalocean提供的VPS；<br/>
+访问速度可以通过<a href="http://blog.me115.com" target="_blank">大CC博客</a> 和<a href="http://www.me115.com" target="_blank">木书架网</a>体验；<br/>
+其中我的博客为直连digitalocean，
+而木书架网站采用了第三方CDN加速（安全宝）<br/><br/>
+
+从以下链接点击进入注册digitalocean，您将获取10美元(可免费使用2个月的VPS):<br/>
+
+<B><a href="https://www.digitalocean.com/?refcode=ee9c5a992d6f" target="_blank">DigitalOcean</a></B></div>
+		</div><div id="ds-recent-comments-2" class="widget ds-widget-recent-comments"><h3 class="widgettitle">近期评论</h3><ul class="ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-avatar-size="30" data-excerpt-length="70"></ul></div><script>
+if (typeof DUOSHUO !== 'undefined')
+	DUOSHUO.RecentComments && DUOSHUO.RecentComments('.ds-recent-comments');
+</script><div id="archives-3" class="widget widget_archive"><h3 class="widgettitle">文章归档</h3>		<ul>
+			<li><a href='http://blog.me115.com/date/2016/01' title='2016 年一月'>2016 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/12' title='2015 年十二月'>2015 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/11' title='2015 年十一月'>2015 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/10' title='2015 年十月'>2015 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/09' title='2015 年九月'>2015 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/08' title='2015 年八月'>2015 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/06' title='2015 年六月'>2015 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/05' title='2015 年五月'>2015 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/04' title='2015 年四月'>2015 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/03' title='2015 年三月'>2015 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/02' title='2015 年二月'>2015 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/01' title='2015 年一月'>2015 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/11' title='2014 年十一月'>2014 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/10' title='2014 年十月'>2014 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/09' title='2014 年九月'>2014 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/08' title='2014 年八月'>2014 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/07' title='2014 年七月'>2014 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/06' title='2014 年六月'>2014 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/05' title='2014 年五月'>2014 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/04' title='2014 年四月'>2014 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/02' title='2014 年二月'>2014 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/12' title='2013 年十二月'>2013 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/11' title='2013 年十一月'>2013 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/10' title='2013 年十月'>2013 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/09' title='2013 年九月'>2013 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/06' title='2013 年六月'>2013 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/04' title='2013 年四月'>2013 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/03' title='2013 年三月'>2013 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/01' title='2013 年一月'>2013 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/12' title='2012 年十二月'>2012 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/10' title='2012 年十月'>2012 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/09' title='2012 年九月'>2012 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/08' title='2012 年八月'>2012 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/05' title='2012 年五月'>2012 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/04' title='2012 年四月'>2012 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/02' title='2012 年二月'>2012 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/11' title='2011 年十一月'>2011 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/10' title='2011 年十月'>2011 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/09' title='2011 年九月'>2011 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/07' title='2011 年七月'>2011 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/06' title='2011 年六月'>2011 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/05' title='2011 年五月'>2011 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/04' title='2011 年四月'>2011 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/03' title='2011 年三月'>2011 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/02' title='2011 年二月'>2011 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/01' title='2011 年一月'>2011 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/12' title='2010 年十二月'>2010 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/11' title='2010 年十一月'>2010 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/10' title='2010 年十月'>2010 年十月</a></li>
+		</ul>
+</div><div id="categories-2" class="widget widget_categories"><h3 class="widgettitle">分类目录</h3>		<ul>
+	<li class="cat-item cat-item-2"><a href="http://blog.me115.com/category/beautiful-life" title="查看 Beautiful Life 下的所有文章">Beautiful Life</a>
+</li>
+	<li class="cat-item cat-item-92"><a href="http://blog.me115.com/category/berkeley-db" title="查看 Berkeley DB 下的所有文章">Berkeley DB</a>
+</li>
+	<li class="cat-item cat-item-3"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98/c%e7%bc%96%e7%a8%8b" title="查看 C++编程 下的所有文章">C++编程</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84" title="查看 CC书评 下的所有文章">CC书评</a>
+</li>
+	<li class="cat-item cat-item-5"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91" title="查看 CC评网 下的所有文章">CC评网</a>
+</li>
+	<li class="cat-item cat-item-146"><a href="http://blog.me115.com/category/go%e8%af%ad%e8%a8%80" title="查看 GO语言 下的所有文章">GO语言</a>
+</li>
+	<li class="cat-item cat-item-6"><a href="http://blog.me115.com/category/linuxunix" title="查看 Linux&amp;Unix 下的所有文章">Linux&amp;Unix</a>
+</li>
+	<li class="cat-item cat-item-90"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1" title="查看 Linux工具箱 下的所有文章">Linux工具箱</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="http://blog.me115.com/category/python" title="查看 Python 下的所有文章">Python</a>
+</li>
+	<li class="cat-item cat-item-93"><a href="http://blog.me115.com/category/redis" title="查看 Redis 下的所有文章">Redis</a>
+</li>
+	<li class="cat-item cat-item-8"><a href="http://blog.me115.com/category/web%e5%bc%80%e5%8f%91" title="查看 WEB开发 下的所有文章">WEB开发</a>
+</li>
+	<li class="cat-item cat-item-127"><a href="http://blog.me115.com/category/%e5%84%92%e9%87%8a%e9%81%93" title="查看 儒释道 下的所有文章">儒释道</a>
+</li>
+	<li class="cat-item cat-item-9"><a href="http://blog.me115.com/category/%e5%85%ac%e5%8f%b8%e7%ae%a1%e7%90%86" title="查看 公司管理 下的所有文章">公司管理</a>
+</li>
+	<li class="cat-item cat-item-10"><a href="http://blog.me115.com/category/%e5%b9%b6%e8%a1%8c%e8%ae%a1%e7%ae%97" title="查看 并行计算 下的所有文章">并行计算</a>
+</li>
+	<li class="cat-item cat-item-58"><a href="http://blog.me115.com/category/%e6%91%84%e5%bd%b1" title="查看 摄影 下的所有文章">摄影</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="http://blog.me115.com/category/%e6%97%b6%e9%97%b4%e7%ae%a1%e7%90%86" title="查看 时间管理 下的所有文章">时间管理</a>
+</li>
+	<li class="cat-item cat-item-1"><a href="http://blog.me115.com/category/uncategorized" title="查看 未分类 下的所有文章">未分类</a>
+</li>
+	<li class="cat-item cat-item-113"><a href="http://blog.me115.com/category/%e6%9e%b6%e6%9e%84" title="查看 架构 下的所有文章">架构</a>
+</li>
+	<li class="cat-item cat-item-12"><a href="http://blog.me115.com/category/%e7%a4%be%e4%bc%9a%e6%9d%82%e8%b0%88" title="查看 社会杂谈 下的所有文章">社会杂谈</a>
+</li>
+	<li class="cat-item cat-item-74"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98" title="查看 程序员 下的所有文章">程序员</a>
+</li>
+	<li class="cat-item cat-item-13"><a href="http://blog.me115.com/category/%e7%bb%8f%e6%b5%8e%e8%a7%82%e7%82%b9" title="查看 经济观点 下的所有文章">经济观点</a>
+</li>
+	<li class="cat-item cat-item-137"><a href="http://blog.me115.com/category/%e7%bd%91%e7%bb%9c%e7%bc%96%e7%a8%8b" title="查看 网络编程 下的所有文章">网络编程</a>
+</li>
+	<li class="cat-item cat-item-132"><a href="http://blog.me115.com/category/%e8%a7%82%e7%82%b9%e4%b8%8e%e6%84%9f%e6%83%b3" title="查看 观点与感想 下的所有文章">观点与感想</a>
+</li>
+	<li class="cat-item cat-item-14"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0" title="查看 读书笔记 下的所有文章">读书笔记</a>
+</li>
+	<li class="cat-item cat-item-15"><a href="http://blog.me115.com/category/%e9%a1%b9%e7%9b%ae%e7%ae%a1%e7%90%86" title="查看 项目管理 下的所有文章">项目管理</a>
+</li>
+		</ul>
+</div><div id="meta-2" class="widget widget_meta"><h3 class="widgettitle">功能</h3>			<ul>
+						<li><a href="http://blog.me115.com/wp-login.php">登录</a></li>
+			<li><a href="http://blog.me115.com/feed" title="使用 RSS 2.0 订阅本站点内容">文章 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://blog.me115.com/comments/feed" title="使用 RSS 订阅本站点的所有文章的近期评论">评论 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://cn.wordpress.org/" title="基于 WordPress，一个优美、先进的个人信息发布平台。">WordPress.org</a></li>
+						</ul>
+</div><div id="nav_menu-2" class="widget widget_nav_menu"><div class="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5-container"><ul id="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5" class="menu"><li id="menu-item-304" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-304"><a title="pongba,关注C++，心理学" href="http://mindhacks.cn/archives/">刘未鹏</a></li>
+<li id="menu-item-540" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-540"><a title="游走世界，精彩人生" href="http://www.purplexsu.net/">purplexsu</a></li>
+<li id="menu-item-348" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-348"><a href="http://coolshell.cn/">酷壳</a></li>
+<li id="menu-item-322" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-322"><a href="http://www.cppfans.org/">C++爱好者博客</a></li>
+<li id="menu-item-321" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-321"><a href="http://www.cnblogs.com/archy_yu/">Archy Yu</a></li>
+<li id="menu-item-305" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-305"><a href="http://www.shenlongbin.com/">申龙斌的程序人生</a></li>
+<li id="menu-item-324" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-324"><a href="http://www.rrgod.com">Eddy Blog</a></li>
+<li id="menu-item-340" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-340"><a href="http://www.wangyuxiong.com/">点滴–挖掘技术细节</a></li>
+<li id="menu-item-341" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-341"><a href="http://www.hiadmin.org/">Smart Testing</a></li>
+</ul></div></div><div id="text-2" class="widget widget_text"><h3 class="widgettitle">统计</h3>			<div class="textwidget"><script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_4893206'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/stat.php%3Fid%3D4893206%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script></div>
+		</div>
+
+	</div><!-- end: #sidebar -->
+</div><!-- end: #sidebar-border --></div><!--wrapper-->
+<div class="clear"></div>
+<div id="footer">
+	<div id="footer-inside">
+		<p>
+			版权所有 &copy; 2016 大CC			| 站点由 <a href="http://zww.me">zBench</a> 和 <a href="http://wordpress.org/">WordPress</a> 驱动		</p>
+		<span id="back-to-top">&uarr; <a href="#" rel="nofollow" title="Back to top">回到顶部</a></span>
+	</div>
+</div><!--footer-->
+</body>
+</html>
+<script  type="text/javascript">
+$(function(){
+    $("pre").addClass("prettyprint");
+    $(".entry").addClass("markdown-body");
+    prettyPrint();
+    var dirbef = '<div id="navCategory" class="dir"><h3>内容目录</h3><ul>', dirend = '</ul><//div>', dircontent = '';
+$('.entry h2').each( function(i,e){ dircontent += '<li><a href="#h2' + i + '">' + $(e).text() + "</a></li>"; $(this).attr('id', 'h2' + i);  } );$( dirbef + dircontent + dirend ).insertBefore( '.entry' );});
+</script>
+
+
+<!-- Dynamic page generated in 1.688 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2016-05-19 12:53:27 -->
+
+<!-- super cache -->

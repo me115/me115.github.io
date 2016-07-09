@@ -1,0 +1,666 @@
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/prettify.css" />
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/github.css"/>
+<script src="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/jquery.js" type="text/javascript"></script> 
+<script src="http://files.cnblogs.com/xguo/google-code-prettify.js"></script>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+<head profile="http://gmpg.org/xfn/11">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>git常用命令大CC | 大CC</title>
+	<link rel="stylesheet" type="text/css" media="all" href="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/style.css" />
+	<link rel="pingback" href="http://blog.me115.com/xmlrpc.php" />
+	<link rel="alternate" type="application/rss+xml" title="大CC &raquo; Feed" href="http://blog.me115.com/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; 评论 Feed" href="http://blog.me115.com/comments/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; git常用命令 评论 Feed" href="http://blog.me115.com/2016/05/933/feed" />
+<script type="text/javascript">
+var duoshuoQuery = {"short_name":"me115","sso":{"login":"http:\/\/blog.me115.com\/wp-login.php?action=duoshuo_login","logout":"http:\/\/blog.me115.com\/wp-login.php?action=logout&_wpnonce=5556dcbd81"},"theme":"default","stylePatch":"wordpress\/zBench"};
+duoshuoQuery.sso.login += '&redirect_to=' + encodeURIComponent(window.location.href);
+duoshuoQuery.sso.logout += '&redirect_to=' + encodeURIComponent(window.location.href);
+</script>
+<script type="text/javascript" src="http://static.duoshuo.com/embed.js" charset="UTF-8" async="async"></script>
+<script type='text/javascript' src='http://blogcc.u.qiniudn.com/wp-includes/js/comment-reply.min.js?ver=3.5'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://blog.me115.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://blog.me115.com/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='从C++到GO' href='http://blog.me115.com/2016/01/926' />
+<link rel='next' title='godep 包管理工具' href='http://blog.me115.com/2016/05/935' />
+<meta name="generator" content="WordPress 3.5" />
+<link rel='shortlink' href='http://blog.me115.com/?p=933' />
+
+<!-- All in One SEO Pack 1.6.15.3 by Michael Torbert of Semper Fi Web Design[629,659] -->
+<link rel="canonical" href="http://blog.me115.com/2016/05/933" />
+<!-- /all in one seo pack -->
+</head>
+<body class="single single-post postid-933 single-format-standard">
+<div id="nav">
+	<div id="menus">
+		<ul><li><a href="http://blog.me115.com/">首页</a></li></ul>
+		<ul id="menu-linux-2" class="menu"><li id="menu-item-566" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-566"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1">Linux工具箱</a></li>
+<li id="menu-item-493" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-493"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84">书评和笔记</a>
+<ul class="sub-menu">
+	<li id="menu-item-495" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-495"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0">读书笔记</a></li>
+	<li id="menu-item-494" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-494"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91">CC评网</a></li>
+</ul>
+</li>
+<li id="menu-item-560" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-560"><a href="http://blog.me115.com/%e9%98%85%e8%af%bb%e8%ae%a1%e5%88%92">阅读计划</a></li>
+<li id="menu-item-461" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-461"><a href="http://blog.me115.com/%e5%85%b3%e4%ba%8e%e6%9c%a8%e4%b9%a6%e6%9e%b6">关于木书架</a></li>
+<li id="menu-item-462" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-462"><a href="http://blog.me115.com/sample-page">关于我</a></li>
+</ul>	</div>
+	<div id="search">
+		<form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form>	</div>
+</div>
+<div id="wrapper">
+	<div id="header">		<h1><a href="http://blog.me115.com/">大CC</a></h1>
+		<h2>关注 Nosql/架构/时间管理/阅读分享</h2>
+		<div class="clear"></div>
+			</div>
+<div id="content">
+		<div class="post-933 post type-post status-publish format-standard hentry category-uncategorized post-single" id="post-933"><!-- post div -->
+		<h2 class="title">git常用命令</h2>
+		<div class="post-info-top">
+			<span class="post-info-date">
+				作者: <a href="http://blog.me115.com/author/me115wp" title="查看 大CC 的所有文章" rel="author">大CC</a>
+				日期:				2016 年 5 月 25 日							</span>
+						<span class="addcomment"><a href="#respond"  rel="nofollow" title="发表评论？">发表评论</a><span class="ds-thread-count" data-thread-key="933" data-replace="1"> (0)</span></span>
+			<span class="gotocomments"><a href="#comments"  rel="nofollow" title="查看评论？">查看评论</a></span>
+					</div>
+		<div class="clear"></div>
+		<div class="entry">
+			<h1>git常用命令</h1>
+
+<h2>初始化仓库</h2>
+
+<ul>   <li>     <p>新建仓库 对现有的项目进行管理，进入该项目目录并输入</p>      <pre><code>git init
+</code></pre>
+  </li>
+</ul>
+
+<p>ps:该命令将创建.git目录，但不会主动将现有项目中的文件纳入管理（需要自行添加）；</p>
+
+<ul>
+  <li>
+    <p>克隆仓库</p>
+
+    <pre><code>git clone https://github.com/libgit2/libgit2 
+</code></pre>
+  </li>
+</ul>
+
+<h2>文件的四种状态</h2>
+
+<ol>
+  <li>
+    <p>未跟踪 untracked 
+      <br />通过以下操作到达未跟踪状态：</p>
+
+    <pre><code>新建文件 vi aaa
+从索引区删除文件  git rm
+</code></pre>
+  </li>
+
+  <li>
+    <p>未修改 unmodified 以下操作到达未修改状态：</p>
+
+    <pre><code>git commit
+</code></pre>
+  </li>
+
+  <li>
+    <p>已修改 modified 
+      <br />到达已修改状态：</p>
+
+    <pre><code> vi aaa
+</code></pre>
+  </li>
+
+  <li>
+    <p>已暂存 staged</p>
+
+    <pre><code>添加 git add
+</code></pre>
+  </li>
+</ol>
+
+<h3>查看当前状态</h3>
+
+<ul>
+  <li>
+    <p>当前状态 </p>
+
+    <pre><code>git status
+</code></pre>
+  </li>
+
+  <li>
+    <p>状态简览 </p>
+
+    <pre><code>git status -s
+</code></pre>
+  </li>
+</ul>
+
+<p>PS: ‘MM’ 标记：左边M：修改并放入暂存区； 右边M：修改了还未放入暂存区</p>
+
+<ul>
+  <li>
+    <p>查看尚未暂存的差异</p>
+
+    <pre><code>git diff 
+</code></pre>
+  </li>
+
+  <li>
+    <p>查看已暂存的将要添加到下次提交里的内容</p>
+
+    <pre><code>git diff --staged
+</code></pre>
+  </li>
+</ul>
+
+<h2>三个工作区域</h2>
+
+<ul>
+  <li>Git仓库 </li>
+
+  <li>工作目录 </li>
+
+  <li>暂存区域 </li>
+</ul>
+
+<p>基本的 Git 工作流程</p>
+
+<ol>
+  <li>
+    <p>在工作目录中修改文件。</p>
+
+    <pre><code>vi aaa
+</code></pre>
+  </li>
+
+  <li>
+    <p>暂存文件，将文件的快照放入暂存区域。</p>
+
+    <pre><code>git add .
+</code></pre>
+  </li>
+
+  <li>
+    <p>提交更新，找到暂存区域的文件，将快照永久性存储到 Git 仓库目录。</p>
+
+    <pre><code>git commit -m &quot;add file&quot; aaa 
+</code></pre>
+
+    <p>已跟踪的文件修改，直接提交到库中：</p>
+
+    <pre><code>git commit -a -m &quot;update file aaa&quot; aaa
+</code></pre>
+  </li>
+</ol>
+
+<h2>移除文件</h2>
+
+<ul>
+  <li>
+    <p>从暂存区中移除文件（硬盘上也删除）</p>
+
+    <pre><code>  git rm 
+</code></pre>
+  </li>
+
+  <li>
+    <p>从暂存区中移除文件（硬盘上保留，即不再跟踪此文件）</p>
+
+    <pre><code>  git rm --cached README 
+</code></pre>
+  </li>
+
+  <li>
+    <p>移动文件</p>
+
+    <pre><code>  git mv a b 
+</code></pre>
+  </li>
+</ul>
+
+<h2>暂存区的操作</h2>
+
+<ul>
+  <li>
+    <p>提交暂存</p>
+
+    <pre><code>  git commit -m &quot;update what&quot; 
+</code></pre>
+  </li>
+
+  <li>
+    <p>补充提交</p>
+
+    <pre><code>  git commit --amend 
+</code></pre>
+
+    <p>最终只会显示成一个提交</p>
+  </li>
+
+  <li>
+    <p>取消暂存</p>
+
+    <pre><code>  git reset HEAD readme
+</code></pre>
+
+    <p>将readme文件从暂存状态更改为未跟踪状态</p>
+  </li>
+
+  <li>
+    <p>回退到指定版本</p>
+
+    <pre><code>  git reset --hard :commit_hash_id
+</code></pre>
+  </li>
+</ul>
+
+<h2>查看提交历史</h2>
+
+<ul>
+  <li>
+    <p>查看日志</p>
+
+    <pre><code>  git log
+</code></pre>
+  </li>
+
+  <li>
+    <p>显示最近两次提交的内容差异</p>
+
+    <pre><code>  git log -p -2 
+</code></pre>
+  </li>
+
+  <li>
+    <p>单行显示</p>
+
+    <pre><code>$git log --pretty=oneline  
+$git log --oneline --decorate
+$git log --pretty=format:&quot;%h - %an, %ar : %s&quot;
+  8029c4c - colin, 10 days ago : add redis_gallery_ad_impr
+</code></pre>
+  </li>
+
+  <li>
+    <p>仅查看指定提交者的提交记录</p>
+
+    <pre><code>$ git log --committer=colin
+</code></pre>
+  </li>
+</ul>
+
+<h2>远程仓库操作</h2>
+
+<ul>
+  <li>
+    <p>查看远程仓库</p>
+
+    <pre><code>git remote -v 
+</code></pre>
+  </li>
+
+  <li>
+    <p>更新本地远程仓库数据拉取（不自动合并到当前工作目录）：</p>
+
+    <pre><code>git fetch origin 
+git merge origin/serverfix 将origin/serverfix合并到当前的分支
+</code></pre>
+  </li>
+
+  <li>
+    <p>远程数据拉取并合并到当前目录：</p>
+
+    <pre><code>git pull origin
+</code></pre>
+
+    <p>自动到远程origin的跟踪分支上拉取并合并数据</p>
+  </li>
+
+  <li>
+    <p>推送到远程仓库</p>
+
+    <pre><code>git push origin master
+git push origin serverfix:serverfix 
+</code></pre>
+
+    <p>推送本地的 serverfix 分支，将其作为远程仓库的 serverfix 分支</p>
+  </li>
+</ul>
+
+<h2>分支操作</h2>
+
+<h3>创建分支</h3>
+
+<pre><code>git branch testing
+</code></pre>
+
+<h3>分支切换</h3>
+
+<p>切换到已存在的分支上(HEAD 就指向这个分支)</p>
+
+<pre><code>  git checkout testing
+</code></pre>
+
+<h3>新建并切换</h3>
+
+<p>基于当前目录新建一个分支并切换工作区到新分支上：</p>
+
+<pre><code>  git checkout -b iss53
+</code></pre>
+
+<p>新建一个基于远程仓库origin上的serverfix的分支：</p>
+
+<pre><code>  git fetch origin
+  git checkout -b serverfix origin/serverfix
+  or：
+  git checkout --track origin/serverfix
+</code></pre>
+
+<h3>跟踪分支</h3>
+
+<ul>
+  <li>
+    <p>设置跟踪设置已有的本地分支跟踪一个刚刚拉取下来的远程分支，或者想要修改正在跟踪的上游分支：</p>
+
+    <pre><code>git branch -u origin/serverfix
+</code></pre>
+  </li>
+
+  <li>
+    <p>查询跟踪关系查看设置的所有跟踪分支</p>
+
+    <pre><code>git branch -vv
+</code></pre>
+  </li>
+</ul>
+
+<h3>删除分支</h3>
+
+<ul>
+  <li>
+    <p>删除本地分支</p>
+
+    <pre><code>git branch -d hotfix
+</code></pre>
+  </li>
+
+  <li>
+    <p>删除远程分支</p>
+
+    <pre><code>git push origin --delete serverfix
+</code></pre>
+  </li>
+</ul>
+
+<h3>分支合并</h3>
+
+<ul>
+  <li>
+    <p>合并merge 合并 iss53 分支到master 分支(ps：被合并的分支为当前工作区)</p>
+
+    <pre><code>git checkout master
+git merge iss53
+</code></pre>
+  </li>
+
+  <li>
+    <p>变基rebase 变基是将一系列提交按照原有次序依次应用到另一分支上，而合并是把最终结果合在一起。</p>
+
+    <pre><code>git checkout experiment
+git rebase master
+</code></pre>
+  </li>
+</ul>
+
+<h3>查看当前分支列表</h3>
+
+<pre><code>git branch
+</code></pre>
+
+<p>ref：《Pro Git 2.0》</p>
+
+<p>Posted by: 大CC | 14MAY,2016 博客：<a href="http://blog.me115.com">blog.me115.com</a> [<a href="http://blog.me115.com/feed">订阅</a>] Github：<a href="https://github.com/me115">大CC</a></p>
+
+<div class="ujian-hook"></div><div style='clear:both;'></div>
+
+ 
+		<script type="text/javascript">
+		var ujian_config = {
+			'num':5,
+			'showType':2,
+			'bgColor':"",
+			'mouseoverColor':"#E6F3DE",
+			'textColor':"#333333",
+			'hoverTextColor':"#333333",
+			'borderColor':"#dddddd",
+			'picSize':96,
+			'target':1,
+			'textHeight':60,
+			'defaultPic':"",
+			'itemTitle':"您可能喜欢："
+		}</script>
+	<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js"></script>					</div><!-- END entry -->
+		<div class="add-info">
+					</div>
+		<div class="post-info-bottom">
+			<span class="post-info-category"><a href="http://blog.me115.com/category/uncategorized" title="查看 未分类 中的全部文章" rel="category tag">未分类</a></span><span class="post-info-tags"></span>
+		</div>
+		<div id="nav-below">
+			<div class="nav-previous"><a href="http://blog.me115.com/2016/01/926" rel="prev"><span class="meta-nav">&larr;</span> 从C++到GO</a></div>
+			<div class="nav-next"><a href="http://blog.me115.com/2016/05/935" rel="next">godep 包管理工具 <span class="meta-nav">&rarr;</span></a></div>
+		</div><!-- #nav-below -->					
+	</div><!-- END post -->
+	<a name="comments"></a>
+
+<div class="ds-thread" data-thread-key="933" data-author-key="1" data-title="git常用命令" data-url="http://blog.me115.com/2016/05/933"></div>
+
+<script type="text/javascript">
+	if (typeof DUOSHUO !== 'undefined')
+		DUOSHUO.EmbedThread('.ds-thread');
+</script>
+	<div id="ds-ssr">
+
+		
+            <ol id="commentlist">
+                            </ol>
+
+		            
+    </div></div><!--content-->
+<div id="sidebar-border">
+	<div id="rss_border">
+		<div class="rss_border">
+			<div id="rss_wrap">
+				<div class="rss_wrap">
+										<a class="rss rss_text" href="http://blog.me115.com/feed" rel="bookmark" title="RSS 订阅">RSS 订阅</a>
+																													</div>
+			</div>
+		</div>
+	</div>
+	<div id="sidebar">
+
+<div id="search-2" class="widget widget_search"><form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form></div>		<div id="recent-posts-2" class="widget widget_recent_entries">		<h3 class="widgettitle">近期文章</h3>		<ul>
+					<li>
+				<a href="http://blog.me115.com/2016/05/935" title="godep 包管理工具">godep 包管理工具</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2016/05/933" title="git常用命令">git常用命令</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2016/01/926" title="从C++到GO">从C++到GO</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/12/924" title="网络编程中的关键问题总结">网络编程中的关键问题总结</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/12/907" title="Reactor事件驱动的两种实现：面向对象 VS 函数式编程">Reactor事件驱动的两种实现：面向对象 VS 函数式编程</a>
+						</li>
+				</ul>
+		</div><div id="text-3" class="widget widget_text"><h3 class="widgettitle">广告</h3>			<div class="textwidget">本站使用digitalocean提供的VPS；<br/>
+访问速度可以通过<a href="http://blog.me115.com" target="_blank">大CC博客</a> 和<a href="http://www.me115.com" target="_blank">木书架网</a>体验；<br/>
+其中我的博客为直连digitalocean，
+而木书架网站采用了第三方CDN加速（安全宝）<br/><br/>
+
+从以下链接点击进入注册digitalocean，您将获取10美元(可免费使用2个月的VPS):<br/>
+
+<B><a href="https://www.digitalocean.com/?refcode=ee9c5a992d6f" target="_blank">DigitalOcean</a></B></div>
+		</div><div id="ds-recent-comments-2" class="widget ds-widget-recent-comments"><h3 class="widgettitle">近期评论</h3><ul class="ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-avatar-size="30" data-excerpt-length="70"></ul></div><script>
+if (typeof DUOSHUO !== 'undefined')
+	DUOSHUO.RecentComments && DUOSHUO.RecentComments('.ds-recent-comments');
+</script><div id="archives-3" class="widget widget_archive"><h3 class="widgettitle">文章归档</h3>		<ul>
+			<li><a href='http://blog.me115.com/date/2016/05' title='2016 年五月'>2016 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2016/01' title='2016 年一月'>2016 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/12' title='2015 年十二月'>2015 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/11' title='2015 年十一月'>2015 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/10' title='2015 年十月'>2015 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/09' title='2015 年九月'>2015 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/08' title='2015 年八月'>2015 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/06' title='2015 年六月'>2015 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/05' title='2015 年五月'>2015 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/04' title='2015 年四月'>2015 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/03' title='2015 年三月'>2015 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/02' title='2015 年二月'>2015 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/01' title='2015 年一月'>2015 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/11' title='2014 年十一月'>2014 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/10' title='2014 年十月'>2014 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/09' title='2014 年九月'>2014 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/08' title='2014 年八月'>2014 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/07' title='2014 年七月'>2014 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/06' title='2014 年六月'>2014 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/05' title='2014 年五月'>2014 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/04' title='2014 年四月'>2014 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/02' title='2014 年二月'>2014 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/12' title='2013 年十二月'>2013 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/11' title='2013 年十一月'>2013 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/10' title='2013 年十月'>2013 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/09' title='2013 年九月'>2013 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/06' title='2013 年六月'>2013 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/04' title='2013 年四月'>2013 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/03' title='2013 年三月'>2013 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/01' title='2013 年一月'>2013 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/12' title='2012 年十二月'>2012 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/10' title='2012 年十月'>2012 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/09' title='2012 年九月'>2012 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/08' title='2012 年八月'>2012 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/05' title='2012 年五月'>2012 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/04' title='2012 年四月'>2012 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/02' title='2012 年二月'>2012 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/11' title='2011 年十一月'>2011 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/10' title='2011 年十月'>2011 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/09' title='2011 年九月'>2011 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/07' title='2011 年七月'>2011 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/06' title='2011 年六月'>2011 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/05' title='2011 年五月'>2011 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/04' title='2011 年四月'>2011 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/03' title='2011 年三月'>2011 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/02' title='2011 年二月'>2011 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/01' title='2011 年一月'>2011 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/12' title='2010 年十二月'>2010 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/11' title='2010 年十一月'>2010 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/10' title='2010 年十月'>2010 年十月</a></li>
+		</ul>
+</div><div id="categories-2" class="widget widget_categories"><h3 class="widgettitle">分类目录</h3>		<ul>
+	<li class="cat-item cat-item-2"><a href="http://blog.me115.com/category/beautiful-life" title="查看 Beautiful Life 下的所有文章">Beautiful Life</a>
+</li>
+	<li class="cat-item cat-item-92"><a href="http://blog.me115.com/category/berkeley-db" title="查看 Berkeley DB 下的所有文章">Berkeley DB</a>
+</li>
+	<li class="cat-item cat-item-3"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98/c%e7%bc%96%e7%a8%8b" title="查看 C++编程 下的所有文章">C++编程</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84" title="查看 CC书评 下的所有文章">CC书评</a>
+</li>
+	<li class="cat-item cat-item-5"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91" title="查看 CC评网 下的所有文章">CC评网</a>
+</li>
+	<li class="cat-item cat-item-146"><a href="http://blog.me115.com/category/go%e8%af%ad%e8%a8%80" title="查看 GO语言 下的所有文章">GO语言</a>
+</li>
+	<li class="cat-item cat-item-6"><a href="http://blog.me115.com/category/linuxunix" title="查看 Linux&amp;Unix 下的所有文章">Linux&amp;Unix</a>
+</li>
+	<li class="cat-item cat-item-90"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1" title="查看 Linux工具箱 下的所有文章">Linux工具箱</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="http://blog.me115.com/category/python" title="查看 Python 下的所有文章">Python</a>
+</li>
+	<li class="cat-item cat-item-93"><a href="http://blog.me115.com/category/redis" title="查看 Redis 下的所有文章">Redis</a>
+</li>
+	<li class="cat-item cat-item-8"><a href="http://blog.me115.com/category/web%e5%bc%80%e5%8f%91" title="查看 WEB开发 下的所有文章">WEB开发</a>
+</li>
+	<li class="cat-item cat-item-127"><a href="http://blog.me115.com/category/%e5%84%92%e9%87%8a%e9%81%93" title="查看 儒释道 下的所有文章">儒释道</a>
+</li>
+	<li class="cat-item cat-item-9"><a href="http://blog.me115.com/category/%e5%85%ac%e5%8f%b8%e7%ae%a1%e7%90%86" title="查看 公司管理 下的所有文章">公司管理</a>
+</li>
+	<li class="cat-item cat-item-10"><a href="http://blog.me115.com/category/%e5%b9%b6%e8%a1%8c%e8%ae%a1%e7%ae%97" title="查看 并行计算 下的所有文章">并行计算</a>
+</li>
+	<li class="cat-item cat-item-58"><a href="http://blog.me115.com/category/%e6%91%84%e5%bd%b1" title="查看 摄影 下的所有文章">摄影</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="http://blog.me115.com/category/%e6%97%b6%e9%97%b4%e7%ae%a1%e7%90%86" title="查看 时间管理 下的所有文章">时间管理</a>
+</li>
+	<li class="cat-item cat-item-1"><a href="http://blog.me115.com/category/uncategorized" title="查看 未分类 下的所有文章">未分类</a>
+</li>
+	<li class="cat-item cat-item-113"><a href="http://blog.me115.com/category/%e6%9e%b6%e6%9e%84" title="查看 架构 下的所有文章">架构</a>
+</li>
+	<li class="cat-item cat-item-12"><a href="http://blog.me115.com/category/%e7%a4%be%e4%bc%9a%e6%9d%82%e8%b0%88" title="查看 社会杂谈 下的所有文章">社会杂谈</a>
+</li>
+	<li class="cat-item cat-item-74"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98" title="查看 程序员 下的所有文章">程序员</a>
+</li>
+	<li class="cat-item cat-item-13"><a href="http://blog.me115.com/category/%e7%bb%8f%e6%b5%8e%e8%a7%82%e7%82%b9" title="查看 经济观点 下的所有文章">经济观点</a>
+</li>
+	<li class="cat-item cat-item-137"><a href="http://blog.me115.com/category/%e7%bd%91%e7%bb%9c%e7%bc%96%e7%a8%8b" title="查看 网络编程 下的所有文章">网络编程</a>
+</li>
+	<li class="cat-item cat-item-132"><a href="http://blog.me115.com/category/%e8%a7%82%e7%82%b9%e4%b8%8e%e6%84%9f%e6%83%b3" title="查看 观点与感想 下的所有文章">观点与感想</a>
+</li>
+	<li class="cat-item cat-item-14"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0" title="查看 读书笔记 下的所有文章">读书笔记</a>
+</li>
+	<li class="cat-item cat-item-15"><a href="http://blog.me115.com/category/%e9%a1%b9%e7%9b%ae%e7%ae%a1%e7%90%86" title="查看 项目管理 下的所有文章">项目管理</a>
+</li>
+		</ul>
+</div><div id="meta-2" class="widget widget_meta"><h3 class="widgettitle">功能</h3>			<ul>
+						<li><a href="http://blog.me115.com/wp-login.php">登录</a></li>
+			<li><a href="http://blog.me115.com/feed" title="使用 RSS 2.0 订阅本站点内容">文章 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://blog.me115.com/comments/feed" title="使用 RSS 订阅本站点的所有文章的近期评论">评论 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://cn.wordpress.org/" title="基于 WordPress，一个优美、先进的个人信息发布平台。">WordPress.org</a></li>
+						</ul>
+</div><div id="nav_menu-2" class="widget widget_nav_menu"><div class="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5-container"><ul id="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5" class="menu"><li id="menu-item-304" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-304"><a title="pongba,关注C++，心理学" href="http://mindhacks.cn/archives/">刘未鹏</a></li>
+<li id="menu-item-540" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-540"><a title="游走世界，精彩人生" href="http://www.purplexsu.net/">purplexsu</a></li>
+<li id="menu-item-348" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-348"><a href="http://coolshell.cn/">酷壳</a></li>
+<li id="menu-item-322" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-322"><a href="http://www.cppfans.org/">C++爱好者博客</a></li>
+<li id="menu-item-321" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-321"><a href="http://www.cnblogs.com/archy_yu/">Archy Yu</a></li>
+<li id="menu-item-305" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-305"><a href="http://www.shenlongbin.com/">申龙斌的程序人生</a></li>
+<li id="menu-item-324" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-324"><a href="http://www.rrgod.com">Eddy Blog</a></li>
+<li id="menu-item-340" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-340"><a href="http://www.wangyuxiong.com/">点滴–挖掘技术细节</a></li>
+<li id="menu-item-341" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-341"><a href="http://www.hiadmin.org/">Smart Testing</a></li>
+</ul></div></div><div id="text-2" class="widget widget_text"><h3 class="widgettitle">统计</h3>			<div class="textwidget"><script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_4893206'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/stat.php%3Fid%3D4893206%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script></div>
+		</div>
+
+	</div><!-- end: #sidebar -->
+</div><!-- end: #sidebar-border --></div><!--wrapper-->
+<div class="clear"></div>
+<div id="footer">
+	<div id="footer-inside">
+		<p>
+			版权所有 &copy; 2016 大CC			| 站点由 <a href="http://zww.me">zBench</a> 和 <a href="http://wordpress.org/">WordPress</a> 驱动		</p>
+		<span id="back-to-top">&uarr; <a href="#" rel="nofollow" title="Back to top">回到顶部</a></span>
+	</div>
+</div><!--footer-->
+</body>
+</html>
+<script  type="text/javascript">
+$(function(){
+    $("pre").addClass("prettyprint");
+    $(".entry").addClass("markdown-body");
+    prettyPrint();
+    var dirbef = '<div id="navCategory" class="dir"><h3>内容目录</h3><ul>', dirend = '</ul><//div>', dircontent = '';
+$('.entry h2').each( function(i,e){ dircontent += '<li><a href="#h2' + i + '">' + $(e).text() + "</a></li>"; $(this).attr('id', 'h2' + i);  } );$( dirbef + dircontent + dirend ).insertBefore( '.entry' );});
+</script>
+
+
+<!-- Dynamic page generated in 61.659 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2016-05-26 01:27:59 -->
+
+<!-- super cache -->

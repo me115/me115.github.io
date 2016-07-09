@@ -1,0 +1,345 @@
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/prettify.css" />
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/github.css"/>
+<script src="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/jquery.js" type="text/javascript"></script> 
+<script src="http://files.cnblogs.com/xguo/google-code-prettify.js"></script>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+<head profile="http://gmpg.org/xfn/11">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>创业如何选择WEB开发语言大CC | 大CC</title>
+	<link rel="stylesheet" type="text/css" media="all" href="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/style.css" />
+	<link rel="pingback" href="http://blog.me115.com/xmlrpc.php" />
+	<link rel="alternate" type="application/rss+xml" title="大CC &raquo; Feed" href="http://blog.me115.com/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; 评论 Feed" href="http://blog.me115.com/comments/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; 创业如何选择WEB开发语言 评论 Feed" href="http://blog.me115.com/2011/09/164/feed" />
+<script type="text/javascript">
+var duoshuoQuery = {"short_name":"me115","sso":{"login":"http:\/\/blog.me115.com\/wp-login.php?action=duoshuo_login","logout":"http:\/\/blog.me115.com\/wp-login.php?action=logout&_wpnonce=c7b4bab775"},"theme":"default","stylePatch":"wordpress\/zBench"};
+duoshuoQuery.sso.login += '&redirect_to=' + encodeURIComponent(window.location.href);
+duoshuoQuery.sso.logout += '&redirect_to=' + encodeURIComponent(window.location.href);
+</script>
+<script type="text/javascript" src="http://static.duoshuo.com/embed.js" charset="UTF-8" async="async"></script>
+<script type='text/javascript' src='http://blogcc.u.qiniudn.com/wp-includes/js/comment-reply.min.js?ver=3.5'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://blog.me115.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://blog.me115.com/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='Linux平台开发技术指南' href='http://blog.me115.com/2011/09/163' />
+<link rel='next' title='[python]通过ElementTree来操作XML' href='http://blog.me115.com/2011/10/165' />
+<meta name="generator" content="WordPress 3.5" />
+<link rel='shortlink' href='http://blog.me115.com/?p=164' />
+
+<!-- All in One SEO Pack 1.6.15.3 by Michael Torbert of Semper Fi Web Design[629,677] -->
+<link rel="canonical" href="http://blog.me115.com/2011/09/164" />
+<!-- /all in one seo pack -->
+</head>
+<body class="single single-post postid-164 single-format-standard">
+<div id="nav">
+	<div id="menus">
+		<ul><li><a href="http://blog.me115.com/">首页</a></li></ul>
+		<ul id="menu-linux-2" class="menu"><li id="menu-item-566" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-566"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1">Linux工具箱</a></li>
+<li id="menu-item-493" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-493"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84">书评和笔记</a>
+<ul class="sub-menu">
+	<li id="menu-item-495" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-495"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0">读书笔记</a></li>
+	<li id="menu-item-494" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-494"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91">CC评网</a></li>
+</ul>
+</li>
+<li id="menu-item-560" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-560"><a href="http://blog.me115.com/%e9%98%85%e8%af%bb%e8%ae%a1%e5%88%92">阅读计划</a></li>
+<li id="menu-item-461" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-461"><a href="http://blog.me115.com/%e5%85%b3%e4%ba%8e%e6%9c%a8%e4%b9%a6%e6%9e%b6">关于木书架</a></li>
+<li id="menu-item-462" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-462"><a href="http://blog.me115.com/sample-page">关于我</a></li>
+</ul>	</div>
+	<div id="search">
+		<form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form>	</div>
+</div>
+<div id="wrapper">
+	<div id="header">		<h1><a href="http://blog.me115.com/">大CC</a></h1>
+		<h2>关注 Nosql/架构/时间管理/阅读分享</h2>
+		<div class="clear"></div>
+			</div>
+<div id="content">
+		<div class="post-164 post type-post status-publish format-standard hentry category-web post-single" id="post-164"><!-- post div -->
+		<h2 class="title">创业如何选择WEB开发语言</h2>
+		<div class="post-info-top">
+			<span class="post-info-date">
+				作者: <a href="http://blog.me115.com/author/me115wp" title="查看 大CC 的所有文章" rel="author">大CC</a>
+				日期:				2011 年 9 月 27 日							</span>
+						<span class="addcomment"><a href="#respond"  rel="nofollow" title="发表评论？">发表评论</a><span class="ds-thread-count" data-thread-key="164" data-replace="1"> (0)</span></span>
+			<span class="gotocomments"><a href="#comments"  rel="nofollow" title="查看评论？">查看评论</a></span>
+					</div>
+		<div class="clear"></div>
+		<div class="entry">
+			<p><font face="华文中宋" size="2">在打算开发一个网站时，选择什么语言，是首先需要面对的问题。目前主流的WEB开发语言有ASP.NET、PHP、JSP; 作为MS上世纪老将ASP，就不再提及，如果是因为维护方面的原因而必须使用，可考虑升级到ASP.NET，而作为新开发一个语言，实在找不到理由再使用它了；</font></p>
+<p><font face="华文中宋" size="2">以下将对这三种语言做对比，以供权衡：</font></p>
+<p><font face="华文中宋" size="2"><strong>上手度</strong></font></p>
+<p><font face="华文中宋" size="2">.NET: 5分</font></p>
+<p><font face="华文中宋" size="2">PHP:3分</font></p>
+<p><font face="华文中宋" size="2">JSP:1分</font></p>
+<p><font face="华文中宋" size="2">如果你是一个WEB方面的新手，这三门WEB语言的学习成本差别很大。ASP.net 作为微软的产品，继承了其一贯的特点，方便上手，易用；甚至你都不用编码，靠着鼠标拖拖拽拽，都能整一个网站出来（网上，就有这样的视频讲解。当然，这样出来的网站是没法应用到实际中的，且不说其代码复用率极其低下，拖拽出来的代码，灵活度太小，效率也低（eg：gridview中的分页实现载入数据是一次全部载入的））。同时，凭着其强大的开发工具visual studio系列，在程序出现bug时，能最大程度的提供问题说明，让开发者尽快定位到问题所在。JSP相比而言难度就大多了，光是配置一个开发环境就得耗费不少精力，JSP语言最为头疼的就是程序调试方面，当程序出现问题时，并不能得到友好的错误提示，调试BUG比较耗时。再就是JSP依托的JAVA过于庞大，着实是个无底洞，开始容易，越往后发现要学的越多，一般互联网公司，还真难以有几个能驾驭，再普及的；PHP学习算是基于.net和JSP之间，语法与C语言一脉相承，上手也算容易；</font></p>
+<p><font face="华文中宋" size="2"><strong></strong></font></p>
+<p><font face="华文中宋" size="2"><strong>资源</strong></font></p>
+<p><font face="华文中宋" size="2">.NET:4分</font></p>
+<p><font face="华文中宋" size="2">PHP:5分</font></p>
+<p><font face="华文中宋" size="2">JSP:2分</font></p>
+<p><font face="华文中宋" size="2">资源包括能获取到的学习资料、开放源码，以及各种插件和库。PHP在这方面遥遥领先，粗略看来，各种网站的知名开源产品，大都使用PHP实现，如博客wordpress、论坛discuz、Wiki知识库MediaWiki等；</font></p>
+<p><font face="华文中宋" size="2">相应的各种插件、库、开源代码的数量和质量更是其它语言无法相比。.NET资源也比较丰富，选用.NET幸福的是有MS这么一个强大后台做有力的技术支持，CSDN 的资料不但多，质量更是上乘；JSP由于其门槛高的缘故，致使在这方面的资料也比较少；</font></p>
+<p><font face="华文中宋" size="2"><strong></strong></font></p>
+<p><font face="华文中宋" size="2"><strong>系统架构实施</strong></font></p>
+<p><font face="华文中宋" size="2">.NET:3分</font></p>
+<p><font face="华文中宋" size="2">PHP:5分</font></p>
+<p><font face="华文中宋" size="2">JSP: 3分</font></p>
+<p><font face="华文中宋" size="2">.NET部署环境是windows 03/08+MS SQL Server + IIS。都是微软的产品，优点就是部署容易，方便，兼容性好。最为头疼就是安全方面的问题，windows下总是得不停的打补丁，但还是时常遭受这样那样的攻击；再就是数据库方面，MS SQL 与Oracle在并发处理、效率上始终有个数据量级的差距，2008发布之后据说是好了些，但总是让人感觉不大放心；PHP就是LAMP架构，即Linux+Apache+My Sql + PHP；Linux平台在我这几年的熟悉后，深刻体会到其就是为服务器而生，各种的工具让人爱不释手；My Sql作为开源产品，首先在软件费用上就公司能省下一大笔，其性能优秀，即使某日网站规模的扩大致使数据库出现瓶颈，也可组建一个数据库团队来研究改进。不过，在Oracle收购MySql之后，为其前景蒙上了一层阴影。有可能，在不久的将来，MySql的部分功能就会闭源。JSP的架构小则是Linux+apache+tomcat+MySql ,大则Linux + Apache + Java (WebSphere) + Oracle，对于一般小型网站的部署，大都选用第一种；WebSphere过于庞大，一般部署都得独自占用一台服务器；Oracle是数据库中的王者，性能优异（国内银行证券的数据库应用，一般只有DB2和Oracle两种选择），但其价格不菲，非一般创业公司能够承担（按CPU收费，一般25w/cpu/每年；次年会收取15%的维护费）需要提一下的是JSP系统架构部署有些难度，架构出现问题后，排错是个很痛苦的过程。</font></p>
+<p><font face="华文中宋" size="2"></font></p>
+<p><font face="华文中宋" size="2"><strong>管理维护</strong></font></p>
+<p><font face="华文中宋" size="2">.NET:2分</font></p>
+<p><font face="华文中宋" size="2">PHP:5分</font></p>
+<p><font face="华文中宋" size="2">JSP: 4分</font></p>
+<p><font face="华文中宋" size="2">WEB管理中，经常会通过远程来管理网站，远程管理的方便与否关键看命令行工具的支持力度及脚本环境的操作便捷性。.NET只能跑在Windows平台上，远程管理一般只能通过图形化界面远程鼠标操作，当网速比较慢的时候，管理员的心情无比复杂，远程操作基本上是在一幅幅图片上估计下一张图片中鼠标的移动位置；Windows平台的命令行环境非常差，IIS的命令行工具功能少，bat脚本也难学难用（虽然可以通过安装cygwin工具来模拟linux shell环境，但系统操作，系统资源监控方面还是无能为力）； Linux下就幸福多了，远程基本上都是通过SSH连接，安全有保证，shell脚本消耗的网络带宽也只是图形化界面的百分之一，管理流畅，心情舒畅；各种程序消耗资源都可远程监控；Linux就是为服务器而生，此话毫不为过。PHP、JSP都可跨平台，一般其系统部署都是在Linux下，MySql数据库和apche服务器都可通过相应的命令行工具有效管理。JSP的应用服务器在这方面支持要少些；</font></p>
+<p><font face="华文中宋" size="2"></font></p>
+<p><font face="华文中宋" size="2"><strong>跨平台</strong></font></p>
+<p><font face="华文中宋" size="2">.NET:0 分</font></p>
+<p><font face="华文中宋" size="2">PHP：5分</font></p>
+<p><font face="华文中宋" size="2">JSP：5分</font></p>
+<p><font face="华文中宋" size="2">曾几何时，我对跨平台不屑一顾，想着好端端的一个应用，既然是定位在这个平台上开发的，干嘛要移植到其它平台上。如今，我是深有体会。手上一个项目，公司由于成本压力，需要将应用从 SUN Unix移植到Linux平台（Redhat)。我们的程序基本上不用改动，在Linux上编译就只多了几个警告，改改就可上线了；而另一个项目，我被深度套牢！我们使用的是Windows平台的ASP.NET，由于受到Windows的病毒泛滥加上WEB管理的麻烦，迫切希望能移植到Linux平台，但这基本上不可能实现。若真想将这应用移植，只有下狠心使用PHP等重写应用，换系统架构。PHP、JSP都可跨平台，不用多说。</font></p>
+<p><font face="华文中宋" size="2"></font></p>
+<p><font face="华文中宋" size="2"><strong>当前主流应用的选择</strong></font></p>
+<p><font face="华文中宋" size="2">PHP：当前WEB创业公司的语言选择主要集中在PHP。除了上述原因还有一个重要原因就是PHP开发程序员队伍的规模。</font></p>
+<p><font face="华文中宋" size="2">淘宝网（阿里巴巴）: Linux操作系统 + Web 服务器: Apache +PHP</font></p>
+<p><font face="华文中宋" size="2">PHP的应用太多，这里不再列举；</font></p>
+<p><font face="华文中宋" size="2">ASP.NET：在创业公司中应用不多，知名互联网应用有限，目前比较知名的应用有：</font></p>
+<p><font face="华文中宋" size="2">博客园、CSDN、eBay、MySpace等；</font></p>
+<p><font face="华文中宋" size="2">JSP：JSP实施比较庞大，用好的就得用到websphere或weblogic这样的大物件，种种原因使得JSP在互联网公司中应用并不多，除了阿里巴巴，没有几个公司能驾驭JAVA（JSP）。深入JAVA需要多年修炼，而成精之后，公司是否有足够的薪水来留住这么一群高手是个考验；</font></p>
+<p><font face="华文中宋" size="2">阿里巴巴：Linux+（JSP）</font></p>
+<p><font face="华文中宋" size="2"></font></p>
+<p><font face="华文中宋" size="2"><strong>总结</strong></font></p>
+<p><font face="华文中宋" size="2">如今流行的Ruby，也是创业公司的一个选择；python的优雅，也可考虑尝试（豆瓣使用的Python）；但选择这些语言的一个风险是公司规模扩大后，是否能找到足够的人才得打个问号。总的来说，创业面临选择一门开发语言，PHP当是首选；如果不考虑Linux平台，铁定在Windows上运营，.NET也是一个不错的选择。JSP小公司勿近，危险，容易造成的资金套牢。</font></p>
+<div class="ujian-hook"></div>
+<div style='clear:both;'></div>
+<p>		<script type="text/javascript">
+		var ujian_config = {
+			'num':5,
+			'showType':2,
+			'bgColor':"",
+			'mouseoverColor':"#E6F3DE",
+			'textColor':"#333333",
+			'hoverTextColor':"#333333",
+			'borderColor':"#dddddd",
+			'picSize':96,
+			'target':1,
+			'textHeight':60,
+			'defaultPic':"",
+			'itemTitle':"您可能喜欢："
+		}</script><br />
+	<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js"></script></p>
+					</div><!-- END entry -->
+		<div class="add-info">
+					</div>
+		<div class="post-info-bottom">
+			<span class="post-info-category"><a href="http://blog.me115.com/category/web%e5%bc%80%e5%8f%91" title="查看 WEB开发 中的全部文章" rel="category tag">WEB开发</a></span><span class="post-info-tags"></span>
+		</div>
+		<div id="nav-below">
+			<div class="nav-previous"><a href="http://blog.me115.com/2011/09/163" rel="prev"><span class="meta-nav">&larr;</span> Linux平台开发技术指南</a></div>
+			<div class="nav-next"><a href="http://blog.me115.com/2011/10/165" rel="next">[python]通过ElementTree来操作XML <span class="meta-nav">&rarr;</span></a></div>
+		</div><!-- #nav-below -->					
+	</div><!-- END post -->
+	<a name="comments"></a>
+
+<div class="ds-thread" data-thread-key="164" data-author-key="1" data-title="创业如何选择WEB开发语言" data-url="http://blog.me115.com/2011/09/164"></div>
+
+<script type="text/javascript">
+	if (typeof DUOSHUO !== 'undefined')
+		DUOSHUO.EmbedThread('.ds-thread');
+</script>
+	<div id="ds-ssr">
+
+		
+            <ol id="commentlist">
+                            </ol>
+
+		            
+    </div></div><!--content-->
+<div id="sidebar-border">
+	<div id="rss_border">
+		<div class="rss_border">
+			<div id="rss_wrap">
+				<div class="rss_wrap">
+										<a class="rss rss_text" href="http://blog.me115.com/feed" rel="bookmark" title="RSS 订阅">RSS 订阅</a>
+																													</div>
+			</div>
+		</div>
+	</div>
+	<div id="sidebar">
+
+<div id="search-2" class="widget widget_search"><form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form></div>		<div id="recent-posts-2" class="widget widget_recent_entries">		<h3 class="widgettitle">近期文章</h3>		<ul>
+					<li>
+				<a href="http://blog.me115.com/2015/12/891" title="单线程你别阻塞，Redis时延问题分析及应对">单线程你别阻塞，Redis时延问题分析及应对</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/11/886" title="负载均衡的几种常用方案">负载均衡的几种常用方案</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/11/884" title="Redis哈希表的实现要点">Redis哈希表的实现要点</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/10/875" title="多线程和多进程模型的选用">多线程和多进程模型的选用</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/10/872" title="异步和非阻塞">异步和非阻塞</a>
+						</li>
+				</ul>
+		</div><div id="text-3" class="widget widget_text"><h3 class="widgettitle">广告</h3>			<div class="textwidget">本站使用digitalocean提供的VPS；<br/>
+访问速度可以通过<a href="http://blog.me115.com" target="_blank">大CC博客</a> 和<a href="http://www.me115.com" target="_blank">木书架网</a>体验；<br/>
+其中我的博客为直连digitalocean，
+而木书架网站采用了第三方CDN加速（安全宝）<br/><br/>
+
+从以下链接点击进入注册digitalocean，您将获取10美元(可免费使用2个月的VPS):<br/>
+
+<B><a href="https://www.digitalocean.com/?refcode=ee9c5a992d6f" target="_blank">DigitalOcean</a></B></div>
+		</div><div id="ds-recent-comments-2" class="widget ds-widget-recent-comments"><h3 class="widgettitle">近期评论</h3><ul class="ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-avatar-size="30" data-excerpt-length="70"></ul></div><script>
+if (typeof DUOSHUO !== 'undefined')
+	DUOSHUO.RecentComments && DUOSHUO.RecentComments('.ds-recent-comments');
+</script><div id="archives-3" class="widget widget_archive"><h3 class="widgettitle">文章归档</h3>		<ul>
+			<li><a href='http://blog.me115.com/date/2015/12' title='2015 年十二月'>2015 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/11' title='2015 年十一月'>2015 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/10' title='2015 年十月'>2015 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/09' title='2015 年九月'>2015 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/08' title='2015 年八月'>2015 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/06' title='2015 年六月'>2015 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/05' title='2015 年五月'>2015 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/04' title='2015 年四月'>2015 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/03' title='2015 年三月'>2015 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/02' title='2015 年二月'>2015 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/01' title='2015 年一月'>2015 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/11' title='2014 年十一月'>2014 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/10' title='2014 年十月'>2014 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/09' title='2014 年九月'>2014 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/08' title='2014 年八月'>2014 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/07' title='2014 年七月'>2014 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/06' title='2014 年六月'>2014 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/05' title='2014 年五月'>2014 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/04' title='2014 年四月'>2014 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/02' title='2014 年二月'>2014 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/12' title='2013 年十二月'>2013 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/11' title='2013 年十一月'>2013 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/10' title='2013 年十月'>2013 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/09' title='2013 年九月'>2013 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/06' title='2013 年六月'>2013 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/04' title='2013 年四月'>2013 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/03' title='2013 年三月'>2013 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/01' title='2013 年一月'>2013 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/12' title='2012 年十二月'>2012 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/10' title='2012 年十月'>2012 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/09' title='2012 年九月'>2012 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/08' title='2012 年八月'>2012 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/05' title='2012 年五月'>2012 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/04' title='2012 年四月'>2012 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/02' title='2012 年二月'>2012 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/11' title='2011 年十一月'>2011 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/10' title='2011 年十月'>2011 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/09' title='2011 年九月'>2011 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/07' title='2011 年七月'>2011 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/06' title='2011 年六月'>2011 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/05' title='2011 年五月'>2011 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/04' title='2011 年四月'>2011 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/03' title='2011 年三月'>2011 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/02' title='2011 年二月'>2011 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/01' title='2011 年一月'>2011 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/12' title='2010 年十二月'>2010 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/11' title='2010 年十一月'>2010 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/10' title='2010 年十月'>2010 年十月</a></li>
+		</ul>
+</div><div id="categories-2" class="widget widget_categories"><h3 class="widgettitle">分类目录</h3>		<ul>
+	<li class="cat-item cat-item-2"><a href="http://blog.me115.com/category/beautiful-life" title="查看 Beautiful Life 下的所有文章">Beautiful Life</a>
+</li>
+	<li class="cat-item cat-item-92"><a href="http://blog.me115.com/category/berkeley-db" title="查看 Berkeley DB 下的所有文章">Berkeley DB</a>
+</li>
+	<li class="cat-item cat-item-3"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98/c%e7%bc%96%e7%a8%8b" title="查看 C++编程 下的所有文章">C++编程</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84" title="查看 CC书评 下的所有文章">CC书评</a>
+</li>
+	<li class="cat-item cat-item-5"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91" title="查看 CC评网 下的所有文章">CC评网</a>
+</li>
+	<li class="cat-item cat-item-6"><a href="http://blog.me115.com/category/linuxunix" title="查看 Linux&amp;Unix 下的所有文章">Linux&amp;Unix</a>
+</li>
+	<li class="cat-item cat-item-90"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1" title="查看 Linux工具箱 下的所有文章">Linux工具箱</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="http://blog.me115.com/category/python" title="查看 Python 下的所有文章">Python</a>
+</li>
+	<li class="cat-item cat-item-93"><a href="http://blog.me115.com/category/redis" title="查看 Redis 下的所有文章">Redis</a>
+</li>
+	<li class="cat-item cat-item-8"><a href="http://blog.me115.com/category/web%e5%bc%80%e5%8f%91" title="查看 WEB开发 下的所有文章">WEB开发</a>
+</li>
+	<li class="cat-item cat-item-127"><a href="http://blog.me115.com/category/%e5%84%92%e9%87%8a%e9%81%93" title="查看 儒释道 下的所有文章">儒释道</a>
+</li>
+	<li class="cat-item cat-item-9"><a href="http://blog.me115.com/category/%e5%85%ac%e5%8f%b8%e7%ae%a1%e7%90%86" title="查看 公司管理 下的所有文章">公司管理</a>
+</li>
+	<li class="cat-item cat-item-10"><a href="http://blog.me115.com/category/%e5%b9%b6%e8%a1%8c%e8%ae%a1%e7%ae%97" title="查看 并行计算 下的所有文章">并行计算</a>
+</li>
+	<li class="cat-item cat-item-58"><a href="http://blog.me115.com/category/%e6%91%84%e5%bd%b1" title="查看 摄影 下的所有文章">摄影</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="http://blog.me115.com/category/%e6%97%b6%e9%97%b4%e7%ae%a1%e7%90%86" title="查看 时间管理 下的所有文章">时间管理</a>
+</li>
+	<li class="cat-item cat-item-1"><a href="http://blog.me115.com/category/uncategorized" title="查看 未分类 下的所有文章">未分类</a>
+</li>
+	<li class="cat-item cat-item-113"><a href="http://blog.me115.com/category/%e6%9e%b6%e6%9e%84" title="查看 架构 下的所有文章">架构</a>
+</li>
+	<li class="cat-item cat-item-12"><a href="http://blog.me115.com/category/%e7%a4%be%e4%bc%9a%e6%9d%82%e8%b0%88" title="查看 社会杂谈 下的所有文章">社会杂谈</a>
+</li>
+	<li class="cat-item cat-item-74"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98" title="查看 程序员 下的所有文章">程序员</a>
+</li>
+	<li class="cat-item cat-item-13"><a href="http://blog.me115.com/category/%e7%bb%8f%e6%b5%8e%e8%a7%82%e7%82%b9" title="查看 经济观点 下的所有文章">经济观点</a>
+</li>
+	<li class="cat-item cat-item-132"><a href="http://blog.me115.com/category/%e8%a7%82%e7%82%b9%e4%b8%8e%e6%84%9f%e6%83%b3" title="查看 观点与感想 下的所有文章">观点与感想</a>
+</li>
+	<li class="cat-item cat-item-14"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0" title="查看 读书笔记 下的所有文章">读书笔记</a>
+</li>
+	<li class="cat-item cat-item-15"><a href="http://blog.me115.com/category/%e9%a1%b9%e7%9b%ae%e7%ae%a1%e7%90%86" title="查看 项目管理 下的所有文章">项目管理</a>
+</li>
+		</ul>
+</div><div id="meta-2" class="widget widget_meta"><h3 class="widgettitle">功能</h3>			<ul>
+						<li><a href="http://blog.me115.com/wp-login.php">登录</a></li>
+			<li><a href="http://blog.me115.com/feed" title="使用 RSS 2.0 订阅本站点内容">文章 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://blog.me115.com/comments/feed" title="使用 RSS 订阅本站点的所有文章的近期评论">评论 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://cn.wordpress.org/" title="基于 WordPress，一个优美、先进的个人信息发布平台。">WordPress.org</a></li>
+						</ul>
+</div><div id="nav_menu-2" class="widget widget_nav_menu"><div class="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5-container"><ul id="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5" class="menu"><li id="menu-item-304" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-304"><a title="pongba,关注C++，心理学" href="http://mindhacks.cn/archives/">刘未鹏</a></li>
+<li id="menu-item-540" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-540"><a title="游走世界，精彩人生" href="http://www.purplexsu.net/">purplexsu</a></li>
+<li id="menu-item-348" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-348"><a href="http://coolshell.cn/">酷壳</a></li>
+<li id="menu-item-322" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-322"><a href="http://www.cppfans.org/">C++爱好者博客</a></li>
+<li id="menu-item-321" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-321"><a href="http://www.cnblogs.com/archy_yu/">Archy Yu</a></li>
+<li id="menu-item-305" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-305"><a href="http://www.shenlongbin.com/">申龙斌的程序人生</a></li>
+<li id="menu-item-324" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-324"><a href="http://www.rrgod.com">Eddy Blog</a></li>
+<li id="menu-item-340" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-340"><a href="http://www.wangyuxiong.com/">点滴–挖掘技术细节</a></li>
+<li id="menu-item-341" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-341"><a href="http://www.hiadmin.org/">Smart Testing</a></li>
+</ul></div></div><div id="text-2" class="widget widget_text"><h3 class="widgettitle">统计</h3>			<div class="textwidget"><script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_4893206'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/stat.php%3Fid%3D4893206%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script></div>
+		</div>
+
+	</div><!-- end: #sidebar -->
+</div><!-- end: #sidebar-border --></div><!--wrapper-->
+<div class="clear"></div>
+<div id="footer">
+	<div id="footer-inside">
+		<p>
+			版权所有 &copy; 2015 大CC			| 站点由 <a href="http://zww.me">zBench</a> 和 <a href="http://wordpress.org/">WordPress</a> 驱动		</p>
+		<span id="back-to-top">&uarr; <a href="#" rel="nofollow" title="Back to top">回到顶部</a></span>
+	</div>
+</div><!--footer-->
+</body>
+</html>
+<script  type="text/javascript">
+$(function(){
+    $("pre").addClass("prettyprint");
+    $(".entry").addClass("markdown-body");
+    prettyPrint();
+    var dirbef = '<div id="navCategory" class="dir"><h3>内容目录</h3><ul>', dirend = '</ul><//div>', dircontent = '';
+$('.entry h2').each( function(i,e){ dircontent += '<li><a href="#h2' + i + '">' + $(e).text() + "</a></li>"; $(this).attr('id', 'h2' + i);  } );$( dirbef + dircontent + dirend ).insertBefore( '.entry' );});
+</script>
+
+
+<!-- Dynamic page generated in 0.124 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2015-12-15 02:06:07 -->
+
+<!-- super cache -->

@@ -1,0 +1,434 @@
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/prettify.css" />
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/github.css"/>
+<script src="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/jquery.js" type="text/javascript"></script> 
+<script src="http://files.cnblogs.com/xguo/google-code-prettify.js"></script>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+<head profile="http://gmpg.org/xfn/11">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Jquery下的Ajax调试方法大CC | 大CC</title>
+	<link rel="stylesheet" type="text/css" media="all" href="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/style.css" />
+	<link rel="pingback" href="http://blog.me115.com/xmlrpc.php" />
+	<link rel="alternate" type="application/rss+xml" title="大CC &raquo; Feed" href="http://blog.me115.com/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; 评论 Feed" href="http://blog.me115.com/comments/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; Jquery下的Ajax调试方法 评论 Feed" href="http://blog.me115.com/2012/10/197/feed" />
+<script type="text/javascript">
+var duoshuoQuery = {"short_name":"me115","sso":{"login":"http:\/\/blog.me115.com\/wp-login.php?action=duoshuo_login","logout":"http:\/\/blog.me115.com\/wp-login.php?action=logout&_wpnonce=c7b4bab775"},"theme":"default","stylePatch":"wordpress\/zBench"};
+duoshuoQuery.sso.login += '&redirect_to=' + encodeURIComponent(window.location.href);
+duoshuoQuery.sso.logout += '&redirect_to=' + encodeURIComponent(window.location.href);
+</script>
+<script type="text/javascript" src="http://static.duoshuo.com/embed.js" charset="UTF-8" async="async"></script>
+<script type='text/javascript' src='http://blogcc.u.qiniudn.com/wp-includes/js/comment-reply.min.js?ver=3.5'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://blog.me115.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://blog.me115.com/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='如何保障晚间的高效工作' href='http://blog.me115.com/2012/09/194' />
+<link rel='next' title='一个值得记住的日子' href='http://blog.me115.com/2012/12/200' />
+<meta name="generator" content="WordPress 3.5" />
+<link rel='shortlink' href='http://blog.me115.com/?p=197' />
+
+<!-- All in One SEO Pack 1.6.15.3 by Michael Torbert of Semper Fi Web Design[629,672] -->
+<link rel="canonical" href="http://blog.me115.com/2012/10/197" />
+<!-- /all in one seo pack -->
+</head>
+<body class="single single-post postid-197 single-format-standard">
+<div id="nav">
+	<div id="menus">
+		<ul><li><a href="http://blog.me115.com/">首页</a></li></ul>
+		<ul id="menu-linux-2" class="menu"><li id="menu-item-566" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-566"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1">Linux工具箱</a></li>
+<li id="menu-item-493" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-493"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84">书评和笔记</a>
+<ul class="sub-menu">
+	<li id="menu-item-495" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-495"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0">读书笔记</a></li>
+	<li id="menu-item-494" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-494"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91">CC评网</a></li>
+</ul>
+</li>
+<li id="menu-item-560" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-560"><a href="http://blog.me115.com/%e9%98%85%e8%af%bb%e8%ae%a1%e5%88%92">阅读计划</a></li>
+<li id="menu-item-461" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-461"><a href="http://blog.me115.com/%e5%85%b3%e4%ba%8e%e6%9c%a8%e4%b9%a6%e6%9e%b6">关于木书架</a></li>
+<li id="menu-item-462" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-462"><a href="http://blog.me115.com/sample-page">关于我</a></li>
+</ul>	</div>
+	<div id="search">
+		<form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form>	</div>
+</div>
+<div id="wrapper">
+	<div id="header">		<h1><a href="http://blog.me115.com/">大CC</a></h1>
+		<h2>关注 Nosql/架构/时间管理/阅读分享</h2>
+		<div class="clear"></div>
+			</div>
+<div id="content">
+		<div class="post-197 post type-post status-publish format-standard hentry category-web post-single" id="post-197"><!-- post div -->
+		<h2 class="title">Jquery下的Ajax调试方法</h2>
+		<div class="post-info-top">
+			<span class="post-info-date">
+				作者: <a href="http://blog.me115.com/author/me115wp" title="查看 大CC 的所有文章" rel="author">大CC</a>
+				日期:				2012 年 10 月 23 日							</span>
+						<span class="addcomment"><a href="#respond"  rel="nofollow" title="发表评论？">发表评论</a><span class="ds-thread-count" data-thread-key="197" data-replace="1"> (1)</span></span>
+			<span class="gotocomments"><a href="#comments"  rel="nofollow" title="查看评论？">查看评论</a></span>
+					</div>
+		<div class="clear"></div>
+		<div class="entry">
+			<p><font color="#ff8000" size="3" face="华文中宋"><strong>介绍</strong></font> </p>
+<p><font size="3" face="华文中宋">本文介绍Jquery下的Ajax调试方法；很多调试方法，就是一点就通，但是，在还没有通之前，会让人困惑，不知所以然；</font> </p>
+<p><font size="3" face="华文中宋">Ajax 可以为用户提供更为丰富的用户体验。jQuery 对 Ajax 当然也提供了很好的支持，而且还抽象了各种浏览器对于 Ajax 支持方面令人痛苦的差异。它不但提供了全功能的 <code>$.ajax()</code> 方法，还有诸如 <code>$.get()</code>，<code>$.getScript()</code>，<code>$.getJSON()</code>，<code>$.post()</code> 和 <code>$().load()</code> 等更为简便的方法。</font> </p>
+<p><font size="3" face="华文中宋"></font>&#160; </p>
+<p><font color="#ff8000" size="3" face="华文中宋"><strong>一个示例</strong></font> </p>
+<p><font size="3" face="华文中宋">首先，我们用一个示例来说明JQuery的Ajax调用过程， </font></p>
+<p><font size="3" face="华文中宋">实现的一个功能是：点击确认支付按钮之后，实现余额支付的功能：</font> </p>
+<p><font size="3" face="华文中宋"><em>1.首先在php页面将相关需要调用的函数绑定到按钮上：</em></font> </p>
+<p><font size="3" face="华文中宋">&lt;input type=&quot;submit&quot; name=&quot;pay_btn&quot; id=&quot;pay_btn&quot; value=&quot;确认支付&quot; /&gt;</font> </p>
+<p><font size="3" face="华文中宋">&lt;script type=&quot;text/javascript&quot;&gt;</font> </p>
+<p><font size="3" face="华文中宋">$(function(){</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160; $(&quot;#pay_btn&quot;).bind(&quot;click&quot;,ABC.balancePay);</font> </p>
+<p><font size="3" face="华文中宋">});</font> </p>
+<p><font size="3" face="华文中宋">&lt;/script&gt;</font> </p>
+<p><font size="3" face="华文中宋"><em>2.脚本处：</em></font> </p>
+<p><font size="3" face="华文中宋">如果使用$.post方式实现：</font> </p>
+<p><font size="3" face="华文中宋">var ABC = {</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160; balancePay: <strong>function</strong>(event){</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160;&#160;&#160;&#160;&#160; event.preventDefault();</font> </p>
+<p><font size="3" face="华文中宋">var tthis = $(event.currentTarget);</font> </p>
+<p><font size="3" face="华文中宋">var form = tthis.parents(&#8216;form&#8217;);</font> </p>
+<p><font size="3" face="华文中宋">var url = form.attr(&#8216;action&#8217;);</font> </p>
+<p><font size="3" face="华文中宋">var data = &#8216;code=15&#8242; ;//+ $(&#8216;#verifyCode&#8217;).val();</font> </p>
+<p><font size="3" face="华文中宋">var jqXhr = $.post(url, data, undefined, &#8216;jsonp&#8217;);</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160;&#160;&#160;&#160;&#160; jqXhr.done(function(datas){</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; //console.log(&#8216;这里是通过console打印出来的&#8217;); //#4</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; $(&quot;#msg&quot;).text(&#8216;结果:&#8217;+data);</font> </p>
+<p><font size="3" face="华文中宋">});</font> </p>
+<p><font size="3" face="华文中宋">}</font> </p>
+<p><font size="3" face="华文中宋">$.post方式也可以直接指定回调函数：</font> </p>
+<p><font size="3" face="华文中宋">var jqXhr = $.post(url, data, function(data){</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; $(&quot;#msg&quot;).text(&#8216;结果:&#8217;+data);</font> </p>
+<p><font size="3" face="华文中宋">}, &#8216;jsonp&#8217;);</font> </p>
+<p><font size="3" face="华文中宋">使用$.ajax方法实现：</font> </p>
+<p><font size="3" face="华文中宋">var jqXhr = $.ajax({</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; type: &#8216;post&#8217;,</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; url: url,</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; data: {code: &#8217;15&#8242;},</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; dataType: &#8216;jsonp&#8217;,</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; sccuess:function(data){</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; alert(&#8216;good&#8217;);},</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; error: function(XMLHttpRequest, textStatus, errorThrown) {&#160; //#3这个error函数调试时非常有用，如果解析不正确，将会弹出错误框      <br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; alert(XMLHttpRequest.status);       <br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; alert(XMLHttpRequest.readyState);       <br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; alert(textStatus); // paser error;       <br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; },</font> </p>
+<p><font size="3" face="华文中宋">});</font> </p>
+<p><font size="3" face="华文中宋"><em>3.服务器端：</em></font> </p>
+<p><font size="3" face="华文中宋">public function actionInterPayProc($callback)</font> </p>
+<p><font size="3" face="华文中宋">{</font> </p>
+<p><font size="3" face="华文中宋">//header(&quot;content-type: text/javascript&quot;);</font> </p>
+<p><font size="3" face="华文中宋">//header(&#8216;Content-type: text/html; charset=utf-8&#8242;);</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; $code = $_POST['code'];</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160;&#160;&#160;&#160;&#160; //$code&#160; //#1 此处给出一个有语法错误的表达式 </font></p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160;&#160;&#160;&#160;&#160; //echo $code;&#160; //#2&#160; 此处标记，用于后面调试说明；</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#8230;</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160;&#160;&#160;&#160;&#160; $result = 1;</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; //echo $_POST['callback']. &#8216;(&#8216; . json_encode($result) . &#8216;);&#8217;;//注意使用的编码方式需要和客户端请求保持一致；</font> </p>
+<p><font size="3" face="华文中宋">exit(0);</font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160; }</font> </p>
+<p><font size="3" face="华文中宋"></font>&#160; </p>
+<p><font color="#ff8000" size="3" face="华文中宋"><strong>调试工具</strong></font> </p>
+<p><font size="3" face="华文中宋">Firefox 有强大 FireBug 插件，现在比较新的浏览器如 Chrome 和 Safari，以及 IE 8都内置了调试工具，借助于这些调试工具，可以非常详细的查看 Ajax 的执行过程（chrome和firefox中调出调试工具的快捷键是ctrl+shift+c)；</font> </p>
+<p><font size="3" face="华文中宋">以下使用FireBug；</font> </p>
+<p><font size="3" face="华文中宋"></font>&#160; </p>
+<p><font color="#ff8000" size="3" face="华文中宋"><strong>调试方法</strong></font> </p>
+<p><font size="3" face="华文中宋"><em>1.使用firebug，查看回调：</em></font> </p>
+<p><font size="3" face="华文中宋">&#160;&#160;&#160; 对于Ajax方法，是通过异步执行的服务器端程序，如果服务器端出错，在页面上不会显示的，我们需要借助调试工具来查看；例如，将以上示例中#2的注释去掉，触发ajax请求一次，可以在控制台面板中查看到错误的返回结果：</font> </p>
+<p><font size="3" face="华文中宋"><img style="border-right-width: 0px;border-top-width: 0px;border-bottom-width: 0px;border-left-width: 0px" title="1247078" border="0" alt="1247078" src="http://blog/wp-content/uploads/2012/10/1247078.png" width="569" height="60" /></font> </p>
+<p><font size="3" face="华文中宋">如果是服务器端程序出错，也可以直接看到，出错原因跟一般普通的页面一样，只不过是在ajax返回的面板中查看（web浏览器页面中不会有任何显示）。</font> </p>
+<p><font size="3" face="华文中宋">这里需要说明的是，如果在服务器端使用了echo等方法将需要查看的变量打印出来了，那么，ajax调用的结果一定是失败的，因为这样看上去的回调函数名称被更改了，造成无法解析；</font> </p>
+<p><font size="3" face="华文中宋">例如，打印的变量是333，那么最后回调的结果是：333ajaxcallbak(1);客户端寻找333ajaxcallbak这个函数名，无法解析。</font> </p>
+<p><font size="3" face="华文中宋"></font>&#160; </p>
+<p><font size="3" face="华文中宋"><em>2.使用error函数打印错误信息：</em></font> </p>
+<p><font size="3"><font face="华文中宋">$.ajax()有一个error参数，可以指定一个函数，在请求失败时，将调用此方法。这里给出的信息，对于调试来说，非常有用；</font></font> </p>
+<p><font size="3" face="华文中宋">error：function (XMLHttpRequest, textStatus, errorThrown)</font> </p>
+<p><font size="3" face="华文中宋">error事件返回的第一个参数XMLHttpRequest有一些有用的信息：</font> </p>
+<p><font size="3" face="华文中宋">XMLHttpRequest.readyState:</font> </p>
+<p><font size="3" face="华文中宋">其返回的状态码对应了一种错误说明：</font> </p>
+<p><font size="3" face="华文中宋">状态码 </font></p>
+<p><font size="3" face="华文中宋">0 － （未初始化）还没有调用send()方法 </font></p>
+<p><font size="3" face="华文中宋">1 － （载入）已调用send()方法，正在发送请求 </font></p>
+<p><font size="3" face="华文中宋">2 － （载入完成）send()方法执行完成，已经接收到全部响应内容 </font></p>
+<p><font size="3" face="华文中宋">3 － （交互）正在解析响应内容 </font></p>
+<p><font size="3" face="华文中宋">4 － （完成）响应内容解析完成，可以在客户端调用了</font> </p>
+<p><font size="3" face="华文中宋">XMLHttpRequest.status:</font> </p>
+<p><font size="3" face="华文中宋">这里返回的状态码就是我们日常见到的HTTP状态；比如404，表示没有找到页面；</font> </p>
+<p><font size="3" face="华文中宋">（详细的状态码对应信息见附录；）</font> </p>
+<p><font size="3" face="华文中宋">textStatus:</font> </p>
+<p><font size="3" face="华文中宋">&quot;timeout&quot;, &quot;error&quot;, &quot;notmodified&quot; 和 &quot;parsererror&quot;。</font> </p>
+<p><font size="3" face="华文中宋">(默 认: 自动判断 (xml 或 html)) 请求失败时调用时间。参数有以下三个：XMLHttpRequest 对象、错误信息、（可选）捕获的错误对象。如果发生了错误，错误信息（第二个参数）除了得到null之外，还可能是&quot;timeout&quot;, &quot;error&quot;, &quot;notmodified&quot; 和 &quot;parsererror&quot;。</font> </p>
+<p><font size="3" face="华文中宋">通过这个error函数，程序出错就很容易排查；</font> </p>
+<p><font size="3" face="华文中宋">比如上面的#2处，去掉注释，相当于更改了回调函数名；在erro里就会报：parsererror；</font> </p>
+<p><font size="3" face="华文中宋"></font>&#160; </p>
+<p><font size="3" face="华文中宋"><em>3.使用console.log打印输出：（alert()也可以）</em></font> </p>
+<p><font size="3" face="华文中宋">这只是一个增强调试体验的辅助方法。对于js中的关注变量跟踪，我们可通过alert()方法打印出来，不过弹出框频繁会让人烦躁。console.log是一个替代方式，它是firebug插件的一个方法。console.log打印出来的变量结果会显示在firebug的控制台面板中；</font> </p>
+<p><font size="3" face="华文中宋"></font>&#160; </p>
+<p><font color="#ff8000" size="3" face="华文中宋"><strong>可能的出错原因：</strong></font> </p>
+<p><font size="3" face="华文中宋">1.如果返回的结果格式不正确，在firebug中能看到结果；</font> </p>
+<p><font size="3" face="华文中宋">2.对于JSON请求，对格式比较严格：</font> </p>
+<p><font size="3" face="华文中宋">如果通过error函数打出来的报错是：parsererror</font> </p>
+<p><font size="3" face="华文中宋">可能的原因是服务器端脚本编码的问题；可以在服务端处理函数内处理的第一行加上对应的header信息：</font></p>
+<p><font size="3" face="华文中宋">eg：header(&#8216;Content-type: text/html; charset=utf-8&#8242;);</font> </p>
+<p><font size="3" face="华文中宋">当然，最有可能的是格式不正确：</font> </p>
+<p><strong><font size="3" face="华文中宋">echo &quot;{&#8216;re&#8217;:'success&#8217;}&quot;;jquery不能解析</font></strong> </p>
+<p><strong><font size="3" face="华文中宋">echo &quot;{&quot;re&quot;:&quot;success&quot;}&quot;;就没有错误</font></strong> </p>
+<p><font size="3" face="华文中宋">不要输出怪异的json格式的字符串，要不jq1.4+版本不会执行success回调。如{abc:1}或者{&#8216;abc&#8217;:1},要输出      <br />{&quot;abc&quot;:1}</font> </p>
+<p><font size="3" face="华文中宋">{&#8216;success&#8217;:true}改为{&quot;success&quot;:true}</font> </p>
+<p><font size="3" face="华文中宋"></font>&#160; </p>
+<p><strong><font color="#ff8000" size="3" face="华文中宋">相关书籍： </font></strong></p>
+<p><font size="3" face="华文中宋">刚接触jquery的朋友，可以看看这本书。介绍的很全面，实例浅显易懂：</font> </p>
+<p><font size="3" face="华文中宋">《<a href="http://www.amazon.cn/gp/product/B0089TDFNS/ref=as_li_tf_tl?ie=UTF8&amp;tag=z08-23&amp;linkCode=as2&amp;camp=536&amp;creative=3200&amp;creativeASIN=B0089TDFNS" target="_blank">锋利的JQuery</a>》</font> </p>
+<p><a href="http://www.amazon.cn/gp/product/B0089TDFNS/ref=as_li_tf_tl?ie=UTF8&amp;tag=z08-23&amp;linkCode=as2&amp;camp=536&amp;creative=3200&amp;creativeASIN=B0089TDFNS" target="_blank"><img style="border-right-width: 0px;border-top-width: 0px;border-bottom-width: 0px;border-left-width: 0px" title="image" border="0" alt="image" src="http://blog/wp-content/uploads/2012/10/image.png" width="191" height="240" /></a> </p>
+<p><font size="3" face="华文中宋"></font>&#160; </p>
+<p><font color="#ff8000" size="3" face="华文中宋"><strong>附录：</strong></font> </p>
+<p><font size="3" face="华文中宋">XMLHttpRequest.status状态码</font> </p>
+<p><font size="3" face="华文中宋">1xx-信息提示      <br />这些状态代码表示临时的响应。客户端在收到常规响应之前，应准备接收一个或多个1xx响应。       <br />100-继续。       <br />101-切换协议。       <br />2xx-成功       <br />这类状态代码表明服务器成功地接受了客户端请求。       <br />200-确定。客户端请求已成功。       <br />201-已创建。       <br />202-已接受。       <br />203-非权威性信息。       <br />204-无内容。       <br />205-重置内容。       <br />206-部分内容。       <br />3xx-重定向       <br />客户端浏览器必须采取更多操作来实现请求。例如，浏览器可能不得不请求服务器上的不同的页面，或通过代理服务器重复该请求。       <br />301-对象已永久移走，即永久重定向。       <br />302-对象已临时移动。       <br />304-未修改。       <br />307-临时重定向。       <br />4xx-客户端错误       <br />发生错误，客户端似乎有问题。例如，客户端请求不存在的页面，客户端未提供有效的身份验证信息。400-错误的请求。       <br />401-访问被拒绝。IIS定义了许多不同的401错误，它们指明更为具体的错误原因。这些具体的错误代码在浏览器中显示，但不在IIS日志中显示：       <br />401.1-登录失败。       <br />401.2-服务器配置导致登录失败。       <br />401.3-由于ACL对资源的限制而未获得授权。       <br />401.4-筛选器授权失败。       <br />401.5-ISAPI/CGI应用程序授权失败。       <br />401.7–访问被Web服务器上的URL授权策略拒绝。这个错误代码为IIS6.0所专用。       <br />403-禁止访问：IIS定义了许多不同的403错误，它们指明更为具体的错误原因：       <br />403.1-执行访问被禁止。       <br />403.2-读访问被禁止。       <br />403.3-写访问被禁止。       <br />403.4-要求SSL。       <br />403.5-要求SSL128。       <br />403.6-IP地址被拒绝。       <br />403.7-要求客户端证书。       <br />403.8-站点访问被拒绝。       <br />403.9-用户数过多。       <br />403.10-配置无效。       <br />403.11-密码更改。       <br />403.12-拒绝访问映射表。       <br />403.13-客户端证书被吊销。       <br />403.14-拒绝目录列表。       <br />403.15-超出客户端访问许可。       <br />403.16-客户端证书不受信任或无效。       <br />403.17-客户端证书已过期或尚未生效。       <br />403.18-在当前的应用程序池中不能执行所请求的URL。这个错误代码为IIS6.0所专用。       <br />403.19-不能为这个应用程序池中的客户端执行CGI。这个错误代码为IIS6.0所专用。       <br />403.20-Passport登录失败。这个错误代码为IIS6.0所专用。       <br />404-未找到。       <br />404.0-（无）–没有找到文件或目录。       <br />404.1-无法在所请求的端口上访问Web站点。       <br />404.2-Web服务扩展锁定策略阻止本请求。       <br />404.3-MIME映射策略阻止本请求。       <br />405-用来访问本页面的HTTP谓词不被允许（方法不被允许）       <br />406-客户端浏览器不接受所请求页面的MIME类型。       <br />407-要求进行代理身份验证。       <br />412-前提条件失败。       <br />413–请求实体太大。       <br />414-请求URI太长。       <br />415–不支持的媒体类型。       <br />416–所请求的范围无法满足。       <br />417–执行失败。       <br />423–锁定的错误。       <br />5xx-服务器错误       <br />服务器由于遇到错误而不能完成该请求。       <br />500-内部服务器错误。       <br />500.12-应用程序正忙于在Web服务器上重新启动。       <br />500.13-Web服务器太忙。       <br />500.15-不允许直接请求Global.asa。       <br />500.16–UNC授权凭据不正确。这个错误代码为IIS6.0所专用。       <br />500.18–URL授权存储不能打开。这个错误代码为IIS6.0所专用。       <br />500.100-内部ASP错误。       <br />501-页眉值指定了未实现的配置。       <br />502-Web服务器用作网关或代理服务器时收到了无效响应。       <br />502.1-CGI应用程序超时。       <br />502.2-CGI应用程序出错。application.       <br />503-服务不可用。这个错误代码为IIS6.0所专用。       <br />504-网关超时。       <br />505-HTTP版本不受支持。       <br />FTP       <br />1xx-肯定的初步答复       <br />这些状态代码指示一项操作已经成功开始，但客户端希望在继续操作新命令前得到另一个答复。       <br />110重新启动标记答复。       <br />120服务已就绪，在nnn分钟后开始。       <br />125数据连接已打开，正在开始传输。       <br />150文件状态正常，准备打开数据连接。       <br />2xx-肯定的完成答复       <br />一项操作已经成功完成。客户端可以执行新命令。200命令确定。       <br />202未执行命令，站点上的命令过多。       <br />211系统状态，或系统帮助答复。       <br />212目录状态。       <br />213文件状态。       <br />214帮助消息。       <br />215NAME系统类型，其中，NAME是AssignedNumbers文档中所列的正式系统名称。       <br />220服务就绪，可以执行新用户的请求。       <br />221服务关闭控制连接。如果适当，请注销。       <br />225数据连接打开，没有进行中的传输。       <br />226关闭数据连接。请求的文件操作已成功（例如，传输文件或放弃文件）。       <br />227进入被动模式(h1,h2,h3,h4,p1,p2)。       <br />230用户已登录，继续进行。       <br />250请求的文件操作正确，已完成。       <br />257已创建“PATHNAME”。       <br />3xx-肯定的中间答复       <br />该命令已成功，但服务器需要更多来自客户端的信息以完成对请求的处理。331用户名正确，需要密码。       <br />332需要登录帐户。       <br />350请求的文件操作正在等待进一步的信息。       <br />4xx-瞬态否定的完成答复       <br />该命令不成功，但错误是暂时的。如果客户端重试命令，可能会执行成功。421服务不可用，正在关闭控制连接。如果服务确定它必须关闭，将向任何命令发送这一应答。       <br />425无法打开数据连接。       <br />426Connectionclosed;transferaborted.       <br />450未执行请求的文件操作。文件不可用（例如，文件繁忙）。       <br />451请求的操作异常终止：正在处理本地错误。       <br />452未执行请求的操作。系统存储空间不够。       <br />5xx-永久性否定的完成答复       <br />该命令不成功，错误是永久性的。如果客户端重试命令，将再次出现同样的错误。500语法错误，命令无法识别。这可能包括诸如命令行太长之类的错误。       <br />501在参数中有语法错误。       <br />502未执行命令。       <br />503错误的命令序列。       <br />504未执行该参数的命令。       <br />530未登录。       <br />532存储文件需要帐户。       <br />550未执行请求的操作。文件不可用（例如，未找到文件，没有访问权限）。       <br />551请求的操作异常终止：未知的页面类型。       <br />552请求的文件操作异常终止：超出存储分配（对于当前目录或数据集）。       <br />553未执行请求的操作。不允许的文件名。       <br />常见的FTP状态代码及其原因       <br />150-FTP使用两个端口：21用于发送命令，20用于发送数据。状态代码150表示服务器准备在端口20上打开新连接，发送一些数据。       <br />226-命令在端口20上打开数据连接以执行操作，如传输文件。该操作成功完成，数据连接已关闭。       <br />230-客户端发送正确的密码后，显示该状态代码。它表示用户已成功登录。       <br />331-客户端发送用户名后，显示该状态代码。无论所提供的用户名是否为系统中的有效帐户，都将显示该状态代码。       <br />426-命令打开数据连接以执行操作，但该操作已被取消，数据连接已关闭。       <br />530-该状态代码表示用户无法登录，因为用户名和密码组合无效。如果使用某个用户帐户登录，可能键入错误的用户名或密码，也可能选择只允许匿名访问。如果使用匿名帐户登录，IIS的配置可能拒绝匿名访问。       <br />550-命令未被执行，因为指定的文件不可用。例如，要GET的文件并不存在，或试图将文件PUT到您没有写入权限的目录。</font> </p>
+<p><font size="3" face="华文中宋">参考：</font> </p>
+<p><a href="http://www.akasuna.com/2012/03/15/jquery-and-ajax-and-jsonp/"><font size="3" face="华文中宋">http://www.akasuna.com/2012/03/15/jquery-and-ajax-and-jsonp/</font></a> </p>
+<p><a href="http://www.cnblogs.com/mybest/archive/2011/12/13/2285730.html"><font size="3" face="华文中宋">http://www.cnblogs.com/mybest/archive/2011/12/13/2285730.html</font></a> </p>
+<p><font size="3" face="华文中宋"></font>&#160;</p>
+<p><strong><font size="3" face="华文中宋">Posted by: 大CC | OCT23,2012</font></strong> </p>
+<p><font size="3" face="华文中宋">博客：</font><a href="http://www.cnblogs.com/me115/"><font size="3" face="华文中宋">cnblogs.com/me115/</font></a><font size="3"><font face="华文中宋"> <strong>[</strong></font></font><a href="http://feed.feedsky.com/me115"><strong><font size="3" face="华文中宋">订阅</font></strong></a><strong><font size="3" face="华文中宋">]</font></strong> </p>
+<p><font size="3" face="华文中宋">微博：</font><a href="http://weibo.com/bigcc115"><font size="3" face="华文中宋">新浪微博</font></a> </p>
+<p><font size="3" face="华文中宋"></font></p>
+<div class="ujian-hook"></div>
+<div style='clear:both;'></div>
+<p>		<script type="text/javascript">
+		var ujian_config = {
+			'num':5,
+			'showType':2,
+			'bgColor':"",
+			'mouseoverColor':"#E6F3DE",
+			'textColor':"#333333",
+			'hoverTextColor':"#333333",
+			'borderColor':"#dddddd",
+			'picSize':96,
+			'target':1,
+			'textHeight':60,
+			'defaultPic':"",
+			'itemTitle':"您可能喜欢："
+		}</script><br />
+	<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js"></script></p>
+					</div><!-- END entry -->
+		<div class="add-info">
+					</div>
+		<div class="post-info-bottom">
+			<span class="post-info-category"><a href="http://blog.me115.com/category/web%e5%bc%80%e5%8f%91" title="查看 WEB开发 中的全部文章" rel="category tag">WEB开发</a></span><span class="post-info-tags"></span>
+		</div>
+		<div id="nav-below">
+			<div class="nav-previous"><a href="http://blog.me115.com/2012/09/194" rel="prev"><span class="meta-nav">&larr;</span> 如何保障晚间的高效工作</a></div>
+			<div class="nav-next"><a href="http://blog.me115.com/2012/12/200" rel="next">一个值得记住的日子 <span class="meta-nav">&rarr;</span></a></div>
+		</div><!-- #nav-below -->					
+	</div><!-- END post -->
+	<a name="comments"></a>
+
+<div class="ds-thread" data-thread-key="197" data-author-key="1" data-title="Jquery下的Ajax调试方法" data-url="http://blog.me115.com/2012/10/197"></div>
+
+<script type="text/javascript">
+	if (typeof DUOSHUO !== 'undefined')
+		DUOSHUO.EmbedThread('.ds-thread');
+</script>
+	<div id="ds-ssr">
+
+		
+            <ol id="commentlist">
+                		<li class="comment even thread-even depth-1" id="li-comment-66">
+			<article id="comment-66" class="comment">
+				<footer class="comment-meta">
+					<cite class="comment-author vcard">
+						<span class="fn"><a href='http://www.yayaquan.com/kfc/' rel='external nofollow' class='url'>kfc优惠券</a></span> on <a rel="nofollow" href="http://blog.me115.com/2012/10/197#comment-66"><time pubdate datetime="2012-10-23T11:38:36+00:00">2012 年 10 月 23 日 at 上午 11:38</time></a> <span class="says">said:</span>					</cite><!-- .comment-author .vcard -->
+				</footer>
+	
+				<div class="comment-content"><p>非常感谢，好东西收藏起来先</p>
+</div>
+				
+			</article><!-- #comment-## -->
+		</li>
+            </ol>
+
+		            
+    </div></div><!--content-->
+<div id="sidebar-border">
+	<div id="rss_border">
+		<div class="rss_border">
+			<div id="rss_wrap">
+				<div class="rss_wrap">
+										<a class="rss rss_text" href="http://blog.me115.com/feed" rel="bookmark" title="RSS 订阅">RSS 订阅</a>
+																													</div>
+			</div>
+		</div>
+	</div>
+	<div id="sidebar">
+
+<div id="search-2" class="widget widget_search"><form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form></div>		<div id="recent-posts-2" class="widget widget_recent_entries">		<h3 class="widgettitle">近期文章</h3>		<ul>
+					<li>
+				<a href="http://blog.me115.com/2015/12/891" title="单线程你别阻塞，Redis时延问题分析及应对">单线程你别阻塞，Redis时延问题分析及应对</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/11/886" title="负载均衡的几种常用方案">负载均衡的几种常用方案</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/11/884" title="Redis哈希表的实现要点">Redis哈希表的实现要点</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/10/875" title="多线程和多进程模型的选用">多线程和多进程模型的选用</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/10/872" title="异步和非阻塞">异步和非阻塞</a>
+						</li>
+				</ul>
+		</div><div id="text-3" class="widget widget_text"><h3 class="widgettitle">广告</h3>			<div class="textwidget">本站使用digitalocean提供的VPS；<br/>
+访问速度可以通过<a href="http://blog.me115.com" target="_blank">大CC博客</a> 和<a href="http://www.me115.com" target="_blank">木书架网</a>体验；<br/>
+其中我的博客为直连digitalocean，
+而木书架网站采用了第三方CDN加速（安全宝）<br/><br/>
+
+从以下链接点击进入注册digitalocean，您将获取10美元(可免费使用2个月的VPS):<br/>
+
+<B><a href="https://www.digitalocean.com/?refcode=ee9c5a992d6f" target="_blank">DigitalOcean</a></B></div>
+		</div><div id="ds-recent-comments-2" class="widget ds-widget-recent-comments"><h3 class="widgettitle">近期评论</h3><ul class="ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-avatar-size="30" data-excerpt-length="70"></ul></div><script>
+if (typeof DUOSHUO !== 'undefined')
+	DUOSHUO.RecentComments && DUOSHUO.RecentComments('.ds-recent-comments');
+</script><div id="archives-3" class="widget widget_archive"><h3 class="widgettitle">文章归档</h3>		<ul>
+			<li><a href='http://blog.me115.com/date/2015/12' title='2015 年十二月'>2015 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/11' title='2015 年十一月'>2015 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/10' title='2015 年十月'>2015 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/09' title='2015 年九月'>2015 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/08' title='2015 年八月'>2015 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/06' title='2015 年六月'>2015 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/05' title='2015 年五月'>2015 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/04' title='2015 年四月'>2015 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/03' title='2015 年三月'>2015 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/02' title='2015 年二月'>2015 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/01' title='2015 年一月'>2015 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/11' title='2014 年十一月'>2014 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/10' title='2014 年十月'>2014 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/09' title='2014 年九月'>2014 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/08' title='2014 年八月'>2014 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/07' title='2014 年七月'>2014 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/06' title='2014 年六月'>2014 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/05' title='2014 年五月'>2014 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/04' title='2014 年四月'>2014 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/02' title='2014 年二月'>2014 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/12' title='2013 年十二月'>2013 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/11' title='2013 年十一月'>2013 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/10' title='2013 年十月'>2013 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/09' title='2013 年九月'>2013 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/06' title='2013 年六月'>2013 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/04' title='2013 年四月'>2013 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/03' title='2013 年三月'>2013 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/01' title='2013 年一月'>2013 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/12' title='2012 年十二月'>2012 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/10' title='2012 年十月'>2012 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/09' title='2012 年九月'>2012 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/08' title='2012 年八月'>2012 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/05' title='2012 年五月'>2012 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/04' title='2012 年四月'>2012 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/02' title='2012 年二月'>2012 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/11' title='2011 年十一月'>2011 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/10' title='2011 年十月'>2011 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/09' title='2011 年九月'>2011 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/07' title='2011 年七月'>2011 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/06' title='2011 年六月'>2011 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/05' title='2011 年五月'>2011 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/04' title='2011 年四月'>2011 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/03' title='2011 年三月'>2011 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/02' title='2011 年二月'>2011 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/01' title='2011 年一月'>2011 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/12' title='2010 年十二月'>2010 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/11' title='2010 年十一月'>2010 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/10' title='2010 年十月'>2010 年十月</a></li>
+		</ul>
+</div><div id="categories-2" class="widget widget_categories"><h3 class="widgettitle">分类目录</h3>		<ul>
+	<li class="cat-item cat-item-2"><a href="http://blog.me115.com/category/beautiful-life" title="查看 Beautiful Life 下的所有文章">Beautiful Life</a>
+</li>
+	<li class="cat-item cat-item-92"><a href="http://blog.me115.com/category/berkeley-db" title="查看 Berkeley DB 下的所有文章">Berkeley DB</a>
+</li>
+	<li class="cat-item cat-item-3"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98/c%e7%bc%96%e7%a8%8b" title="查看 C++编程 下的所有文章">C++编程</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84" title="查看 CC书评 下的所有文章">CC书评</a>
+</li>
+	<li class="cat-item cat-item-5"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91" title="查看 CC评网 下的所有文章">CC评网</a>
+</li>
+	<li class="cat-item cat-item-6"><a href="http://blog.me115.com/category/linuxunix" title="查看 Linux&amp;Unix 下的所有文章">Linux&amp;Unix</a>
+</li>
+	<li class="cat-item cat-item-90"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1" title="查看 Linux工具箱 下的所有文章">Linux工具箱</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="http://blog.me115.com/category/python" title="查看 Python 下的所有文章">Python</a>
+</li>
+	<li class="cat-item cat-item-93"><a href="http://blog.me115.com/category/redis" title="查看 Redis 下的所有文章">Redis</a>
+</li>
+	<li class="cat-item cat-item-8"><a href="http://blog.me115.com/category/web%e5%bc%80%e5%8f%91" title="查看 WEB开发 下的所有文章">WEB开发</a>
+</li>
+	<li class="cat-item cat-item-127"><a href="http://blog.me115.com/category/%e5%84%92%e9%87%8a%e9%81%93" title="查看 儒释道 下的所有文章">儒释道</a>
+</li>
+	<li class="cat-item cat-item-9"><a href="http://blog.me115.com/category/%e5%85%ac%e5%8f%b8%e7%ae%a1%e7%90%86" title="查看 公司管理 下的所有文章">公司管理</a>
+</li>
+	<li class="cat-item cat-item-10"><a href="http://blog.me115.com/category/%e5%b9%b6%e8%a1%8c%e8%ae%a1%e7%ae%97" title="查看 并行计算 下的所有文章">并行计算</a>
+</li>
+	<li class="cat-item cat-item-58"><a href="http://blog.me115.com/category/%e6%91%84%e5%bd%b1" title="查看 摄影 下的所有文章">摄影</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="http://blog.me115.com/category/%e6%97%b6%e9%97%b4%e7%ae%a1%e7%90%86" title="查看 时间管理 下的所有文章">时间管理</a>
+</li>
+	<li class="cat-item cat-item-1"><a href="http://blog.me115.com/category/uncategorized" title="查看 未分类 下的所有文章">未分类</a>
+</li>
+	<li class="cat-item cat-item-113"><a href="http://blog.me115.com/category/%e6%9e%b6%e6%9e%84" title="查看 架构 下的所有文章">架构</a>
+</li>
+	<li class="cat-item cat-item-12"><a href="http://blog.me115.com/category/%e7%a4%be%e4%bc%9a%e6%9d%82%e8%b0%88" title="查看 社会杂谈 下的所有文章">社会杂谈</a>
+</li>
+	<li class="cat-item cat-item-74"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98" title="查看 程序员 下的所有文章">程序员</a>
+</li>
+	<li class="cat-item cat-item-13"><a href="http://blog.me115.com/category/%e7%bb%8f%e6%b5%8e%e8%a7%82%e7%82%b9" title="查看 经济观点 下的所有文章">经济观点</a>
+</li>
+	<li class="cat-item cat-item-132"><a href="http://blog.me115.com/category/%e8%a7%82%e7%82%b9%e4%b8%8e%e6%84%9f%e6%83%b3" title="查看 观点与感想 下的所有文章">观点与感想</a>
+</li>
+	<li class="cat-item cat-item-14"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0" title="查看 读书笔记 下的所有文章">读书笔记</a>
+</li>
+	<li class="cat-item cat-item-15"><a href="http://blog.me115.com/category/%e9%a1%b9%e7%9b%ae%e7%ae%a1%e7%90%86" title="查看 项目管理 下的所有文章">项目管理</a>
+</li>
+		</ul>
+</div><div id="meta-2" class="widget widget_meta"><h3 class="widgettitle">功能</h3>			<ul>
+						<li><a href="http://blog.me115.com/wp-login.php">登录</a></li>
+			<li><a href="http://blog.me115.com/feed" title="使用 RSS 2.0 订阅本站点内容">文章 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://blog.me115.com/comments/feed" title="使用 RSS 订阅本站点的所有文章的近期评论">评论 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://cn.wordpress.org/" title="基于 WordPress，一个优美、先进的个人信息发布平台。">WordPress.org</a></li>
+						</ul>
+</div><div id="nav_menu-2" class="widget widget_nav_menu"><div class="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5-container"><ul id="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5" class="menu"><li id="menu-item-304" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-304"><a title="pongba,关注C++，心理学" href="http://mindhacks.cn/archives/">刘未鹏</a></li>
+<li id="menu-item-540" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-540"><a title="游走世界，精彩人生" href="http://www.purplexsu.net/">purplexsu</a></li>
+<li id="menu-item-348" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-348"><a href="http://coolshell.cn/">酷壳</a></li>
+<li id="menu-item-322" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-322"><a href="http://www.cppfans.org/">C++爱好者博客</a></li>
+<li id="menu-item-321" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-321"><a href="http://www.cnblogs.com/archy_yu/">Archy Yu</a></li>
+<li id="menu-item-305" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-305"><a href="http://www.shenlongbin.com/">申龙斌的程序人生</a></li>
+<li id="menu-item-324" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-324"><a href="http://www.rrgod.com">Eddy Blog</a></li>
+<li id="menu-item-340" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-340"><a href="http://www.wangyuxiong.com/">点滴–挖掘技术细节</a></li>
+<li id="menu-item-341" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-341"><a href="http://www.hiadmin.org/">Smart Testing</a></li>
+</ul></div></div><div id="text-2" class="widget widget_text"><h3 class="widgettitle">统计</h3>			<div class="textwidget"><script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_4893206'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/stat.php%3Fid%3D4893206%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script></div>
+		</div>
+
+	</div><!-- end: #sidebar -->
+</div><!-- end: #sidebar-border --></div><!--wrapper-->
+<div class="clear"></div>
+<div id="footer">
+	<div id="footer-inside">
+		<p>
+			版权所有 &copy; 2015 大CC			| 站点由 <a href="http://zww.me">zBench</a> 和 <a href="http://wordpress.org/">WordPress</a> 驱动		</p>
+		<span id="back-to-top">&uarr; <a href="#" rel="nofollow" title="Back to top">回到顶部</a></span>
+	</div>
+</div><!--footer-->
+</body>
+</html>
+<script  type="text/javascript">
+$(function(){
+    $("pre").addClass("prettyprint");
+    $(".entry").addClass("markdown-body");
+    prettyPrint();
+    var dirbef = '<div id="navCategory" class="dir"><h3>内容目录</h3><ul>', dirend = '</ul><//div>', dircontent = '';
+$('.entry h2').each( function(i,e){ dircontent += '<li><a href="#h2' + i + '">' + $(e).text() + "</a></li>"; $(this).attr('id', 'h2' + i);  } );$( dirbef + dircontent + dirend ).insertBefore( '.entry' );});
+</script>
+
+
+<!-- Dynamic page generated in 0.139 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2015-12-15 02:03:12 -->
+
+<!-- super cache -->

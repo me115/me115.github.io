@@ -1,0 +1,434 @@
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/prettify.css" />
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/github.css"/>
+<script src="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/jquery.js" type="text/javascript"></script> 
+<script src="http://files.cnblogs.com/xguo/google-code-prettify.js"></script>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+<head profile="http://gmpg.org/xfn/11">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Linux下SVN部署/安全及权限配置，实现web同步更新大CC | 大CC</title>
+	<link rel="stylesheet" type="text/css" media="all" href="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/style.css" />
+	<link rel="pingback" href="http://blog.me115.com/xmlrpc.php" />
+	<link rel="alternate" type="application/rss+xml" title="大CC &raquo; Feed" href="http://blog.me115.com/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; 评论 Feed" href="http://blog.me115.com/comments/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; Linux下SVN部署/安全及权限配置，实现web同步更新 评论 Feed" href="http://blog.me115.com/2013/04/306/feed" />
+<script type="text/javascript">
+var duoshuoQuery = {"short_name":"me115","sso":{"login":"http:\/\/blog.me115.com\/wp-login.php?action=duoshuo_login","logout":"http:\/\/blog.me115.com\/wp-login.php?action=logout&_wpnonce=830f012da7"},"theme":"default","stylePatch":"wordpress\/zBench"};
+duoshuoQuery.sso.login += '&redirect_to=' + encodeURIComponent(window.location.href);
+duoshuoQuery.sso.logout += '&redirect_to=' + encodeURIComponent(window.location.href);
+</script>
+<script type="text/javascript" src="http://static.duoshuo.com/embed.js" charset="UTF-8" async="async"></script>
+<script type='text/javascript' src='http://blogcc.u.qiniudn.com/wp-includes/js/comment-reply.min.js?ver=3.5'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://blog.me115.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://blog.me115.com/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='轻松scrum之旅 思维导图读书笔记' href='http://blog.me115.com/2013/03/299' />
+<link rel='next' title='请给我一份出彩的报价邮件！' href='http://blog.me115.com/2013/04/308' />
+<meta name="generator" content="WordPress 3.5" />
+<link rel='shortlink' href='http://blog.me115.com/?p=306' />
+
+<!-- All in One SEO Pack 1.6.15.3 by Michael Torbert of Semper Fi Web Design[629,707] -->
+<meta name="keywords" content="svn,项目管理" />
+<link rel="canonical" href="http://blog.me115.com/2013/04/306" />
+<!-- /all in one seo pack -->
+</head>
+<body class="single single-post postid-306 single-format-standard">
+<div id="nav">
+	<div id="menus">
+		<ul><li><a href="http://blog.me115.com/">首页</a></li></ul>
+		<ul id="menu-linux-2" class="menu"><li id="menu-item-566" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-566"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1">Linux工具箱</a></li>
+<li id="menu-item-493" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-493"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84">书评和笔记</a>
+<ul class="sub-menu">
+	<li id="menu-item-495" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-495"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0">读书笔记</a></li>
+	<li id="menu-item-494" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-494"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91">CC评网</a></li>
+</ul>
+</li>
+<li id="menu-item-560" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-560"><a href="http://blog.me115.com/%e9%98%85%e8%af%bb%e8%ae%a1%e5%88%92">阅读计划</a></li>
+<li id="menu-item-461" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-461"><a href="http://blog.me115.com/%e5%85%b3%e4%ba%8e%e6%9c%a8%e4%b9%a6%e6%9e%b6">关于木书架</a></li>
+<li id="menu-item-462" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-462"><a href="http://blog.me115.com/sample-page">关于我</a></li>
+</ul>	</div>
+	<div id="search">
+		<form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form>	</div>
+</div>
+<div id="wrapper">
+	<div id="header">		<h1><a href="http://blog.me115.com/">大CC</a></h1>
+		<h2>关注 Nosql/架构/时间管理/阅读分享</h2>
+		<div class="clear"></div>
+			</div>
+<div id="content">
+		<div class="post-306 post type-post status-publish format-standard hentry category-15 tag-svn tag-15 post-single" id="post-306"><!-- post div -->
+		<h2 class="title">Linux下SVN部署/安全及权限配置，实现web同步更新</h2>
+		<div class="post-info-top">
+			<span class="post-info-date">
+				作者: <a href="http://blog.me115.com/author/me115wp" title="查看 大CC 的所有文章" rel="author">大CC</a>
+				日期:				2013 年 4 月 6 日							</span>
+						<span class="addcomment"><a href="#respond"  rel="nofollow" title="发表评论？">发表评论</a><span class="ds-thread-count" data-thread-key="306" data-replace="1"> (0)</span></span>
+			<span class="gotocomments"><a href="#comments"  rel="nofollow" title="查看评论？">查看评论</a></span>
+					</div>
+		<div class="clear"></div>
+		<div class="entry">
+			<p><font size="3" face="华文中宋">本文包含以下内容：</font>
+<p><font size="3" face="华文中宋">SVN服务器安装</font></p>
+<p><font size="3" face="华文中宋">SVN权限管理</font></p>
+<p><font size="3" face="华文中宋">SVN使用SASL加密</font></p>
+<p><font size="3" face="华文中宋">SVN上传时同步其它目录</font></p>
+<p><font size="3" face="华文中宋"></font>&nbsp;<br />
+<h1><font color="#ff8040" size="3" face="华文中宋"><strong>需求</strong></font></h1>
+<p><font size="3" face="华文中宋">在WEB线上版本管理的基础上，能够在代码上传之后，立刻通过WEB访问，查看修改效果；同时，保证数据的安全性；</font>
+<p><font size="3" face="华文中宋"></font>&nbsp;<br />
+<h1><font color="#ff8040" size="3" face="华文中宋"><strong>SVN安装</strong></font></h1>
+<p>
+<p><font size="3" face="华文中宋"></font></p>
+<p><font size="3" face="华文中宋">SVN服务器有2种运行方式：独立服务器和借助apache运行。</font>
+<p><font size="3" face="华文中宋">svnserve和apache相比是轻量级的，也比较简单，svnserve包含在subversion里面，所以只要安装了subversion就相当于安装了一个小型的svn服务器。它使用自己的一套协议通信。例如访问apache时使用 http:// 前缀，而svnserve使用 svn:// 前缀.</font>
+<p><font size="3" face="华文中宋">这里介绍的是通过独立服务器方式运行，优点是简单小巧。如果是支持较大规模的开发，还是推荐使用apache服务器方式；这里使用svnserver安装；</font>
+<p><font size="3" face="华文中宋"> 1.首先为SVN单独创建一个用户，这样可以使用操作系统的安全特性；</font>
+<p><font size="3" face="华文中宋"> 2.将svnadmin这个用户加入到sudu组；</font>
+<p><font size="3" face="华文中宋"> 3.安装：</font>
+<p><font size="3" face="华文中宋"> sudo apt-get install subversion</font>
+<p><font size="3" face="华文中宋">4.创建测试目录： </font>
+<p><font size="3" face="华文中宋"> mkdir /home/svnadmin/test</font>
+<p><font size="3" face="华文中宋">5.创建版本库：<br /> svnadmin create /home/svnadmin/test</font>
+<p><font size="3" face="华文中宋">4. 导入项目</font>
+<p><font size="3" face="华文中宋">例如现在有个工程，名称为examPro，</font></p>
+<p><font size="3" face="华文中宋">位置/alidata/www/examPro , 将这个工程导入到本地仓库中。</p>
+<p></font>
+<p><font size="3" face="华文中宋"> svn import /alidata/www/examPro&nbsp; file:///home/svnadmin/examPro&nbsp; -m &#8220;import examPro&#8221;</font>
+<p><font size="3" face="华文中宋">在上一个例子里，将会拷贝目录examPro到版本库中；</font>
+<p><font size="3" face="华文中宋">这样这个工程就在纳入服务器的本地仓库管理。</font></p>
+<p><font size="3" face="华文中宋">为了使用SVN的同步更新机制，我们需要在svn服务器环境上签出一份最新工程拷贝（为表述方便，这里称为A目录）。<br />$ svn checkout </font><a href="file:///home/myrepos"><font size="3" face="华文中宋"><a href="file:///home/svnadmin/examPro">file:///home/svnadmin/examPro</font></a></a><br /><font size="3" face="华文中宋">在这个拷贝里，我们一般不做修改，而是用来同步更新；当开发机器上有任何修改，更新到SVN服务器上时，能同步更新到A目录；这样，就能保证A目录下的代码是整个工程的最新代码，而使用A目录搭建的WEB测试环境，就是最新的WEB测试环境；</font></p>
+<p><font size="3" face="华文中宋">&nbsp;</font></p>
+<p><font size="3" face="华文中宋">5.启动SVN服务</font>
+<p><font size="3" face="华文中宋">$ svnserve -d -r /home/svnadmin/examPro&nbsp; </font>
+<p><font size="3" face="华文中宋">描述说明：<br />-d 表示svnserver以“守护”进程模式运行<br />-r 指定文件系统的根位置（版本库的根目录），这样客户端不用输入全路径，就可以访问版本库。</font>
+<p><font size="3" face="华文中宋">6.停止svn服务：</font>
+<p><font size="3" face="华文中宋">killall svnserve //停止svnserve服务</font>
+<p><strong><font size="3" face="华文中宋"></font></strong>&nbsp;<br />
+<h1><strong><font color="#ff8040" size="3" face="华文中宋">SVN权限管理</font></strong></h1>
+<h2><font size="3" face="华文中宋">1.SVN版本库目录说明</font></h2>
+<p><font size="3" face="华文中宋">db：存放具体数据；</font>
+<p><font size="3" face="华文中宋">hooks：钩子程序存放地，比如我们要实现同步更新的操作，在这里实现；</font>
+<p><font size="3" face="华文中宋">conf：配置文件存放地</font>
+<p><font size="3" face="华文中宋">下面具体说说conf目录；</font></p>
+<p><font size="3" face="华文中宋">conf目录下有三个文件：</font></p>
+<p><font size="3" face="华文中宋">svnserve.conf、authz、以及passwd；<br /></font></p>
+<h2><font size="3" face="华文中宋">2.SVN服务配置文件：svnserve.conf</font></h2>
+<p><font size="3" face="华文中宋">查看该文件，首先是匿名用户的权限配置：</font>
+<p><font size="3" face="华文中宋">anon-access = none</font>
+<p><font size="3" face="华文中宋">auth-access = write</font>
+<p><font size="3" face="华文中宋">表示：对于匿名用户，无访问权限；</font>
+<p><font size="3" face="华文中宋">对于授权用户，有写权限；</font>
+<p><font size="3" face="华文中宋"></font>&nbsp;
+<p><font size="3" face="华文中宋">接下来的一段用于配置使用哪种授权登录方式；</font>
+<p><font size="3" face="华文中宋">可选的有password-db ，就是用户名和密码都是明文存放在同级目录下的passwd文件中；优点是高效配置简单，缺点是安全性弱，明文总不是那么让人感觉可靠；</font>
+<p><font size="3" face="华文中宋">另一种是authz-db，这种方式的用户密码使用了sasl加密，安全上有保证；</font>
+<p><font size="3" face="华文中宋">选择这种方式的设置，将password-db 注释掉：</font>
+<p><font size="3" face="华文中宋"># password-db = passwd</font>
+<p><font size="3" face="华文中宋">authz-db = authz</font>
+<p><font size="3" face="华文中宋">#指定授权所属的域，C++的同志可将其理解为名字空间；</font>
+<p><font size="3" face="华文中宋">realm = examPro</font>
+<p><font size="3" face="华文中宋">接下来是[sasl]段，用于标识是否进行SASL加密处理；</font>
+<p><font size="3" face="华文中宋">use-sasl = true</font>
+<p><font size="3" face="华文中宋">min-encryption = 128</font>
+<p><font size="3" face="华文中宋">max-encryption = 256</font>
+<p><font size="3" face="华文中宋">变量 min-encryption 和 max-encryption 控制服务器所需要的加密强度。</font>
+<p><font size="3" face="华文中宋"></font>&nbsp;<br />
+<h2><font size="3" face="华文中宋">3. 详细权限配置文件authz：</font></h2>
+<p><font size="3" face="华文中宋">这个就是授权数据库，用于配置指定目录对用户的访问权限；</font>
+<p><font size="3" face="华文中宋">首先是指定一个用户组，按组来分配权限总是方便的，即使目前你的团队一个组只有一个人。在新加入成员的时候，你就能体会到按组分配权限的便利性了；</font>
+<p><font size="3" face="华文中宋">[groups]</font>
+<p><font size="3" face="华文中宋">g_fronter=cuicc,gdii</font>
+<p><font size="3" face="华文中宋">g_vip=coo</font>
+<p><font size="3" face="华文中宋">g_doc=yhh</font>
+<p><font size="3" face="华文中宋">[examPro:/]</font>
+<p><font size="3" face="华文中宋">@g_vip=rw</font>
+<p><font size="3" face="华文中宋">@g_fronter=r</font>
+<p><font size="3" face="华文中宋">@g_doc=r</font>
+<p><font size="3" face="华文中宋">[examPro:/protected/modules]</font>
+<p><font size="3" face="华文中宋">@g_vip=rw</font>
+<p><font size="3" face="华文中宋">@g_fronter=</font>
+<p><font size="3" face="华文中宋">*=</font>
+<p><font size="3" face="华文中宋">[examPro:/protected]</font>
+<p><font size="3" face="华文中宋">@g_doc=</font>
+<p><font size="3" face="华文中宋">对于以上代码的配置的详细说明，可以参考本文的参考文章[1]SVN权限配置，里面介绍的比较详细，这里就不多说，有疑问的请留言或mail；</font>
+<p><strong><font size="3" face="华文中宋"></font></strong>&nbsp;<br />
+<h1><strong><font color="#ff8040" size="3" face="华文中宋">SVN使用SASL加密</font></strong></h1>
+<p><font size="3" face="华文中宋">1.配置svnserve.conf，注释掉password-db = passwd</font>
+<p><font size="3" face="华文中宋">并启用sqsl：use-sasl = true</font>
+<p><font size="3" face="华文中宋">2.新建一个svn.conf文件，一般放在/usr/lib/sasl2或者/etc/sasl2，内容为：</font>
+<p><font size="3" face="华文中宋">pwcheck_method: auxprop</font>
+<p><font size="3" face="华文中宋">auxprop_plugin: sasldb</font>
+<p><font size="3" face="华文中宋">sasldb_path: /home/svnadmin/config/sasldb</font>
+<p><font size="3" face="华文中宋">mech_list: DIGEST-MD5</font>
+<p><font size="3" face="华文中宋">其中sasldb_path 指定你打算将sasl加密的数据库放置的位置；</font>
+<p><font size="3" face="华文中宋">注释：pwcheck_method指明检查的方法，这里是“auxprop ”，这个pwcheck_method还对应了如启动一个代理作为认证服务等方式，而现在的意思就是使用本文件说的方式去检查。然后我们指明auxprop_plugin为sasldb，也就是使用一个文件存放用户名密码，也就是/home/svn/svnjiami/sasldb,其它的认证信息存放plugin还有sql和ldapdb。而mech_list指明了认证信息传递机制。</font>
+<p><font size="3" face="华文中宋">svnserve 已经在运行，你需要重启服务，并确保它读取了更新后的配置参数</font>
+<p><font size="3" face="华文中宋">killall svnserve //停止svnserve服务</font>
+<p><font size="3" face="华文中宋">svnserve –d –r /home/svn //启动svnserve服务</font>
+<p><font size="3" face="华文中宋">3.创建用户和密码</font>
+<p><font size="3" face="华文中宋">使用saslpasswd2 程序</font>
+<p><font size="3" face="华文中宋">语法：saslpasswd2 –c –f /home/svn/jiami/sasldb –u [svnserve.conf里面配置的realm名字] [username]</font>
+<p><font size="3" face="华文中宋">eg：saslpasswd2 -c&nbsp; -f /home/svnadmin/config/sasldb -u examPro colin</font>
+<p><font size="3" face="华文中宋">会出现交互界面，提示输入两次密码；</font>
+<p><font size="3" face="华文中宋">附：</font>
+<p><font size="3" face="华文中宋">saslpasswd2 -d -f home/svnadmin/config/sasldb -u 用户名//删除用户</font>
+<p><font size="3" face="华文中宋">sasldblistusers2 -f /home/svnadmin/config/sasldb // 查询用户</font>
+<p><font size="3" face="华文中宋">PS：如果访问库的时候出现以下提示 &#8220;Could not obtain the list of SASL mechanisms&#8221;，原因是Linux默认没有安装DIGEST-MD5，此时，可用以下命令安装更新：yum install cyrus-sasl-md5 , cyrus-sasl-md5首页: </font><a href="http://asg.web.cmu.edu/sasl/"><font size="3" face="华文中宋">http://asg.web.cmu.edu/sasl/</font></a><font size="3" face="华文中宋">, 安装包下载地址:</font><a href="ftp://ftp.andrew.cmu.edu/pub/cyrus/"><font size="3" face="华文中宋">ftp://ftp.andrew.cmu.edu/pub/cyrus/</font></a>
+<p><font size="3" face="华文中宋">配置完成；</font>
+<p><strong><font size="3" face="华文中宋"></font>&nbsp;<br />
+<h1><font color="#ff8040" size="3" face="华文中宋">SVN上传时同步到服务器其它目录</font></h1>
+<p><font size="3" face="华文中宋"></font></strong>
+<p><font size="3" face="华文中宋">svn/examPro/hooks/目录下：</font>
+<p><font size="3" face="华文中宋">能看到一堆模版钩子文件，我们需要的是post-commit.tmpl，</font>
+<p><font size="3" face="华文中宋">copy一份，命名为post-commit。然后修改；</font>
+<p><font size="3" face="华文中宋">1.设置语言环境：</font>
+<p><font size="3" face="华文中宋">#这行比较重要，需要根据你的服务器环境选择正确的语言环境，否则，这个update不会工作；</font>
+<p><font size="3" face="华文中宋">#export LANG=zh_CN.UTF-8</font>
+<p><font size="3" face="华文中宋">export LANG=en_US.UTF-8</font>
+<p><font size="3" face="华文中宋">2.设置SVN更新时需要同步更新的目录</font>
+<p><font size="3" face="华文中宋">svn update /alidata/www/examplePro &#8211;username yoursname &#8211;password yourpwd</font>
+<p><font size="3" face="华文中宋">以上这行表明，当svn服务器版本有更新时，则同步更新到/alidata/www/examPro目录下的对应文件；yoursname 和yourpwd是你在sasl中设置的用户名和密码；（这里还是涉及到了明文存放，对此，你可以分配一个用户对svn版本库只有全局的读权限）</font>
+<p><font size="3" face="华文中宋">3.输出日志，便于跟踪查询</font>
+<p><font size="3" face="华文中宋">echo `whoami`,$REPOS,$REV &gt;&gt; /home/svnadmin/examPro/hooks/svn_hook.log</font>
+<p><font size="3" face="华文中宋">每当有更新时，更新日志里就会插入一条语句，表明何时有过更新；（这个也可用来配置环境时调试，用来查询同步是否起效）</font>
+<p><font size="3" face="华文中宋">我们的配置到这里就全部完成；</font>
+<p><font size="3" face="华文中宋">现在，SVN就实现了版本管理的功能，同时，同步更新的目录有利于测试人员集成测试；</font>
+<p><font size="3" face="华文中宋">开发人员需要保证的是，任何时候签入到svn库中的版本是可运行的代码。</font>
+<p><font size="3" face="华文中宋"></font>&nbsp;<br />
+<h1><font color="#ff8040" size="3" face="华文中宋">参考：</font></h1>
+<p><font size="3" face="华文中宋">[1]:SVN权限配置：</font><a href="http://hi.baidu.com/victorlin23/item/f3f42f276e9c810a42634a94"><font size="3" face="华文中宋">http://hi.baidu.com/victorlin23/item/f3f42f276e9c810a42634a94</font></a>
+<p><font size="3" face="华文中宋">[2]:SVN使用SASL加密：</font><a href="http://www.cnblogs.com/linn/archive/2011/08/04/2127014.html"><font size="3" face="华文中宋">http://www.cnblogs.com/linn/archive/2011/08/04/2127014.html</font></a>
+<p><a href="http://www.cnblogs.com/linn/archive/2011/08/04/2127014.html"><font size="3" face="华文中宋"></font></a></p>
+<div class="ujian-hook"></div>
+<div style='clear:both;'></div>
+<p>		<script type="text/javascript">
+		var ujian_config = {
+			'num':5,
+			'showType':2,
+			'bgColor':"",
+			'mouseoverColor':"#E6F3DE",
+			'textColor':"#333333",
+			'hoverTextColor':"#333333",
+			'borderColor':"#dddddd",
+			'picSize':96,
+			'target':1,
+			'textHeight':60,
+			'defaultPic':"",
+			'itemTitle':"您可能喜欢："
+		}</script><br />
+	<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js"></script></p>
+					</div><!-- END entry -->
+		<div class="add-info">
+					</div>
+		<div class="post-info-bottom">
+			<span class="post-info-category"><a href="http://blog.me115.com/category/%e9%a1%b9%e7%9b%ae%e7%ae%a1%e7%90%86" title="查看 项目管理 中的全部文章" rel="category tag">项目管理</a></span><span class="post-info-tags"><a href="http://blog.me115.com/tag/svn" rel="tag">svn</a>, <a href="http://blog.me115.com/tag/%e9%a1%b9%e7%9b%ae%e7%ae%a1%e7%90%86" rel="tag">项目管理</a></span>
+		</div>
+		<div id="nav-below">
+			<div class="nav-previous"><a href="http://blog.me115.com/2013/03/299" rel="prev"><span class="meta-nav">&larr;</span> 轻松scrum之旅 思维导图读书笔记</a></div>
+			<div class="nav-next"><a href="http://blog.me115.com/2013/04/308" rel="next">请给我一份出彩的报价邮件！ <span class="meta-nav">&rarr;</span></a></div>
+		</div><!-- #nav-below -->					
+	</div><!-- END post -->
+	<a name="comments"></a>
+
+<div class="ds-thread" data-thread-key="306" data-author-key="1" data-title="Linux下SVN部署/安全及权限配置，实现web同步更新" data-url="http://blog.me115.com/2013/04/306"></div>
+
+<script type="text/javascript">
+	if (typeof DUOSHUO !== 'undefined')
+		DUOSHUO.EmbedThread('.ds-thread');
+</script>
+	<div id="ds-ssr">
+
+		
+            <ol id="commentlist">
+                            </ol>
+
+		            
+    </div></div><!--content-->
+<div id="sidebar-border">
+	<div id="rss_border">
+		<div class="rss_border">
+			<div id="rss_wrap">
+				<div class="rss_wrap">
+										<a class="rss rss_text" href="http://blog.me115.com/feed" rel="bookmark" title="RSS 订阅">RSS 订阅</a>
+																													</div>
+			</div>
+		</div>
+	</div>
+	<div id="sidebar">
+
+<div id="search-2" class="widget widget_search"><form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form></div>		<div id="recent-posts-2" class="widget widget_recent_entries">		<h3 class="widgettitle">近期文章</h3>		<ul>
+					<li>
+				<a href="http://blog.me115.com/2015/12/891" title="单线程你别阻塞，Redis时延问题分析及应对">单线程你别阻塞，Redis时延问题分析及应对</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/11/886" title="负载均衡的几种常用方案">负载均衡的几种常用方案</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/11/884" title="Redis哈希表的实现要点">Redis哈希表的实现要点</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/10/875" title="多线程和多进程模型的选用">多线程和多进程模型的选用</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/10/872" title="异步和非阻塞">异步和非阻塞</a>
+						</li>
+				</ul>
+		</div><div id="text-3" class="widget widget_text"><h3 class="widgettitle">广告</h3>			<div class="textwidget">本站使用digitalocean提供的VPS；<br/>
+访问速度可以通过<a href="http://blog.me115.com" target="_blank">大CC博客</a> 和<a href="http://www.me115.com" target="_blank">木书架网</a>体验；<br/>
+其中我的博客为直连digitalocean，
+而木书架网站采用了第三方CDN加速（安全宝）<br/><br/>
+
+从以下链接点击进入注册digitalocean，您将获取10美元(可免费使用2个月的VPS):<br/>
+
+<B><a href="https://www.digitalocean.com/?refcode=ee9c5a992d6f" target="_blank">DigitalOcean</a></B></div>
+		</div><div id="ds-recent-comments-2" class="widget ds-widget-recent-comments"><h3 class="widgettitle">近期评论</h3><ul class="ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-avatar-size="30" data-excerpt-length="70"></ul></div><script>
+if (typeof DUOSHUO !== 'undefined')
+	DUOSHUO.RecentComments && DUOSHUO.RecentComments('.ds-recent-comments');
+</script><div id="archives-3" class="widget widget_archive"><h3 class="widgettitle">文章归档</h3>		<ul>
+			<li><a href='http://blog.me115.com/date/2015/12' title='2015 年十二月'>2015 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/11' title='2015 年十一月'>2015 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/10' title='2015 年十月'>2015 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/09' title='2015 年九月'>2015 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/08' title='2015 年八月'>2015 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/06' title='2015 年六月'>2015 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/05' title='2015 年五月'>2015 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/04' title='2015 年四月'>2015 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/03' title='2015 年三月'>2015 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/02' title='2015 年二月'>2015 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/01' title='2015 年一月'>2015 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/11' title='2014 年十一月'>2014 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/10' title='2014 年十月'>2014 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/09' title='2014 年九月'>2014 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/08' title='2014 年八月'>2014 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/07' title='2014 年七月'>2014 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/06' title='2014 年六月'>2014 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/05' title='2014 年五月'>2014 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/04' title='2014 年四月'>2014 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/02' title='2014 年二月'>2014 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/12' title='2013 年十二月'>2013 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/11' title='2013 年十一月'>2013 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/10' title='2013 年十月'>2013 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/09' title='2013 年九月'>2013 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/06' title='2013 年六月'>2013 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/04' title='2013 年四月'>2013 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/03' title='2013 年三月'>2013 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/01' title='2013 年一月'>2013 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/12' title='2012 年十二月'>2012 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/10' title='2012 年十月'>2012 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/09' title='2012 年九月'>2012 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/08' title='2012 年八月'>2012 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/05' title='2012 年五月'>2012 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/04' title='2012 年四月'>2012 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/02' title='2012 年二月'>2012 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/11' title='2011 年十一月'>2011 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/10' title='2011 年十月'>2011 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/09' title='2011 年九月'>2011 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/07' title='2011 年七月'>2011 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/06' title='2011 年六月'>2011 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/05' title='2011 年五月'>2011 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/04' title='2011 年四月'>2011 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/03' title='2011 年三月'>2011 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/02' title='2011 年二月'>2011 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/01' title='2011 年一月'>2011 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/12' title='2010 年十二月'>2010 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/11' title='2010 年十一月'>2010 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/10' title='2010 年十月'>2010 年十月</a></li>
+		</ul>
+</div><div id="categories-2" class="widget widget_categories"><h3 class="widgettitle">分类目录</h3>		<ul>
+	<li class="cat-item cat-item-2"><a href="http://blog.me115.com/category/beautiful-life" title="查看 Beautiful Life 下的所有文章">Beautiful Life</a>
+</li>
+	<li class="cat-item cat-item-92"><a href="http://blog.me115.com/category/berkeley-db" title="查看 Berkeley DB 下的所有文章">Berkeley DB</a>
+</li>
+	<li class="cat-item cat-item-3"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98/c%e7%bc%96%e7%a8%8b" title="查看 C++编程 下的所有文章">C++编程</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84" title="查看 CC书评 下的所有文章">CC书评</a>
+</li>
+	<li class="cat-item cat-item-5"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91" title="查看 CC评网 下的所有文章">CC评网</a>
+</li>
+	<li class="cat-item cat-item-6"><a href="http://blog.me115.com/category/linuxunix" title="查看 Linux&amp;Unix 下的所有文章">Linux&amp;Unix</a>
+</li>
+	<li class="cat-item cat-item-90"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1" title="查看 Linux工具箱 下的所有文章">Linux工具箱</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="http://blog.me115.com/category/python" title="查看 Python 下的所有文章">Python</a>
+</li>
+	<li class="cat-item cat-item-93"><a href="http://blog.me115.com/category/redis" title="查看 Redis 下的所有文章">Redis</a>
+</li>
+	<li class="cat-item cat-item-8"><a href="http://blog.me115.com/category/web%e5%bc%80%e5%8f%91" title="查看 WEB开发 下的所有文章">WEB开发</a>
+</li>
+	<li class="cat-item cat-item-127"><a href="http://blog.me115.com/category/%e5%84%92%e9%87%8a%e9%81%93" title="查看 儒释道 下的所有文章">儒释道</a>
+</li>
+	<li class="cat-item cat-item-9"><a href="http://blog.me115.com/category/%e5%85%ac%e5%8f%b8%e7%ae%a1%e7%90%86" title="查看 公司管理 下的所有文章">公司管理</a>
+</li>
+	<li class="cat-item cat-item-10"><a href="http://blog.me115.com/category/%e5%b9%b6%e8%a1%8c%e8%ae%a1%e7%ae%97" title="查看 并行计算 下的所有文章">并行计算</a>
+</li>
+	<li class="cat-item cat-item-58"><a href="http://blog.me115.com/category/%e6%91%84%e5%bd%b1" title="查看 摄影 下的所有文章">摄影</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="http://blog.me115.com/category/%e6%97%b6%e9%97%b4%e7%ae%a1%e7%90%86" title="查看 时间管理 下的所有文章">时间管理</a>
+</li>
+	<li class="cat-item cat-item-1"><a href="http://blog.me115.com/category/uncategorized" title="查看 未分类 下的所有文章">未分类</a>
+</li>
+	<li class="cat-item cat-item-113"><a href="http://blog.me115.com/category/%e6%9e%b6%e6%9e%84" title="查看 架构 下的所有文章">架构</a>
+</li>
+	<li class="cat-item cat-item-12"><a href="http://blog.me115.com/category/%e7%a4%be%e4%bc%9a%e6%9d%82%e8%b0%88" title="查看 社会杂谈 下的所有文章">社会杂谈</a>
+</li>
+	<li class="cat-item cat-item-74"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98" title="查看 程序员 下的所有文章">程序员</a>
+</li>
+	<li class="cat-item cat-item-13"><a href="http://blog.me115.com/category/%e7%bb%8f%e6%b5%8e%e8%a7%82%e7%82%b9" title="查看 经济观点 下的所有文章">经济观点</a>
+</li>
+	<li class="cat-item cat-item-132"><a href="http://blog.me115.com/category/%e8%a7%82%e7%82%b9%e4%b8%8e%e6%84%9f%e6%83%b3" title="查看 观点与感想 下的所有文章">观点与感想</a>
+</li>
+	<li class="cat-item cat-item-14"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0" title="查看 读书笔记 下的所有文章">读书笔记</a>
+</li>
+	<li class="cat-item cat-item-15"><a href="http://blog.me115.com/category/%e9%a1%b9%e7%9b%ae%e7%ae%a1%e7%90%86" title="查看 项目管理 下的所有文章">项目管理</a>
+</li>
+		</ul>
+</div><div id="meta-2" class="widget widget_meta"><h3 class="widgettitle">功能</h3>			<ul>
+						<li><a href="http://blog.me115.com/wp-login.php">登录</a></li>
+			<li><a href="http://blog.me115.com/feed" title="使用 RSS 2.0 订阅本站点内容">文章 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://blog.me115.com/comments/feed" title="使用 RSS 订阅本站点的所有文章的近期评论">评论 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://cn.wordpress.org/" title="基于 WordPress，一个优美、先进的个人信息发布平台。">WordPress.org</a></li>
+						</ul>
+</div><div id="nav_menu-2" class="widget widget_nav_menu"><div class="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5-container"><ul id="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5" class="menu"><li id="menu-item-304" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-304"><a title="pongba,关注C++，心理学" href="http://mindhacks.cn/archives/">刘未鹏</a></li>
+<li id="menu-item-540" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-540"><a title="游走世界，精彩人生" href="http://www.purplexsu.net/">purplexsu</a></li>
+<li id="menu-item-348" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-348"><a href="http://coolshell.cn/">酷壳</a></li>
+<li id="menu-item-322" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-322"><a href="http://www.cppfans.org/">C++爱好者博客</a></li>
+<li id="menu-item-321" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-321"><a href="http://www.cnblogs.com/archy_yu/">Archy Yu</a></li>
+<li id="menu-item-305" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-305"><a href="http://www.shenlongbin.com/">申龙斌的程序人生</a></li>
+<li id="menu-item-324" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-324"><a href="http://www.rrgod.com">Eddy Blog</a></li>
+<li id="menu-item-340" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-340"><a href="http://www.wangyuxiong.com/">点滴–挖掘技术细节</a></li>
+<li id="menu-item-341" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-341"><a href="http://www.hiadmin.org/">Smart Testing</a></li>
+</ul></div></div><div id="text-2" class="widget widget_text"><h3 class="widgettitle">统计</h3>			<div class="textwidget"><script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_4893206'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/stat.php%3Fid%3D4893206%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script></div>
+		</div>
+
+	</div><!-- end: #sidebar -->
+</div><!-- end: #sidebar-border --></div><!--wrapper-->
+<div class="clear"></div>
+<div id="footer">
+	<div id="footer-inside">
+		<p>
+			版权所有 &copy; 2015 大CC			| 站点由 <a href="http://zww.me">zBench</a> 和 <a href="http://wordpress.org/">WordPress</a> 驱动		</p>
+		<span id="back-to-top">&uarr; <a href="#" rel="nofollow" title="Back to top">回到顶部</a></span>
+	</div>
+</div><!--footer-->
+</body>
+</html>
+<script  type="text/javascript">
+$(function(){
+    $("pre").addClass("prettyprint");
+    $(".entry").addClass("markdown-body");
+    prettyPrint();
+    var dirbef = '<div id="navCategory" class="dir"><h3>内容目录</h3><ul>', dirend = '</ul><//div>', dircontent = '';
+$('.entry h2').each( function(i,e){ dircontent += '<li><a href="#h2' + i + '">' + $(e).text() + "</a></li>"; $(this).attr('id', 'h2' + i);  } );$( dirbef + dircontent + dirend ).insertBefore( '.entry' );});
+</script>
+
+
+<!-- Dynamic page generated in 0.121 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2015-12-11 13:42:09 -->
+
+<!-- super cache -->

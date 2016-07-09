@@ -1,0 +1,548 @@
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/prettify.css" />
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/github.css"/>
+<script src="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/jquery.js" type="text/javascript"></script> 
+<script src="http://files.cnblogs.com/xguo/google-code-prettify.js"></script>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+<head profile="http://gmpg.org/xfn/11">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>《演讲之禅：一位技术演讲家的自白》读书笔记大CC | 大CC</title>
+	<link rel="stylesheet" type="text/css" media="all" href="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/style.css" />
+	<link rel="pingback" href="http://blog.me115.com/xmlrpc.php" />
+	<link rel="alternate" type="application/rss+xml" title="大CC &raquo; Feed" href="http://blog.me115.com/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; 评论 Feed" href="http://blog.me115.com/comments/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; 《演讲之禅：一位技术演讲家的自白》读书笔记 评论 Feed" href="http://blog.me115.com/2014/06/629/feed" />
+<script type="text/javascript">
+var duoshuoQuery = {"short_name":"me115","sso":{"login":"http:\/\/blog.me115.com\/wp-login.php?action=duoshuo_login","logout":"http:\/\/blog.me115.com\/wp-login.php?action=logout&_wpnonce=c7b4bab775"},"theme":"default","stylePatch":"wordpress\/zBench"};
+duoshuoQuery.sso.login += '&redirect_to=' + encodeURIComponent(window.location.href);
+duoshuoQuery.sso.logout += '&redirect_to=' + encodeURIComponent(window.location.href);
+</script>
+<script type="text/javascript" src="http://static.duoshuo.com/embed.js" charset="UTF-8" async="async"></script>
+<script type='text/javascript' src='http://blogcc.u.qiniudn.com/wp-includes/js/comment-reply.min.js?ver=3.5'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://blog.me115.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://blog.me115.com/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='Linux命令工具基础04 磁盘管理' href='http://blog.me115.com/2014/05/619' />
+<link rel='next' title='策略模式和工厂模式的区别' href='http://blog.me115.com/2014/06/635' />
+<meta name="generator" content="WordPress 3.5" />
+<link rel='shortlink' href='http://blog.me115.com/?p=629' />
+
+<!-- All in One SEO Pack 1.6.15.3 by Michael Torbert of Semper Fi Web Design[629,707] -->
+<meta name="keywords" content="演讲,读书笔记" />
+<link rel="canonical" href="http://blog.me115.com/2014/06/629" />
+<!-- /all in one seo pack -->
+</head>
+<body class="single single-post postid-629 single-format-standard">
+<div id="nav">
+	<div id="menus">
+		<ul><li><a href="http://blog.me115.com/">首页</a></li></ul>
+		<ul id="menu-linux-2" class="menu"><li id="menu-item-566" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-566"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1">Linux工具箱</a></li>
+<li id="menu-item-493" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-493"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84">书评和笔记</a>
+<ul class="sub-menu">
+	<li id="menu-item-495" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-495"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0">读书笔记</a></li>
+	<li id="menu-item-494" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-494"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91">CC评网</a></li>
+</ul>
+</li>
+<li id="menu-item-560" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-560"><a href="http://blog.me115.com/%e9%98%85%e8%af%bb%e8%ae%a1%e5%88%92">阅读计划</a></li>
+<li id="menu-item-461" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-461"><a href="http://blog.me115.com/%e5%85%b3%e4%ba%8e%e6%9c%a8%e4%b9%a6%e6%9e%b6">关于木书架</a></li>
+<li id="menu-item-462" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-462"><a href="http://blog.me115.com/sample-page">关于我</a></li>
+</ul>	</div>
+	<div id="search">
+		<form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form>	</div>
+</div>
+<div id="wrapper">
+	<div id="header">		<h1><a href="http://blog.me115.com/">大CC</a></h1>
+		<h2>关注 Nosql/架构/时间管理/阅读分享</h2>
+		<div class="clear"></div>
+			</div>
+<div id="content">
+		<div class="post-629 post type-post status-publish format-standard hentry category-cc tag-123 tag-14 post-single" id="post-629"><!-- post div -->
+		<h2 class="title">《演讲之禅：一位技术演讲家的自白》读书笔记</h2>
+		<div class="post-info-top">
+			<span class="post-info-date">
+				作者: <a href="http://blog.me115.com/author/me115wp" title="查看 大CC 的所有文章" rel="author">大CC</a>
+				日期:				2014 年 6 月 4 日							</span>
+						<span class="addcomment"><a href="#respond"  rel="nofollow" title="发表评论？">发表评论</a><span class="ds-thread-count" data-thread-key="629" data-replace="1"> (1)</span></span>
+			<span class="gotocomments"><a href="#comments"  rel="nofollow" title="查看评论？">查看评论</a></span>
+					</div>
+		<div class="clear"></div>
+		<div class="entry">
+			<h1 id="-">《演讲之禅：一位技术演讲家的自白》读书笔记</h1>
+
+<p><a href="http://www.amazon.cn/%E6%BC%94%E8%AE%B2%E4%B9%8B%E7%A6%85-%E4%B8%80%E4%BD%8D%E6%8A%80%E6%9C%AF%E6%BC%94%E8%AE%B2%E5%AE%B6%E7%9A%84%E8%87%AA%E7%99%BD-%E6%96%AF%E7%A7%91%E7%89%B9%E2%80%A2%E5%8D%9A%E5%85%8B%E9%A1%BF/dp/B006NS2OUW?SubscriptionId=AKIAJOMEZLLKFEWYT4PQ&amp;tag=z08-23&amp;linkCode=xm2&amp;camp=2025&amp;creative=165953&amp;creativeASIN=B006NS2OUW" target="_blank"><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="s4279952" border="0" alt="s4279952" src="http://blogcc.u.qiniudn.com/wp-content/uploads/2014/06/s4279952.jpg" width="315" height="423" /></a> </p>
+
+<h2 id="-1-">第1章 其实我看不到裸露的你</h2>
+
+<p>要知道你怎么对待错误，听众就会怎样对待错误；   <br />你可以泰然处之，大家也就一笑而过；如果你大惊失色，大家同样会将注意力集中到这件事上；</p>
+
+<p>因此，如果我在费城的下一个演讲时鞋子着火了，或者上楼梯时摔倒了，还在走道上摔了个嘴啃泥，我就可以将这些变成机遇。   <br />以后要是发生什么还不及这个故事尴尬的事情时，我就可以拿这个故事说事了。我可以以一个灾难作为逃脱另一个灾难的衔接点了：“你认为这很令人尴尬吗？呃，以前我在费城的时候……”然后，我就会再提起以前的糟糕事。</p>
+
+<p>错误肯定会发生，然而重要的是你如何定位错误，以下有两种方法：</p>
+
+<ol>   <li>不要误以为错误是可以完全避免的。一方面要努力熟悉演讲材料，另一方面也要记住完美是不可能的。这样，当一些小错误发生时，你就不会猝不及防。 </li>    <li>要知道你怎么对待错误，听众就会怎样对待错误。 </li> </ol>
+
+<p>如果水栖到裤子上，你反应得像是泰坦尼克号撞到冰山上，那么观众就会看得清清楚楚，视之为惨剧。如果你坦然处之，甚至视之为趣事，听众也自然会照样学。</p>
+
+<p>正如戴尔.卡耐基在《Public Speaking for Success》中所说： “演讲结束后，演讲大师常常会发现自己的演讲有4个版本：一个是他们所发表的，一个是他们准备要讲的，一个是报纸报道的，一个是讲完之后反思的。”</p>
+
+<p>通常而言，困扰演讲者的事情和听众关注的事情总是相去甚远。   <br /><strong>听众期望享受娱乐，学到知识，最重要的是期待你精彩的表演，而你演讲中出的错并不会影响到这些。</strong>真正把事情弄糟的是你没来得及说一句话就出错了，包括没有一个吸引人的论点，没有认真地分析你要表述的观点，或没有让要讲的内容与听众关联起来，正是这些错误导致了演讲不成功。如果能处理好这些问题，那么其余的就都不重要了。</p>
+
+<h2 id="-2-">第2章 演讲带来的胆怯心理</h2>
+
+<p>我们的大脑认为以下4点会危及生命： </p>
+
+<ul>   <li>独自站立 </li>    <li>在没有地方躲避的空旷地域 </li>    <li>手无寸铁 </li>    <li>在一群人的注视下     <br />对于所有的生物而言，当以上4种情况并存时，的确会造成威胁，因为这意味着你被袭击或被生吃的可能性极大。 </li> </ul>
+
+<p>而站在讲台上演讲时，这4个条件都符合；最原始的生理特征告诉我们，需要紧张；</p>
+
+<p><strong>重视练习的重要性</strong>    <br />幻灯片不能代表整个表演：演讲者本人才是表演的主体。    <br />结果就是，关于演讲的书上所有的建议，包括教你如何做幻灯片，一且离开了练习，就都难以运用于实际操作。    <br />练习最实用的好处就是允许犯错，并且在别人发现之前将其改正。可能我并不比别人更具有演讲天赋——我只是能更好地找出问题所在。</p>
+
+<p>当我练习时，特别是练习新的演讲材料时，我会遇到很多困难。当我说错或者感到迷惑时，我会停下来，并且做出选择：</p>
+
+<ul>   <li>如果再来一次，我能行吗？ </li>    <li>这个或者之前的那个幻灯片需要作出修改吗？ </li>    <li>这些文字能用一张照片和一个故事代替吗？ </li>    <li>从前一个观点到后一个观点有更好的衔接方式吗？ </li>    <li>如果我直接删去这个观点、幻灯片或者想法，情况是否会好转？ </li> </ul>
+
+<p>当我真正开讲时，那绝对不是我的第一次演讲。其实，当我练习到第三四遍时，我已经能在没有幻灯片的情况下做好演讲了，因为我已经熟悉了如何凸显主题。练习带来的自信能让我自由应对（即兴发挥）一些意外的情况;</p>
+
+<p>虽然我尊重自己身体对恐惧难以遏制的反应，但我仍需要在演讲前努力保持镇静。我希望自己的身体能够在演讲当天的早晨尽量放松，由于紧张而产生的能量尽量多地释放出来。<strong>每次演讲的那天早上，我都会习惯性地去健身房运动，以期在上台前能消耗多余的能量。</strong></p>
+
+<p>这是我所发现的唯一的一种方法，既能控制恐惧反应机制，又能避免由此产生的副作用。其他的方法还有：</p>
+
+<ul>   <li>提前到达演讲现场，以防匆忙上阵。 </li>    <li>在开始之前测试技术和音响效果。 </li>    <li>绕讲台走一圈，这样你的身体会在室内感觉安全。 </li>    <li>在观众席上亲身感受一下，了解从观众的角度能看到什么。 </li>    <li>早早吃点东西以防饥饿，但是不要在即将开讲之前吃。 </li>    <li>在开始之前和听众聊聊天（如果方便的话），这样你就不会感觉是在给陌生人作讲座；     <br />如果你在熟悉的人面前能谈吐自如，那么你就具备了给陌生人作演讲所需的技巧。下次再听著名演讲家的讲座时，请仔细观察。也许这位演讲家讲得自然而坦然，不论在座的有多少人，都会让人感觉他只是在给一小群人作演讲。 </li> </ul>
+
+<h2 id="-3-30000-">第3章 每小时30000美元</h2>
+
+<p>到现在为止，我平均年收入有10万美元，比我在微软工作时的收入少。但是，我现在的工作时间少了，也不用像以前那样朝九晚五，而且我现在完全独立了，这是无价的。我将自己每月的旅行限定在一两次之内，因此得以逃脱颠簸的生活。比起金钱来，我更重视时间，毕竟寸金难买寸光阴。</p>
+
+<p>无论工资高低，世界上大约有一半的人口没有干净的自来水和稳定的供电。从全球来看，如果你能在室内的灯光下阅读此书，在几步之内还有一个装满食物的冰箱，还能随时叫来外卖，从未担心过自己患上疟疾或痢疾，那么你就是很幸运的。如果你还是郁郁寡欢，那么想想这个宇宙吧，其中有99.9%的地方都是死气沉沉的空地，而你现在活着，而且是作为人类这种高智慧的动物活着，而且你还接受了教育，能读懂书，这些都说明了生命是多么的可贵，这样一来，你是多么的富有，我们应该对此感到高兴、满意。</p>
+
+<h2 id="-4-">第4章 如何应对条件恶劣的环境</h2>
+
+<p>你越是多疑，你所害怕的事情出现的概率越高，这样你就更加疑神疑鬼，形成恶性循环。</p>
+
+<p>现在我知道了，要想感染观众，我首先得以身作则。如果我想让他们得到快乐，首先我自己要快乐；如果我想让他们笑，首先我自己要笑。但是，这些效果都必须通过交流来实现，而这也是最难达到的。醉汉在婚礼上致辞时，开心的只有他自己，其余的人则很不幸。真正优秀的演讲家能够让大家畅通无阻地交流，他们与听众；坦诚相见，让听众领略奇异而积极的听觉盛况。</p>
+
+<p>从另外一个角度来看，不友善的听众即使讨厌你，他们也是在关注你的演讲后作出的这种反应。比起漠然的听众来，那些不友善的听众给予你的关注更多。如果你的听众是一屋昏迷不醒的病人，他们躺在病床上，戴着智能视频监控器，输着镇定剂，那么他们完全没有可能对你的话语感兴趣。然而，<strong>如果你的听众对你讲的内容感到气愤或者起哄，那么至少说明他们在意你所讲的话。</strong>至少他们对你的演讲有反应，虽然有好有坏。如果你越早发现他们在意的是什么，那你就越有可能和他们建立起沟通。</p>
+
+<p>在经历过千百次演讲后，我发现<strong>听众最不能容忍的就是演讲者的不诚实。</strong>开诚布公地坦白让他们气愤的事情，或者和他们倾心交谈，这些都能给你加分。有勇气讲真话的演讲者还是不多的。</p>
+
+<p>戴尔.卡耐基的《人性的弱点》（袖珍版）是史上最畅销的自助书之一，然而，很少有人知道，这本书在当时受到了出版界和文化精英的极大批判。作者本人被编辑和动画制作人讽刺挖苦，还被大学生模仿嘲笑，人们批评他的建议过于简单和啰嗦（就像是现在狄巴克.乔布拉和菲尔博士被我们嘲笑一样）。有人邀请他到纽约的公爵俱乐部（Dutch Treat Club)演讲，要知道这是一个荟萃出版界、编辑界、广告界及其他文人雅士的团体，这些人也是对卡耐基批评得最厉害的。尽管有人建议他不要去冒这个险，但他还是选择接受邀请。他是这么说的： 我知道对我这本书的批评很多，说我写得不够深刻，在心理学和人际关系 上毫无新意可言。我承认这些说法没错。在座的各位，我可从未说过我发表了什么新观点。当然，我只是讲出来一些常识性的 东西。我之所以将它提出来，一遍一遍地重申和强调它的重要性，因为人们需要的正是这些显而易见的道理。人们最需要的正是与人的相处之道。</p>
+
+<p>如果你真的害怕听众会对你施加压力，那么，一些额外的工作能帮你减轻恐惧。向活动主办者询问到场观众的预计人数，这些观众一般会问怎样的问题。让主办方提供其中两三个听众的名字，并同这几个人交谈看法，因为他们就是听众的代表。反思自己的恐惧是真实的还是你自己臆想出来的。当你演讲的时候，你一定要提到：<strong>“我和泰勒、马拉、康奈利讨论之后，他们认为接下来我要讲的是人们最讨厌的三种情况。”将听众加入到演讲内容中，这能为你加分，</strong>但很少有演讲者会这么做。如果有听众不同意泰勒、马拉、康奈利的观点，他们也只能在你离去之后才发现。</p>
+
+<h2 id="-5-">第5章 避免语塞</h2>
+
+<p>没有哪种培训能让天生愚笨的人变聪明。演讲者的问题不是说的能力，而是思考的能力。很少有人提起这些，但是有些人注定不能成为成功的演讲家，除非有人来帮他们思考。而他们自己最多只是拥有思考和说服他人这两件工具中的一件。</p>
+
+<p>即使对许多思维敏捷的演讲者而言，他们也是过于关注形式，从而忽略了实质性的内容。<strong>他们把很多精力花费在幻灯片模板、图片、视颊、字体、衣着、发型以及其他的事情上，而忘记了要努力地去思考如何将自己的观点阐述清楚。</strong>成为一个口齿伶俐的演讲者并不难，这种人能做出含有漂亮的幻灯片、广阔的词汇量和大量的引言借鉴的讲稿，只是没有多少内容要说而已。</p>
+
+<p>我所见到的槽糕演讲大多数不是因为语言、幻片、视觉效果或者其他的人们所担心的事情没有做好，而是因为缺乏思想和深度。</p>
+
+<p><strong>无论你做何种演讲，人们之所以来听的原因只有几种。当你准备演讲内容的时候，应该以满足听众以下的这些需求为出发点。</strong>    <br />人们听演讲的原因有： </p>
+
+<ol>   <li>希望能学到知识。 </li>    <li>希望受到激励。 </li>    <li>希望从中获得快乐。 </li>    <li>希望你能满足他们的某种需要。 </li>    <li>希望结识同样对某个主题感兴趣的人。 </li>    <li>希望能与他人有共同的积极经历。 </li>    <li>被他人所迫，如老板、父母、老师或者配偶。 </li> </ol>
+
+<p><strong>如果有100位听众花1个小时来听你的讲座，那么他们就相当于将人类的100个小时花费在了你的演讲上。</strong>如果你准备的时间还不到5~10个小时，研究内容以及提炼语言来达到听众的要求的时间太少，那么你对听众时间的尊重又从何说起呢？要是你认为自己的5个小时比别人的100个小时还要；重要，那你简直自负得忘乎所以了。毫无疑问，你一登台，这种不尊重他人的态度就会暴露无遗。</p>
+
+<p><strong>如果你的演讲不错，参照演讲稿也没有什么不对。</strong> 观众其实是很宽容的。他们期望演讲者能发挥出色，因此会忽略很多细微的不足之处。但是，如果演讲者根本就不去仔细地思考他要讲的内容，故意忽视演讲材料，最终导致演讲失败，那么你又如何要求听众原谅你呢？在许多专业场合，这种毫无准备的态度是人们所不能接受的。假设一位医生正在给你做脑部手术，他在手术中途停下，期望你提醒他手术的目的，那你一定难以接受。如果连你都不知道你自己上台是干什么的，那观众也帮不了你了。</p>
+
+<p>我要强调的不仅仅是练习，虽然练习也很重要，但是仅仅是练习还不够，任何一个人都能够花上几个小时来准备。真正的目的是要利用准备时间来强化思想，研究更好的方法来满足听众的要求，这样一来，即使现场演讲时有一些小的瑕疵也不会影响大局。   <br />为了做好准备，你要做好以下四件事： </p>
+
+<ol>   <li>     <p>在题目下有一个鲜明的立场。       <br />所有的演讲都有中心观点，你需要知道你的中心点是什么。        <br />如果你没有明确的观点，那么你的演讲就可能像这样：“这些是我所能想到的，能在有限的时间内讲到的，但是由干我不知道你们在乎的是什么，也不知道如果时间不够我会讲到那些，你们听到的都是一些半成品，是一些难以理解、难以表述的垃圾。”毎当我听到一个糟糕的演讲，我都想问演讲者：“你的演讲到底要表达什么意思？”或者“你到底想说什么？”由于某些原因，他们似乎并不知道自己要演讲，不知道自己的演讲会有人来听。 </p>   </li>    <li>     <p>认真了解你的听众。       <br />要弄明白他们来听你讲座的原因、他们的需求、背景知识、兴趣爱好，以及他们渴望从你这里学到什么东西。如果你没有 足够的时间来将演讲主题研究透彻，那你至少要了解听众。结果可能是你发现自己对某个课题的理解并不是很透彻，但是你至少比你的听众要了解得多。 </p>   </li>    <li>     <p>让你的论点尽量简洁明了。       <br />如果你要用10分钟才能讲清楚自己的论点，这可不是什么好事。你的论点就是一种声明，而论据则是用来论证观点的。论点必须是精炼、简明的，而论据则可能稍长，怛是绝不能让听众听得如坠云里雾里、不知所云。一个不算失败的演讲至少是立意鲜明的，又不会令观众听得稀里糊涂、毫无趣味，而一个槽糕的演讲总是让人找不到重点。        <br />达到这些目标最快捷的方法就是<strong>选择一个提纲挈领的标题</strong>。演讲者往往对标题关注甚少，但是标题却会醒目地位于幻灯片的首页。在一次大型活动或者会议上，你的标题也是人们选择是否听你演讲的重要筹码。许多人的标题无趣而死板，这只会让机会悄悄溜走。一个标题的意义在于，它将所有的东西划为两类，一类是你所要讲的，另一类是你不会涉及的。选择标题，将事!物分门别类往往是一件无趣的事情，你要是不能找到一个合适的标题，那你往往也不会提出好的论点。如果整个演讲中你只能讲述一个论点，那会是什么？这唯一的论点显然正是标题应该表达的。</p>   </li> </ol>
+
+<p>在这里有一个很好的例子。如果我的演讲题目是“创意入门法则”，那么从一开始我就失败了。我怎么可能将创意的入门法则概括完整、一一道来？观众又何必要事无巨细地了解全部的内容呢？这个主题一定是无趣而又道不尽的。出类拔萃的演讲家从不选择大而泛的主题，因为选择这样的主题本身就是错误的。我可能用6个小时熟读所有的入门法则宝典，但是这根本就没有什么用处。人们真正需要的是独到的见解，他们希望能有一个演讲者或者一个老师来指导他们从一个特定的角度来剖析问题。 比较而言，“在枯燥的工作中如何创新”或者“启示与头脑风暴：读苏士博士的书学习创新之法”等标题或许更好。</p>
+
+<p>你可以参考以下标题，并以此将演讲做得更好： </p>
+
+<ul>   <li>在……中遇到的问题及解决之道 </li>    <li>……为何失败，如何补救 </li>    <li>我在……中犯下的错误，以及我所学到的东西 </li>    <li>关于……人们经常提起的问题及解决妙招 </li>    <li>关于……的真相，及其对我们的启发 </li>    <li>关于……只有专家才知道的捷径和窍门 </li>    <li>关于……你成功的五个原因 </li>    <li>为何……能永远改变你的生活，现在免费告诉你 </li> </ul>
+
+<p>4.拟定演讲提纲。   <br />即使你在演讲中一时忘词，或者电脑死机，或者你的节奏让人难以理解，你都可以回到提纲上来。只要你依照提纲的顺序阐明自己的观点，你就能为听众提供有用的信息。</p>
+
+<p>我在演讲中经常用到幻灯片，因为我喜欢通过图片和视频来表述我的观点，但是我从不担心这些工具坏掉。我在演讲前就很好地掌握了我所要讲的内容，即使不能按照我所期望的那样来演讲，我依然能把所有的内容传递给听众。如果对内容很熟练，我就能自然地表述。事实上，通过努力制作出一个清晰、深刻、有理有据的提纲，我已经想到了演讲的三种效果：预期的版本(标题）、五分钟版本（讲完所有的观点及简明的提纲）和拓展版本（由幻灯片、视频以及其他各种方法来支持每个论点）。</p>
+
+<p>没有幻灯片的演讲者会用简明的提纲或者清单来帮助他们演讲。马克.吐温、温斯顿.丘吉尔、富兰克林.罗斯福都会用列有五六项内容的清单来提醒他们自己（每一项往往只有几个字），以此来完成1小时左右的演讲。只要你在演讲之前认真思考过，那么你只需要一个小小的清单，这样，几乎所有的演讲就基本上没有问题了</p>
+
+<h2 id="-6-">第6章 不招人厌烦的学问</h2>
+
+<p>在为《Whats the Use of Lectures》（Jossey-Bass出版社）这本书做研究时，唐纳.A.布莱教授曾测量过他的学生在不同的讲座中不同时段的心率。毫无悬念的是，他们的心率是逐渐降低的，而心率高峰正好处于开讲前听众精神高度集中的那个时期。而且，平均算下来，心率是稳定下降的（如图6-1所示）。这个现象颇为令人失望，却也表明了为何<strong>大多数讲座都是越往后越寂静。因为坐着的时候要做的事情很少，我们的身体于是逐渐转入休息状态，而身体的状态会决定思维的状态。</strong></p>
+
+<p>西雅图太平洋大学大脑中心主任、分子生物学家约翰.梅狄娜认为，<strong>大多数人对许多事物的关注时间最长为10分钟。</strong> 其实，“10”并不是一个神奇的数字。只要演讲者很明白自己在做什么，并且深知如何保持听众的注意力，无论是8分钟、12分钟还是45分钟的演讲，都能博得观众的好评。但是实际情况往往不是如此。于是，我们也就不难理解为何现在很多深得人心的会议、TED会议（科技、娱乐、设计）都有8分钟或者20分钟的时间限制。</p>
+
+<p>美国有100位参议员，50位执政官，而只有1位总统，每个人的权力都比他们所代表的平民百姓大。<strong>权力的不平均分配有助于更有效率地完成工作</strong>，这也是演讲中我们所需要的效果。也许你认为美国的现状并不好，但是当所有的3亿人口都享有平等的权力时，你会发现情况会更糟。</p>
+
+<p>从政治学的思维来看，<strong>演讲绝不是权力平等共享，而是专权制盛行的地方。</strong>舞台上站着的只有一个人，欢迎的掌声也只献给那一个人，拿麦克风的也只有一个人。<strong>假设在TED会议上有外星人光临，他们一定会以为站在舞台上拿着话筒的那个人是星球的绝对统治者。</strong></p>
+
+<p>在文明史中，演讲者都是那些首领、国王或者法老。然而，很少有演讲者用到他所拥有的这种力量。许多演讲者都不敢越过常规，因此他也浪费了观众陚予他的力量。   <br />设定进度    <br />要运用这种力量，最简单的方法就是设定演讲的速度。每个人都梦想成为自己最喜欢的乐队的吉他手或者主唱，但是他们忽略了真正的力量来自节奏部分。</p>
+
+<p>我曾在大学和企业演讲，听众都是比我聪明得多的人，他们比我更有创意，更幽默，但是我依然能演讲成功，因为我给了他们一个清晰明了的节奏，以便于他们跟进。演讲前，我会说：“<strong>我演讲的时间是30分钟，要讲的内容一共有5条，每一条我将花5分钟来讲解，剩下的时间欢迎你们提问。</strong>”说这些话花费了我大概10秒钟的时间，但是我却能因此吸引他们的注意力，告诉了他们我的计划，这样他们就能知晓演讲的节奏。</p>
+
+<p>引导注意力（“我来看的是什么，值得来看吗？”)   <br />人们喜欢关注一些事情，包括：    <br />. 我们喜欢吃的东西    <br />. 可能吃掉我们的东西    <br />. 与我们有关的问题    <br />. 我们重视的人    <br />. 我们关注的话题    <br />. 我们想解开的疑问    <br />. 闪亮的、移动的物体（如汽车广告）    <br />. 我们想发生性关系的人（如所有的广告）    <br />. 劲爆的事物（男人关注的）    <br />. 漂亮的事物（女人关注的）    <br />. 漂亮而且劲爆的事物（男人和女人共同关注的）    <br />有了这张清单，最简单的方法就是依据它制定一些小策略，每演讲五六分钟就穿插一些这类事物，以博得听众的关注。</p>
+
+<p>放上一些与讲座毫不相关的漂亮图片并不能长久地引起人们的兴趣。只有精心挑选的图片才有用，而且要给观众足够的时间将这幅图片和演讲结合起来。如果你能找到能很自然地吸引注意力的方法，那你可以将它运用于讲座中。</p>
+
+<p>最简单的方法就是讲故事。坦白地说，一旦开口讲话，你就是在讲一个故事。所有的交流都是一段叙述：有开端、过程和结尾。引导观众注意力的最好方法就是讲述听众所关心的情况（情况也就是一个故事）。这样一来，就有两点能引起他们的注意：故事本身和故事的主人公。</p>
+
+<p>如果你说：“这是新税法的第5行。”这只是一段对于事实平凡而又无聊的叙述，只会让听众转移注意力。但是，如果你说：“<em>在座的80%的听众都搞不清你们上次的纳税申报单中的第5行和第6行，而这会让你花费500美元，现在我来告诉大家如何避免此类事情。</em>”那么，观众的反应一定大不相同。<strong>只要演讲者将问题与受影响的人联系起来，即使是像税务这种枯燥乏味的讲座也能妙趣横生。</strong>一旦听众对你讲的故事产生兴趣，他们就会跟随你的步伐。好的演讲家就具有这种能力。</p>
+
+<p>演好你的角色   <br />你就是主角 人们总是对事物抱有期望。去一个高级酒店时，他们期望有出色的服务和可供取笑的酒店领班。看动作片时，他们期望有违反物理原理的大爆炸以及有漏洞的阴谋。当他们抽出1个小时的时间来听你演讲时，他们期望你对自己要讲的内容和要做的事情充满自信。如果你在演讲时还在摸索着连接电脑的投影仪，为自己的幻灯片而苦恼，或者向他们承认自己准备不足，希望得到谅解，那你肯定是不值得他们花费这1个小时的。你并没有扮演好他们期望中的角色——一个自信、目标明确、动力十足的可能精通于某些方面的专家。你并不需要是一个完美的人，但是你一定要演好自己的角色。</p>
+
+<p>人们容易犯的一个通病就是临阵畏缩，当站在台上时，他们会显得过于礼貌和谨慎。他们说话轻声细语，不讲故事，也从不露出笑容，完全变成了一个毫无特色的平庸之辈。   <br />虽然这样看起来很安全，不会出什么岔子，但这却会遭到听众的抛弃。</p>
+
+<p><strong>学习表演并不是学习作假，而是学习如何在舞台上和生活中更好地表现自己。</strong>    <br />所有的交流能手都从戏剧学中受益匪浅。</p>
+
+<p>. 针对演讲内容提出一些小问题，要求观众回答。演讲者问观众的最蠢的问题就是：“对我讲的这些你们还有什么问题吗？”这句话听起来像是一种威胁，似乎在看谁会挑战你的威信，而大多数观众是不会站出来提问的。但是，你还可以用一种更为积极而又互动的方式，比如，你问：“哪些方面还需要我解释一下吗？”</p>
+
+<h2 id="-7-15-">第7章 从15分钟的电视节目录制中学到的</h2>
+
+<p>借鉴在同一种媒介中成功人士的经历。例如，如果你参加的是视频会议，那你一定要观察一下别人的表现。这样，当轮到你发言时，你就掌握了一定的分寸</p>
+
+<h2 id="-9-">第9章 他们是你的朋友</h2>
+
+<p>在为数不多的专心听课的人当中，有多少人能真正理解我讲的内容？   <br />第二天还有多少人记得这些内容？    <br />又有多少人会将我讲的这些运用到生活实践中呢？</p>
+
+<p>有一个好消息就是：当教学的效果达到时，教学本身将是一次很有价值的经历。当你看到有人听懂了你的观点，并将它成功地运用于生活中时，这种喜悦之情是生活中其他快乐所不能比拟的。</p>
+
+<p>如果你高明的思想让听众厌烦了，那该怎么办呢？这时，解决教学困难的方法就是观察学生的反应，找出应对之策，调整演讲以适应学生的需求。   <br />你要在演讲中不停问自己：    <br />. 听众是否巳经了解这些知识？    <br />. 听众是否需要我从另一个不同的角度去解释？    <br />. 听众是否已经掌握了不少知识，需要休息或者放松？    <br />. 听众是否太自傲了，需要给他们一点儿挑战？    <br />. 当回到工作中时，他们会发现什么新问题吗？    <br />. 他们在生活中用到过我讲的方法吗？效果如何？    <br />. 现在，他们回到了工作和生活中，还希望你讲哪些主题？    <br />. 对于如何将讲座变得更生动、更活泼和更吸引人，他们有什么建议？    <br />如果你不分析听众的反馈，你就无法教好书。好的教师讲得多，听得也多，他们会时刻关注如何提高自己的课程素材水平，从而达到更好的授课效果。一个教师若是不愿从学生那里寻求意见，甚至连自己失败的原因都不在乎，那他就是一位失败的教师。</p>
+
+<h2 id="-10-">第10章 自白</h2>
+
+<p>有时，听众已经知道我要讲的知识，这时我的旨要任务就是提醒他们回忆那些知识，或者将这些知识运用到一个新的环境中。我深知，<strong>要想体现自我价值，我并不一定要是某项观点的首创者。</strong>通常，演讲者将古人的话运用到新的环境中，或者以业内人士无法传达的一种方式传授给听众，那么他们同样在创造价值。有时，从一个非业内人士那里得到的信息比从一个专业人士那里得到的信息还要有价值。</p>
+
+<p>关注能让演讲更有趣。如果说我有给人带来乐趣的秘诀，我想应该是我学过即兴表演学。在那里，我学会了如何观察和如何倾听。幽默和独到的见解来自于关注，而非天资。<strong>当我学了即兴表演学之后，我的演讲技巧得到了很大的提高，我对生活的态度也发生了转变。我强烈推荐学习即兴表演学。</strong></p>
+
+<p>要使演讲生动，最简单的方法就是坦诚相待。虽然听众不会告诉你，但是他们最希望看到的就是一位诚实的演讲者。如果你把许多人都不敢说的话说了出来，那你就是英雄。</p>
+
+<p><strong>如果你喜欢收集思想，那么演讲和写书就是必然的结果。</strong>我们之所以能了解历史上的伟大思想家，就是因为有他们的演讲或者他们所著的书籍，或者有人在得到或未得到他们允许的情况下，将这些思想家的观点记录了下来。</p>
+
+<h2 id="-">后台笔记</h2>
+
+<p>只要有一个遥控器在手，你就获得了完全的自由。你可以在任何时候做任何亊情，可以在舞台上乱逛、走到听众席间、站到讲台后，甚至到听众席后排，这些都不妨碍你演讲（但是一定要与技术人员核实信息，当你离开舞台时，无线麦克风有时会产生回音）。</p>
+
+<p>我经常带来一些作品，准备在问答环节免费赠送。但如果前排没有人，我会把书赠给愿意移位到前排的人。这种方法总是很奏效，特别是对那些因为懒惰而不愿移动的人很管用，而且这样一来，听众对我而言就不那么恐怖了（即使我面对的是最恐怖的人，当我看到他们追逐免费礼品的表情时，也会觉得他们不那么吓人了）。越是担心演讲，我带的书就会越多。如果你没有自己写的书，那你也可以买一些别人写的相同话题的书来送给听众（<strong>如果100美元能减轻你的紧张情绪，让听众更具亲和力，倒也很值得</strong>），其效果都是一样的。</p>
+
+<h2 id="-">如何立论</h2>
+
+<p>许多演讲者都不太关注重音。有时，他们还把重音视为垃圾，置之不理。<strong>听众会因为演讲者的重读而给他加分，但是演讲者自己并不一定清楚为何要这么做。</strong>然而，无论如何，有重音的句子总比平淡单一的句子好，但是也好不了多少。我们的目的是要合理运用重读来表达你的思想。 我们可以分析一些著名演讲家的讲座，在他们强调的地方划分句子。他们可能会用到各种不同的强调方法，如重复词语、停顿、做手势，甚至是偶尔放轻语调等。一个好的演讲者会通过强调来传达不同的信息，但是大多数人却很容易忽视这些信息。这些信息并不是来源于幻灯片，也不是来源于演讲内容，而是来源于演讲者巧妙构思的语调。</p>
+
+<p>寂静为演讲者能量的传输营造了一个很好的基线。<strong>有时候，当演讲厅静下来时，听众反而会投入更多的关注力</strong>（这个事实并非广为人知，因为演讲者总是想尽办法不在演讲中出现沉默）。如果你不断地说话，听众的耳朵和大脑都无法得到短暂的休息。如果你在讲一些有趣的东西，或者想要证明你的某个观点，听众就更需要一些时间来消化你所讲的内容。而且，很多人会相应地做一些笔记，有的只是在脑海里记下某些要点，但是这些都是需要时间来完成的。要是看一些杰出戏剧家的表演，你就会发现，在其中20%~30%的时间里，他们会安静下来，留给听众思考、消化以及大笑的时间，或者只是为他们的下—个表演做准备。</p>
+
+<p>教师在授课时，中间的停顿是很重要的。这段时间能给学生留下思考和总结的空间。停顿的时间长短需要一些技巧。</p>
+
+<h2 id="-">演讲失败了怎么办</h2>
+
+<h3 id="-">表现的像新手</h3>
+
+<p>如果是做脑部手术，一定没有人希望自己的主刀医生是一个新手。同理，听众也是同样的心理。<strong>当你站到演讲台上的时候，你一定不要表现得像是第一次登台演讲一样，即使这确实是你的首次演讲，你也不能表现出来。</strong>演讲者若是被自己的笔记本电脑、笔记弄糊涂了，或者在大多数时间里都背对着听众，他的这些行为都会说明他是一个新手。</p>
+
+<p>解决方法：练习，直到能够达到不错的效果为止。你准备在演讲中说的内容都需要练习。   <br />你还要在转换幻灯片和话题时，做好衔接，这也是最容易出错的地方。</p>
+
+<h3 id="-">你让话题枯燥无味</h3>
+
+<p>如果我们语调单一、表情木然、举一些没有意思的例子、表现得像是自己都不喜欢这个话题，那么无论什么样的话题都会索然无味。如果演讲者本人都对自己要传达的信息毫无兴趣，那么他又能期望听众有怎么样的反应呢？</p>
+
+<p>解决方法：从一开始就找到激发听众兴趣的切入点。如果你要选择演讲话题和论点，那一定要找一些有意思的话题。找到一个立论点，将主题插人到演讲题目中，然后按照自己的观点来展开思路。即使只有你对这个话题感兴趣，但只要你能把自己的热情表达得当，听众也会被你的激情所感动，从而追随你的脚步</p>
+
+<h3 id="-">你的幻灯片惹人讨厌</h3>
+
+<p>使用幻灯片是有风险的，它可能因为各方面的原因而给听众带来困扰。幻灯片往往不能传达足够的内容，也会给演讲者带来干扰。</p>
+
+<p>解决方法：不要首先就想到运用幻灯片，首先应该了解你的听众。想要找到支持你的论点的依据，你可以用图片。如果你想将自己的笔记加到幻灯片中，以减小自己的恐惧感，那么一定不能给听众带来困扰。</p>
+
+<h3 id="-">害怕听众</h3>
+
+<p>害怕听众是很正常的。但如果你在演讲时被这种恐惧感占了上风，那你的听众就不会得到满足，也不会学到知识。</p>
+
+<p>解决方法：找到一个放松的方法。带上一些小礼品来吸引听众，面带笑容也能减轻恐惧感，从而让你放松。提前到达现场，这样你就能见到一些听众，进而觉得他们不那么恐怖了。找一些你感兴趣的话题，这样一来，分亨的快乐就能给你积极的力量，从而平衡你的恐惧感。</p>
+
+<h3 id="-">缺乏眼神沟通</h3>
+
+<p>你的眼睛看着哪里？如果演讲者是新手，那么他会看着自己的鞋子，盯着某一位观众，或者看着空旷的地方。其实，你至少可以看着观众席的后排，这样观众就会认为你正在看着其他的观众。最好的眼神交流是在不同的时间看不同的地方，扫视观众以达到自然的效果，即使你只是装出来的自然，那也比不自然好。</p>
+
+<h3 id="-">缺乏激情</h3>
+
+<p>激情在演讲中很重要。尽管你的演讲毫无依据，但是你表现得越是在意，就有越多的观众想要倾听你的思想。然而，很少有人能讲得富有激情。演讲者自以为讲得很有激情，但在观众看来，他们只是表现平平。你可以观看那些富有激情的演讲视颊（马丁.路德.金的《我有一个梦想》的演讲就是不错的例子），然后对比自己的演讲视频。想想如何在保持自己特色的基础上，再加入更多的激情。</p>
+
+<h3 id="-">所有的观众都盯着自己的电脑</h3>
+
+<p>每位观众都有自己的文化理念，在某些文化中，观众大多不会盯着演讲者，这样会让演讲者感觉很气馁。对演讲者而言，和观众的眼神交流越多越好。有时，观众只是在做笔记，或者和他人分享你的演讲，这些都是对你有利的。</p>
+
+<p>你可以请求观众关掉他们的笔记本电脑，但是不要强求。你也要尊重他们的选择，特別是当他们付费前来的时候。但是你可以告诉他们，如果他们聚精会神听演讲，你会表现得更好。   <br />有时我会跟他们说：“现在我们来做个交易。如果你们在5分钟内全神贯注地听我演讲，完了之后还是认为我讲得很烂，是在浪费你们的时间，你们宁愿上网，那么我就不会再管了。事实上，5分钟之后，你们要起身离开我都不介意。但是，在接下来的300秒内，请全神贯注地听演讲。”这时，大多数人都会关上他们的电脑。</p>
+
+<h3 id="-">演讲超时</h3>
+
+<p>如果你的演讲内容结构合理，那么演讲的节奏必然是平稳和谐的，你会为每一个步骤设计好时间。这样一来，你就不会在只剩下一分钟的时候发现自己还有一半的内容没有讲。   <br />. 练习在比正式演讲更短的时间内做完演讲。    <br />. 计划抽出20%~30%的时间用于问答环节。如果演讲的时间超过预期，你还可以通过减少问答环节的时间作为缓冲。    <br />. 不要用你事先准备的幻灯片。当观众人数很少时，成功的几率很小。调整到非正式模式，像之前我在“将幻灯片遗忘在家”的情况中介绍的那样，让观众提一些问题，你针对这些问题一一作答。</p>
+
+<h2 id="-">调査和推荐</h2>
+
+<h3 id="-">如何战胜焦虑和恐惧</h3>
+
+<p>最好的建议就是找到你们当地的演讲社团，这些人都很乐意帮助你。   <br />克伦.康格斯.迪尔所著的《Conquer Your Speech Anxiety》（Wadsworth出版社），它改变了我对恐惧的想法。这本书和关于这个主题的其他书籍（如M.F.芬硕特的《The Francis Effect》等）不同，它是一个练习手册。每一章都针对不同的恐惧布置不同的训练，让你认识、接受并战胜这些恐惧。随书还附送一张CD，可帮助你练习。</p>
+
+<h3 id="-">如何讲好故事</h3>
+
+<p>我在书中没有提到讲故事的重要性，<strong>讲故事其实是所有演讲和写作的基础</strong>。我选择用行动而不是说话来证明这个事实，我也希望读者认为这本书里的故事实用，能给你留下深刻的印象。 安东尼.博丹的《Kitchen Confidential》（Harper Perennial出版社）和乔治.奥威尔的《Down and Out in Parisand London》(Mariner Books)都给了我很大的启发。最主要的是，这两本书让我决定用自己的经历作为本书的主要内容（同时还有威廉.梓泽的《Inventing the Truth》[Mariner Books])。我相信，第一人称的叙述最能引起读者的共鸣，这些是第三人称叙述所不能达到的效果。    <br />安妮特.西门所著的《The Story Factor))(Perseus Books Group)是一本独特的书。这本书为我们展现了日常生活中我们是如何讲故事的，也为如何提高讲故事的水平，及其在生活工作中的效用给出了明确的指导。</p>
+
+<h3 id="-">演讲设计</h3>
+
+<p>我在本书中故意避开演讲设计不谈，一方面是因为关于这个主题的书已经很全了。格尔.雷诺兹的《Presentation Zen》（NewRiders出版社）和南希.德瓦安蒂的《Slide: ology》（奥莱利出版社）都能为你做演讲设计提供参考。这两本书中都引用了许多经验丰富的演讲家的例子，告诉你他们是如何将幻灯片串联起来的。 雷诺兹建议我们先在纸上描绘出自己演讲的内容和演讲方式，我对此很赞同。若是一开始就用这些演讲软件，你只会以幻灯片为中心，而不是以故事、观点或观众为中心。</p>
+
+<p>由杰瑞.森菲尔德主演的纪录片《戏剧演员》对演讲者来说，也许是最棒的90分钟电影了，它能很好地帮助演讲者理解喜剧演员付出的努力。就算你不喜欢杰瑞.森菲尔德的幽默，你也可以听克里斯.洛克、卡琳.奎因、比尔.科斯比等知名喜剧演员讲他们是如何搜集材料、准备表演的。这部电影的亮点是森菲尔德丢弃了他所有的旧材料后，如何运用创新、练习创造新材料，将表演提升到一个新的境界。</p>
+
+<h3 id="-">专业演讲</h3>
+
+<p>现在有许多书都声称能让你成为年薪10万、100万美元的演讲家。但是我认为，<strong>演讲的主要用途不是为了积累财富，因为更好地思考和沟通能增进你与他人的关系，也包括你和白己的关系。</strong></p>
+
+<p>当你有一定的主题演讲经验时，你就有可能获得薪水。演讲的证书和学位有很多，但如果你看一下世界上排名前500位的演讲家，我打赌你会发现没有人会有这些证书。如果你在某一个主题上有演讲经验，那你就可以去找那些活动组织者，他们如果正好需要人来做这个主题演讲，就可能聘请你。像我一样，你也许会在开始几年免费给他们演讲，直到你的技术和名声能够给你带来价值。</p>
+
+<p>我所看过的书中，艾伦.维斯的《Money Talks: How to Make a Million As a Speaker》（麦格劳.希尔出版社）是对如何以演讲为生最好的专业参考书。这本书中的错误很少，作者在书中真诚得近乎无情地教给我们如何找到潜在的雇主，雇主眼中的价值比例，以及如何让这些为你所用。</p>
+
+<p>&#160;</p>
+
+<p>亚马逊链接：<a href="http://www.amazon.cn/%E6%BC%94%E8%AE%B2%E4%B9%8B%E7%A6%85-%E4%B8%80%E4%BD%8D%E6%8A%80%E6%9C%AF%E6%BC%94%E8%AE%B2%E5%AE%B6%E7%9A%84%E8%87%AA%E7%99%BD-%E6%96%AF%E7%A7%91%E7%89%B9%E2%80%A2%E5%8D%9A%E5%85%8B%E9%A1%BF/dp/B006NS2OUW?SubscriptionId=AKIAJOMEZLLKFEWYT4PQ&amp;tag=z08-23&amp;linkCode=xm2&amp;camp=2025&amp;creative=165953&amp;creativeASIN=B006NS2OUW" target="_blank">《演讲之禅:一位技术演讲家的自白》</a></p>
+
+<p>Posted by: 大CC | 04JUN,2014   <br />博客：<a href="http://blog.me115.com">blog.me115.com</a> [<a href="http://feed.feedsky.com/me115">订阅</a>]    <br />微博：<a href="http://weibo.com/bigcc115">新浪微博</a></p>
+
+<div class="ujian-hook"></div><div style='clear:both;'></div>
+
+ 
+		<script type="text/javascript">
+		var ujian_config = {
+			'num':5,
+			'showType':2,
+			'bgColor':"",
+			'mouseoverColor':"#E6F3DE",
+			'textColor':"#333333",
+			'hoverTextColor':"#333333",
+			'borderColor':"#dddddd",
+			'picSize':96,
+			'target':1,
+			'textHeight':60,
+			'defaultPic':"",
+			'itemTitle':"您可能喜欢："
+		}</script>
+	<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js"></script>					</div><!-- END entry -->
+		<div class="add-info">
+					</div>
+		<div class="post-info-bottom">
+			<span class="post-info-category"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84" title="查看 CC书评 中的全部文章" rel="category tag">CC书评</a></span><span class="post-info-tags"><a href="http://blog.me115.com/tag/%e6%bc%94%e8%ae%b2" rel="tag">演讲</a>, <a href="http://blog.me115.com/tag/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0" rel="tag">读书笔记</a></span>
+		</div>
+		<div id="nav-below">
+			<div class="nav-previous"><a href="http://blog.me115.com/2014/05/619" rel="prev"><span class="meta-nav">&larr;</span> Linux命令工具基础04 磁盘管理</a></div>
+			<div class="nav-next"><a href="http://blog.me115.com/2014/06/635" rel="next">策略模式和工厂模式的区别 <span class="meta-nav">&rarr;</span></a></div>
+		</div><!-- #nav-below -->					
+	</div><!-- END post -->
+	<a name="comments"></a>
+
+<div class="ds-thread" data-thread-key="629" data-author-key="1" data-title="《演讲之禅：一位技术演讲家的自白》读书笔记" data-url="http://blog.me115.com/2014/06/629"></div>
+
+<script type="text/javascript">
+	if (typeof DUOSHUO !== 'undefined')
+		DUOSHUO.EmbedThread('.ds-thread');
+</script>
+	<div id="ds-ssr">
+
+		
+            <ol id="commentlist">
+                		<li class="comment even thread-even depth-1" id="li-comment-633">
+			<article id="comment-633" class="comment">
+				<footer class="comment-meta">
+					<cite class="comment-author vcard">
+						<span class="fn"><a href='http://www.xiaoqingma.com' rel='external nofollow' class='url'>小清妈网赚博客</a></span> on <a rel="nofollow" href="http://blog.me115.com/2014/06/629#comment-633"><time pubdate datetime="2014-06-13T21:34:53+00:00">2014 年 6 月 13 日 at 下午 9:34</time></a> <span class="says">said:</span>					</cite><!-- .comment-author .vcard -->
+				</footer>
+	
+				<div class="comment-content"><p>艰难苦恨繁霜鬓，潦倒新停浊酒杯。</p>
+</div>
+				
+			</article><!-- #comment-## -->
+		</li>
+            </ol>
+
+		            
+    </div></div><!--content-->
+<div id="sidebar-border">
+	<div id="rss_border">
+		<div class="rss_border">
+			<div id="rss_wrap">
+				<div class="rss_wrap">
+										<a class="rss rss_text" href="http://blog.me115.com/feed" rel="bookmark" title="RSS 订阅">RSS 订阅</a>
+																													</div>
+			</div>
+		</div>
+	</div>
+	<div id="sidebar">
+
+<div id="search-2" class="widget widget_search"><form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form></div>		<div id="recent-posts-2" class="widget widget_recent_entries">		<h3 class="widgettitle">近期文章</h3>		<ul>
+					<li>
+				<a href="http://blog.me115.com/2015/12/891" title="单线程你别阻塞，Redis时延问题分析及应对">单线程你别阻塞，Redis时延问题分析及应对</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/11/886" title="负载均衡的几种常用方案">负载均衡的几种常用方案</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/11/884" title="Redis哈希表的实现要点">Redis哈希表的实现要点</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/10/875" title="多线程和多进程模型的选用">多线程和多进程模型的选用</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/10/872" title="异步和非阻塞">异步和非阻塞</a>
+						</li>
+				</ul>
+		</div><div id="text-3" class="widget widget_text"><h3 class="widgettitle">广告</h3>			<div class="textwidget">本站使用digitalocean提供的VPS；<br/>
+访问速度可以通过<a href="http://blog.me115.com" target="_blank">大CC博客</a> 和<a href="http://www.me115.com" target="_blank">木书架网</a>体验；<br/>
+其中我的博客为直连digitalocean，
+而木书架网站采用了第三方CDN加速（安全宝）<br/><br/>
+
+从以下链接点击进入注册digitalocean，您将获取10美元(可免费使用2个月的VPS):<br/>
+
+<B><a href="https://www.digitalocean.com/?refcode=ee9c5a992d6f" target="_blank">DigitalOcean</a></B></div>
+		</div><div id="ds-recent-comments-2" class="widget ds-widget-recent-comments"><h3 class="widgettitle">近期评论</h3><ul class="ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-avatar-size="30" data-excerpt-length="70"></ul></div><script>
+if (typeof DUOSHUO !== 'undefined')
+	DUOSHUO.RecentComments && DUOSHUO.RecentComments('.ds-recent-comments');
+</script><div id="archives-3" class="widget widget_archive"><h3 class="widgettitle">文章归档</h3>		<ul>
+			<li><a href='http://blog.me115.com/date/2015/12' title='2015 年十二月'>2015 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/11' title='2015 年十一月'>2015 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/10' title='2015 年十月'>2015 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/09' title='2015 年九月'>2015 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/08' title='2015 年八月'>2015 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/06' title='2015 年六月'>2015 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/05' title='2015 年五月'>2015 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/04' title='2015 年四月'>2015 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/03' title='2015 年三月'>2015 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/02' title='2015 年二月'>2015 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/01' title='2015 年一月'>2015 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/11' title='2014 年十一月'>2014 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/10' title='2014 年十月'>2014 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/09' title='2014 年九月'>2014 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/08' title='2014 年八月'>2014 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/07' title='2014 年七月'>2014 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/06' title='2014 年六月'>2014 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/05' title='2014 年五月'>2014 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/04' title='2014 年四月'>2014 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/02' title='2014 年二月'>2014 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/12' title='2013 年十二月'>2013 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/11' title='2013 年十一月'>2013 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/10' title='2013 年十月'>2013 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/09' title='2013 年九月'>2013 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/06' title='2013 年六月'>2013 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/04' title='2013 年四月'>2013 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/03' title='2013 年三月'>2013 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/01' title='2013 年一月'>2013 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/12' title='2012 年十二月'>2012 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/10' title='2012 年十月'>2012 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/09' title='2012 年九月'>2012 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/08' title='2012 年八月'>2012 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/05' title='2012 年五月'>2012 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/04' title='2012 年四月'>2012 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/02' title='2012 年二月'>2012 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/11' title='2011 年十一月'>2011 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/10' title='2011 年十月'>2011 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/09' title='2011 年九月'>2011 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/07' title='2011 年七月'>2011 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/06' title='2011 年六月'>2011 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/05' title='2011 年五月'>2011 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/04' title='2011 年四月'>2011 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/03' title='2011 年三月'>2011 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/02' title='2011 年二月'>2011 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/01' title='2011 年一月'>2011 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/12' title='2010 年十二月'>2010 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/11' title='2010 年十一月'>2010 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/10' title='2010 年十月'>2010 年十月</a></li>
+		</ul>
+</div><div id="categories-2" class="widget widget_categories"><h3 class="widgettitle">分类目录</h3>		<ul>
+	<li class="cat-item cat-item-2"><a href="http://blog.me115.com/category/beautiful-life" title="查看 Beautiful Life 下的所有文章">Beautiful Life</a>
+</li>
+	<li class="cat-item cat-item-92"><a href="http://blog.me115.com/category/berkeley-db" title="查看 Berkeley DB 下的所有文章">Berkeley DB</a>
+</li>
+	<li class="cat-item cat-item-3"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98/c%e7%bc%96%e7%a8%8b" title="查看 C++编程 下的所有文章">C++编程</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84" title="查看 CC书评 下的所有文章">CC书评</a>
+</li>
+	<li class="cat-item cat-item-5"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91" title="查看 CC评网 下的所有文章">CC评网</a>
+</li>
+	<li class="cat-item cat-item-6"><a href="http://blog.me115.com/category/linuxunix" title="查看 Linux&amp;Unix 下的所有文章">Linux&amp;Unix</a>
+</li>
+	<li class="cat-item cat-item-90"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1" title="查看 Linux工具箱 下的所有文章">Linux工具箱</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="http://blog.me115.com/category/python" title="查看 Python 下的所有文章">Python</a>
+</li>
+	<li class="cat-item cat-item-93"><a href="http://blog.me115.com/category/redis" title="查看 Redis 下的所有文章">Redis</a>
+</li>
+	<li class="cat-item cat-item-8"><a href="http://blog.me115.com/category/web%e5%bc%80%e5%8f%91" title="查看 WEB开发 下的所有文章">WEB开发</a>
+</li>
+	<li class="cat-item cat-item-127"><a href="http://blog.me115.com/category/%e5%84%92%e9%87%8a%e9%81%93" title="查看 儒释道 下的所有文章">儒释道</a>
+</li>
+	<li class="cat-item cat-item-9"><a href="http://blog.me115.com/category/%e5%85%ac%e5%8f%b8%e7%ae%a1%e7%90%86" title="查看 公司管理 下的所有文章">公司管理</a>
+</li>
+	<li class="cat-item cat-item-10"><a href="http://blog.me115.com/category/%e5%b9%b6%e8%a1%8c%e8%ae%a1%e7%ae%97" title="查看 并行计算 下的所有文章">并行计算</a>
+</li>
+	<li class="cat-item cat-item-58"><a href="http://blog.me115.com/category/%e6%91%84%e5%bd%b1" title="查看 摄影 下的所有文章">摄影</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="http://blog.me115.com/category/%e6%97%b6%e9%97%b4%e7%ae%a1%e7%90%86" title="查看 时间管理 下的所有文章">时间管理</a>
+</li>
+	<li class="cat-item cat-item-1"><a href="http://blog.me115.com/category/uncategorized" title="查看 未分类 下的所有文章">未分类</a>
+</li>
+	<li class="cat-item cat-item-113"><a href="http://blog.me115.com/category/%e6%9e%b6%e6%9e%84" title="查看 架构 下的所有文章">架构</a>
+</li>
+	<li class="cat-item cat-item-12"><a href="http://blog.me115.com/category/%e7%a4%be%e4%bc%9a%e6%9d%82%e8%b0%88" title="查看 社会杂谈 下的所有文章">社会杂谈</a>
+</li>
+	<li class="cat-item cat-item-74"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98" title="查看 程序员 下的所有文章">程序员</a>
+</li>
+	<li class="cat-item cat-item-13"><a href="http://blog.me115.com/category/%e7%bb%8f%e6%b5%8e%e8%a7%82%e7%82%b9" title="查看 经济观点 下的所有文章">经济观点</a>
+</li>
+	<li class="cat-item cat-item-132"><a href="http://blog.me115.com/category/%e8%a7%82%e7%82%b9%e4%b8%8e%e6%84%9f%e6%83%b3" title="查看 观点与感想 下的所有文章">观点与感想</a>
+</li>
+	<li class="cat-item cat-item-14"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0" title="查看 读书笔记 下的所有文章">读书笔记</a>
+</li>
+	<li class="cat-item cat-item-15"><a href="http://blog.me115.com/category/%e9%a1%b9%e7%9b%ae%e7%ae%a1%e7%90%86" title="查看 项目管理 下的所有文章">项目管理</a>
+</li>
+		</ul>
+</div><div id="meta-2" class="widget widget_meta"><h3 class="widgettitle">功能</h3>			<ul>
+						<li><a href="http://blog.me115.com/wp-login.php">登录</a></li>
+			<li><a href="http://blog.me115.com/feed" title="使用 RSS 2.0 订阅本站点内容">文章 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://blog.me115.com/comments/feed" title="使用 RSS 订阅本站点的所有文章的近期评论">评论 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://cn.wordpress.org/" title="基于 WordPress，一个优美、先进的个人信息发布平台。">WordPress.org</a></li>
+						</ul>
+</div><div id="nav_menu-2" class="widget widget_nav_menu"><div class="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5-container"><ul id="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5" class="menu"><li id="menu-item-304" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-304"><a title="pongba,关注C++，心理学" href="http://mindhacks.cn/archives/">刘未鹏</a></li>
+<li id="menu-item-540" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-540"><a title="游走世界，精彩人生" href="http://www.purplexsu.net/">purplexsu</a></li>
+<li id="menu-item-348" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-348"><a href="http://coolshell.cn/">酷壳</a></li>
+<li id="menu-item-322" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-322"><a href="http://www.cppfans.org/">C++爱好者博客</a></li>
+<li id="menu-item-321" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-321"><a href="http://www.cnblogs.com/archy_yu/">Archy Yu</a></li>
+<li id="menu-item-305" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-305"><a href="http://www.shenlongbin.com/">申龙斌的程序人生</a></li>
+<li id="menu-item-324" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-324"><a href="http://www.rrgod.com">Eddy Blog</a></li>
+<li id="menu-item-340" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-340"><a href="http://www.wangyuxiong.com/">点滴–挖掘技术细节</a></li>
+<li id="menu-item-341" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-341"><a href="http://www.hiadmin.org/">Smart Testing</a></li>
+</ul></div></div><div id="text-2" class="widget widget_text"><h3 class="widgettitle">统计</h3>			<div class="textwidget"><script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_4893206'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/stat.php%3Fid%3D4893206%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script></div>
+		</div>
+
+	</div><!-- end: #sidebar -->
+</div><!-- end: #sidebar-border --></div><!--wrapper-->
+<div class="clear"></div>
+<div id="footer">
+	<div id="footer-inside">
+		<p>
+			版权所有 &copy; 2015 大CC			| 站点由 <a href="http://zww.me">zBench</a> 和 <a href="http://wordpress.org/">WordPress</a> 驱动		</p>
+		<span id="back-to-top">&uarr; <a href="#" rel="nofollow" title="Back to top">回到顶部</a></span>
+	</div>
+</div><!--footer-->
+</body>
+</html>
+<script  type="text/javascript">
+$(function(){
+    $("pre").addClass("prettyprint");
+    $(".entry").addClass("markdown-body");
+    prettyPrint();
+    var dirbef = '<div id="navCategory" class="dir"><h3>内容目录</h3><ul>', dirend = '</ul><//div>', dircontent = '';
+$('.entry h2').each( function(i,e){ dircontent += '<li><a href="#h2' + i + '">' + $(e).text() + "</a></li>"; $(this).attr('id', 'h2' + i);  } );$( dirbef + dircontent + dirend ).insertBefore( '.entry' );});
+</script>
+
+
+<!-- Dynamic page generated in 0.142 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2015-12-14 23:09:57 -->
+
+<!-- super cache -->

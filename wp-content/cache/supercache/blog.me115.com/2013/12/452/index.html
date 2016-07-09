@@ -1,0 +1,421 @@
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/prettify.css" />
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/github.css"/>
+<script src="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/jquery.js" type="text/javascript"></script> 
+<script src="http://files.cnblogs.com/xguo/google-code-prettify.js"></script>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+<head profile="http://gmpg.org/xfn/11">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Redis 在新浪微博中的应用大CC | 大CC</title>
+	<link rel="stylesheet" type="text/css" media="all" href="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/style.css" />
+	<link rel="pingback" href="http://blog.me115.com/xmlrpc.php" />
+	<link rel="alternate" type="application/rss+xml" title="大CC &raquo; Feed" href="http://blog.me115.com/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; 评论 Feed" href="http://blog.me115.com/comments/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; Redis 在新浪微博中的应用 评论 Feed" href="http://blog.me115.com/2013/12/452/feed" />
+<script type="text/javascript">
+var duoshuoQuery = {"short_name":"me115","sso":{"login":"http:\/\/blog.me115.com\/wp-login.php?action=duoshuo_login","logout":"http:\/\/blog.me115.com\/wp-login.php?action=logout&_wpnonce=830f012da7"},"theme":"default","stylePatch":"wordpress\/zBench"};
+duoshuoQuery.sso.login += '&redirect_to=' + encodeURIComponent(window.location.href);
+duoshuoQuery.sso.logout += '&redirect_to=' + encodeURIComponent(window.location.href);
+</script>
+<script type="text/javascript" src="http://static.duoshuo.com/embed.js" charset="UTF-8" async="async"></script>
+<script type='text/javascript' src='http://blogcc.u.qiniudn.com/wp-includes/js/comment-reply.min.js?ver=3.5'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://blog.me115.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://blog.me115.com/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='2013中国软件技术大会 参会笔录及感想' href='http://blog.me115.com/2013/12/446' />
+<link rel='next' title='sar 找出系统瓶颈的利器' href='http://blog.me115.com/2013/12/468' />
+<meta name="generator" content="WordPress 3.5" />
+<link rel='shortlink' href='http://blog.me115.com/?p=452' />
+
+<!-- All in One SEO Pack 1.6.15.3 by Michael Torbert of Semper Fi Web Design[629,677] -->
+<meta name="keywords" content="redis,内存数据库" />
+<link rel="canonical" href="http://blog.me115.com/2013/12/452" />
+<!-- /all in one seo pack -->
+</head>
+<body class="single single-post postid-452 single-format-standard">
+<div id="nav">
+	<div id="menus">
+		<ul><li><a href="http://blog.me115.com/">首页</a></li></ul>
+		<ul id="menu-linux-2" class="menu"><li id="menu-item-566" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-566"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1">Linux工具箱</a></li>
+<li id="menu-item-493" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-493"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84">书评和笔记</a>
+<ul class="sub-menu">
+	<li id="menu-item-495" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-495"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0">读书笔记</a></li>
+	<li id="menu-item-494" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-494"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91">CC评网</a></li>
+</ul>
+</li>
+<li id="menu-item-560" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-560"><a href="http://blog.me115.com/%e9%98%85%e8%af%bb%e8%ae%a1%e5%88%92">阅读计划</a></li>
+<li id="menu-item-461" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-461"><a href="http://blog.me115.com/%e5%85%b3%e4%ba%8e%e6%9c%a8%e4%b9%a6%e6%9e%b6">关于木书架</a></li>
+<li id="menu-item-462" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-462"><a href="http://blog.me115.com/sample-page">关于我</a></li>
+</ul>	</div>
+	<div id="search">
+		<form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form>	</div>
+</div>
+<div id="wrapper">
+	<div id="header">		<h1><a href="http://blog.me115.com/">大CC</a></h1>
+		<h2>关注 Nosql/架构/时间管理/阅读分享</h2>
+		<div class="clear"></div>
+			</div>
+<div id="content">
+		<div class="post-452 post type-post status-publish format-standard hentry category-redis tag-redis-2 tag-105 post-single" id="post-452"><!-- post div -->
+		<h2 class="title">Redis 在新浪微博中的应用</h2>
+		<div class="post-info-top">
+			<span class="post-info-date">
+				作者: <a href="http://blog.me115.com/author/me115wp" title="查看 大CC 的所有文章" rel="author">大CC</a>
+				日期:				2013 年 12 月 19 日							</span>
+						<span class="addcomment"><a href="#respond"  rel="nofollow" title="发表评论？">发表评论</a><span class="ds-thread-count" data-thread-key="452" data-replace="1"> (5)</span></span>
+			<span class="gotocomments"><a href="#comments"  rel="nofollow" title="查看评论？">查看评论</a></span>
+					</div>
+		<div class="clear"></div>
+		<div class="entry">
+			<p>Redis 在新浪微博中的应用</p>
+
+<h2 id="redis-">Redis简介</h2>
+
+<h3 id="-1-5-"><strong>1. 支持5种数据结构</strong></h3>
+
+<p>支持strings, hashes, lists, sets, sorted sets    <br />string是很好的存储方式，用来做计数存储。sets用于建立索引库非常棒；</p>
+
+<h3 id="-2-k-v-vs-k-v-"><strong>2. K-V 存储 vs K-V 缓存</strong></h3>
+
+<p>新浪微博目前使用的98%都是持久化的应用，2%的是缓存，用到了600+服务器    <br />Redis中持久化的应用和非持久化的方式不会差别很大：     <br />非持久化的为8-9万tps，那么持久化在7-8万tps左右；     <br />当使用持久化时，需要考虑到持久化和写性能的配比，也就是要考虑redis使用的内存大小和硬盘写的速率的比例计算；</p>
+
+<h3 id="-3-"><strong>3. 社区活跃</strong></h3>
+
+<p>Redis目前有3万多行代码, 代码写的精简，有很多巧妙的实现，作者有技术洁癖    <br />Redis的社区活跃度很高，这是衡量开源软件质量的重要指标，开源软件的初期一般都没有商业技术服务支持，如果没有活跃社区做支撑，一旦发生问题都无处求救；</p>
+
+<h2 id="redis-">Redis基本原理</h2>
+
+<p>redis持久化(aof) append online file：    <br />写log(aof), 到一定程度再和内存合并. 追加再追加, 顺序写磁盘, 对性能影响非常小</p>
+
+<h3 id="-1-"><strong>1. 单实例单进程</strong></h3>
+
+<p>Redis使用的是单进程，所以在配置时，一个实例只会用到一个CPU；    <br />在配置时，如果需要让CPU使用率最大化，可以配置Redis实例数对应CPU数, Redis实例数对应端口数(8核Cpu, 8个实例, 8个端口), 以提高并发:     <br />单机测试时, 单条数据在200字节, 测试的结果为8~9万tps；</p>
+
+<h3 id="2-replication">2. Replication</h3>
+
+<p>过程: 数据写到master&#8211;&gt;master存储到slave的rdb中&#8211;&gt;slave加载rdb到内存。    <br />存储点(save point): 当网络中断了, 连上之后, 继续传.     <br />Master-slave下第一次同步是全传，后面是增量同步；、</p>
+
+<h3 id="-3-"><strong>3. 数据一致性</strong></h3>
+
+<p>长期运行后多个结点之间存在不一致的可能性；    <br />开发两个工具程序：     <br />1.对于数据量大的数据，会周期性的全量检查；     <br />2.实时的检查增量数据，是否具有一致性；</p>
+
+<p>对于主库未及时同步从库导致的不一致，称之为延时问题；    <br />对于一致性要求不是那么严格的场景，我们只需要要保证最终一致性即可；     <br />对于延时问题，需要根据业务场景特点分析，从应用层面增加策略来解决这个问题；     <br />例如：     <br />1.新注册的用户，必须先查询主库；     <br />2.注册成功之后，需要等待3s之后跳转，后台此时就是在做数据同步。</p>
+
+<h2 id="-redis-">新浪Redis使用历程</h2>
+
+<p>2009年, 使用memcache(用于非持久化内容), memcacheDB(用于持久化+计数),    <br />memcacheDB是新浪在memcache的基础上，使用BerkeleyDB作为数据持久化的存储实现；</p>
+
+<h3 id="-1-"><strong>1. 面临的问题</strong></h3>
+
+<ul>   <li>数据结构(Data Structure)需求越来越多, 但memcache中没有, 影响开发效率 </li>    <li>性能需求, 随着读操作的量的上升需要解决，经历的过程有:      <br />数据库读写分离(M/S)&#8211;&gt;数据库使用多个Slave&#8211;&gt;增加Cache (memcache)&#8211;&gt;转到Redis </li>    <li>解决写的问题：      <br />水平拆分，对表的拆分，将有的用户放在这个表，有的用户放在另外一个表； </li>    <li>     <p>可靠性需求        <br />Cache的&quot;雪崩&quot;问题让人纠结         <br />Cache面临着快速恢复的挑战</p>   </li>    <li>     <p>开发成本需求        <br />Cache和DB的一致性维护成本越来越高(先清理DB, 再清理缓存, 不行啊, 太慢了!)         <br />开发需要跟上不断涌入的产品需求         <br />硬件成本最贵的就是数据库层面的机器，基本上比前端的机器要贵几倍，主要是IO密集型，很耗硬件；</p>   </li>    <li>     <p>维护性复杂        <br />一致性维护成本越来越高；         <br />BerkeleyDB使用B树，会一直写新的，内部不会有文件重新组织；这样会导致文件越来越大；大的时候需要进行文件归档，归档的操作要定期做；         <br />这样，就需要有一定的down time；</p>   </li> </ul>
+
+<p>基于以上考虑， 选择了Redis</p>
+
+<h3 id="-2-"><strong>2. 寻找开源软件的方式及评判标准</strong></h3>
+
+<ul>   <li>对于开源软件，首先看其能做什么，但更多的需要关注它不能做什么，它会有什么问题？ </li>    <li>上升到一定规模后，可能会出现什么问题，是否能接受？ </li>    <li>google code上, 国外论坛找材料(国内比国外技术水平滞后5年） </li>    <li>观察作者个人的代码水平 </li> </ul>
+
+<h2 id="redis-">Redis应用场景</h2>
+
+<h3 id="-1-"><strong>1. 业务使用方式</strong></h3>
+
+<ul>   <li>hash sets: 关注列表, 粉丝列表, 双向关注列表(key-value(field), 排序) </li>    <li>string(counter): 微博数, 粉丝数, &#8230;(避免了select count(*) from &#8230;) </li>    <li>sort sets(自动排序): TopN, 热门微博等, 自动排序 </li>    <li>lists(queue): push/sub提醒,&#8230; </li> </ul>
+
+<p>上述四种, 从精细化控制方面，hash sets和string(counter)推荐使用, sort sets和lists(queue)不推荐使用    <br />还可通过二次开发，进行精简。比如: 存储字符改为存储整形, 16亿数据, 只需要16G内存     <br />存储类型保存在3种以内，建议不要超过3种；</p>
+
+<p>将memcache +myaql 替换为Redis：    <br />Redis作为存储并提供查询，后台不再使用mysql，解决数据多份之间的一致性问题；</p>
+
+<h3 id="-2-"><strong>2. 对大数据表的存储</strong></h3>
+
+<p>（eg：140字微博的存储）    <br />一个库就存唯一性id和140个字；     <br />另一个库存id和用户名，发布日期、点击数等信息，用来计算、排序等，等计算出最后需要展示的数据时再到第一个库中提取微博内容；</p>
+
+<p>改进的3个步骤:    <br />1）发现现有系统存在问题;     <br />2）发现了新东西, 怎么看怎么好, 全面转向新东西;     <br />3）理性回归, 判断哪些适合新东西, 哪些不适合, 不合适的回迁到老系统</p>
+
+<h3 id="-3-"><strong>3. 一些技巧</strong></h3>
+
+<ul>   <li>很多应用, 可以承受数据库连接失败, 但不能承受处理慢 </li>    <li>一份数据, 多份索引(针对不同的查询场景) </li>    <li>解决IO瓶颈的唯一途径: 用内存 </li>    <li>在数据量变化不大的情况下，优先选用Redis </li> </ul>
+
+<h2 id="-">遇到的问题及解决办法</h2>
+
+<p>(注意: 都是量特别大时候会出现的, 量小了怎么都好说)</p>
+
+<h3 id="-1-problem-replication-"><strong>1.Problem: Replication中断后, 重发&#8211;&gt;网络突发流量</strong></h3>
+
+<p>Solution: 重写Replication代码, rdb+aof(滚动)</p>
+
+<h3 id="-2-problem-"><strong>2.Problem: 容量问题</strong></h3>
+
+<p>Solution: 容量规划和M/S的sharding功能(share nothing, 抽象出来的数据对象之间的关联数据很小)    <br />增加一些配置, 分流, 比如: 1,2,3,4, 机器1处理%2=1的, 机器2处理%2=0的.     <br />低于内存的1/2使用量, 否则就扩容（建议Redis实例使用的数据，最大不要超过内存的80%）     <br />我们线上96G/128G内存服务器不建议单实例容量大于20/30G。     <br />微博应用中单表数据最高的有2T的数据，不过应用起来已经有些力不从心；     <br />每个的端口不要超过20G；测试磁盘做save所需要的时间，需要多长时间能够全部写入；内存越大，写的时间也就越长；     <br />单实例内存容量较大后，直接带来的问题就是故障恢复或者Rebuild从库的时候时间较长，对于普通硬盘的加载速度而言，我们的经验一般是redis加载1G需要1分钟；（加载的速度依赖于数据量的大小和数据的复杂度）     <br />Redis rewrite aof和save rdb时，将会带来非常大且长的系统压力，并占用额外内存，很可能导致系统内存不足等严重影响性能的线上故障。</p>
+
+<p>reblance: 现有数据按照上述配置重新分发。    <br />后面使用中间层，路由HA；     <br />注：目前官方也正在做这个事，Redis Cluster，解决HA问题；</p>
+
+<h3 id="-3-problem-bgsave-or-bgwriteaof-"><strong>3. Problem: bgsave or bgwriteaof的冰晶问题</strong></h3>
+
+<p>Solution: 磁盘性能规划和限制写入的速度, 比如: 规定磁盘以200M/s的速度写入, 细水长流, 即使到来大量数据. 但是要注意写入速度要满足两个客观限制:    <br />符合磁盘速度     <br />符合时间限制(保证在高峰到来之前, 就得写完)</p>
+
+<h3 id="-4-problem-"><strong>4.Problem: 运维问题</strong></h3>
+
+<p>1）Inner Crontab: 把Crontab迁移到Redis内部, 减少迁移时候的压力    <br />本机多端口避免同时做 &#8211; 能做到     <br />同一业务多端口(分布在多机上), 避免同时做 &#8211; 做不到     <br />2）动态升级: 先加载.so文件, 再管理配置, 切换到新代码上(Config set命令)     <br />把对redis改进的东西都打包成lib.so文件，这样能够支持动态升级     <br />自己改的时候要考虑社区的升级。当社区有新的版本，有很好用的新功能时，要能很容易的与我们改进后的版本很好的merge；     <br />升级的前提条件: 模块化, 以模块为单位升级     <br />加载时间取决于两个方面: 数据大小, 数据结构复杂度. 一般, 40G数据耗时40分钟     <br />分布式系统的两个核心问题: A.路由问题 B.HA问题</p>
+
+<p>3）危险命令的处理: 比如: fresh all删除全部数据, 得进行控制    <br />运维不能只讲数据备份，还得考虑数据恢复所需要的时间；     <br />增加权限认证(管理员才有权限)eg：flashall 权限认证，得有密码才能做；     <br />当然，高速数据交互一般都不会在每次都进行权限认证，通用的处理策略是第一次认证，后期都不用再认证；     <br />控制hash策略(没有key, 就找不到value; 不知道hash策略, 就无法得到key)</p>
+
+<p>4）Config Dump:    <br />内存中的配置项动态修改过, 按照一定策略写入到磁盘中(Redis已支持)     <br />5）bgsave带来aof写入很慢:     <br />fdatasync在做bgsave时, 不做sync aof(会有数据出入)     <br />6）成本问题: (22T内存, 有10T用来计数)     <br />Redisscounter(16亿数据占用16G内存) &#8211; 全部变为整型存储, 其余(字符串等)全不要     <br />Redis+SSD(counterService计数服务)     <br />顺序自增, table按照顺序写, 写满10个table就自动落地(到SSD)     <br />存储分级: 内存分配问题, 10K和100K写到一块, 会有碎片. Sina已经优化到浪费只占5%以内(已经很好了!)</p>
+
+<h3 id="-5-problem-"><strong>5.Problem: 分布式问题</strong></h3>
+
+<p>1.Config Server: 命名空间, 特别大的告诉访问, 都不适合用代理, 因为代理降低速度, 但是, Sina用了(单机多端口, Redis Cluster, sentinel)    <br />Config Server放到Zookeeper上     <br />最前面是命名服务，后面跟的是无状态的twmemproxy（twitter的改进的，用C写的） ,后面才是redis；     <br />2.twmemproxy     <br />应用不必关心连接失败, 由代理负责重连     <br />把Hash算法放到代理商     <br />代理后边的升级, 前端不关心, 解决了HA的问题     <br />无状态, 多台代理无所谓     <br />3.AS &#8211;&gt; Proxy &#8211;&gt;Redis     <br />4.Sina的Redis都是单机版, 而Redis-Cluster交互过于复杂，没有使用     <br />做HA的话，一定要配合监控来做，如果挂了之后，后续该如何做；     <br />并不是追求单机性能，而是集群的吞吐量，从而可以支持无线扩展；</p>
+
+<h2 id="-">经验总结</h2>
+
+<ul>   <li>提前做好数据量的规划, 减少sharding(互联网公司一般以年为单位) </li>    <li>只存精细化数据(内存很金贵!) </li>    <li>存储用户维度的数据      <br />对象维度的数据要有生命周期       <br />特别是数据量特别大的时候，就很有必要来进行划分了； </li>    <li>暴露服务的常见过程: IP&#8211;&gt;负载均衡&#8211;&gt;域名&#8211;&gt;命名服务(一张表: 名字+资源(IP+端口)) </li>    <li>对于硬件消耗，IO、网络和CPU相比，Redis最消耗的是CPU，复杂的数据类型必定带来CPU消耗； </li>    <li>新浪微博响应时间超时目前设置为5s；（返回很慢的记录key，需记录下来分析，慢日志）； </li>    <li>备份的数据要定期要跑一下生产的数据；用来检查备份数据的有效性； </li>    <li>slave挂多了肯定会对master造成比较的影响；新浪微博目前使用的M/S是一拖一，主要用来做容灾；      <br />同步时，是fork出一个单独进程来和slave进行同步；不会占用查询的进程； </li>    <li>升级到2.6.30以后的linux内核；      <br />在2.6.30以上对软中断的问题处理的很好，性能提升效果明显，差不多有15%到30%的差距； </li>    <li>redis不用读写分离，每个请求都是单线程，为什么要进行读写分离。 </li> </ul>
+
+<p>Posted by: 大CC | 19DEC,2013    <br />博客：<a href="http://blog.me115.com">blog.me115.com</a>     <br />微博：<a href="http://weibo.com/bigcc115">新浪微博</a></p>
+
+<div class="ujian-hook"></div><div style='clear:both;'></div>
+
+ 
+		<script type="text/javascript">
+		var ujian_config = {
+			'num':5,
+			'showType':2,
+			'bgColor':"",
+			'mouseoverColor':"#E6F3DE",
+			'textColor':"#333333",
+			'hoverTextColor':"#333333",
+			'borderColor':"#dddddd",
+			'picSize':96,
+			'target':1,
+			'textHeight':60,
+			'defaultPic':"",
+			'itemTitle':"您可能喜欢："
+		}</script>
+	<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js"></script>					</div><!-- END entry -->
+		<div class="add-info">
+					</div>
+		<div class="post-info-bottom">
+			<span class="post-info-category"><a href="http://blog.me115.com/category/redis" title="查看 Redis 中的全部文章" rel="category tag">Redis</a></span><span class="post-info-tags"><a href="http://blog.me115.com/tag/redis-2" rel="tag">redis</a>, <a href="http://blog.me115.com/tag/%e5%86%85%e5%ad%98%e6%95%b0%e6%8d%ae%e5%ba%93" rel="tag">内存数据库</a></span>
+		</div>
+		<div id="nav-below">
+			<div class="nav-previous"><a href="http://blog.me115.com/2013/12/446" rel="prev"><span class="meta-nav">&larr;</span> 2013中国软件技术大会 参会笔录及感想</a></div>
+			<div class="nav-next"><a href="http://blog.me115.com/2013/12/468" rel="next">sar 找出系统瓶颈的利器 <span class="meta-nav">&rarr;</span></a></div>
+		</div><!-- #nav-below -->					
+	</div><!-- END post -->
+	<a name="comments"></a>
+
+<div class="ds-thread" data-thread-key="452" data-author-key="1" data-title="Redis 在新浪微博中的应用" data-url="http://blog.me115.com/2013/12/452"></div>
+
+<script type="text/javascript">
+	if (typeof DUOSHUO !== 'undefined')
+		DUOSHUO.EmbedThread('.ds-thread');
+</script>
+	<div id="ds-ssr">
+
+		
+            <ol id="commentlist">
+                		<li class="post pingback">
+			<p>Pingback: <a href='http://blog.me115.com/2014/04/534' rel='external nofollow' class='url'>《大型网站技术架构》读书笔记[2] &#8211; 架构的模式大CC | 大CC</a></p>
+		</li>
+		<li class="post pingback">
+			<p>Pingback: <a href='http://blog.me115.com/2014/06/658' rel='external nofollow' class='url'>NoSQL数据库的分布式模型大CC | 大CC</a></p>
+		</li>
+		<li class="post pingback">
+			<p>Pingback: <a href='http://www.ym910.com/wp/?p=5394' rel='external nofollow' class='url'>NoSQL数据库的分布式模型 | 易鸣</a></p>
+		</li>
+		<li class="post pingback">
+			<p>Pingback: <a href='http://www.chawenti.com/articles/24436.html' rel='external nofollow' class='url'>NoSQL数据库的分布式模型 &#8211; 大CC | 查问题</a></p>
+		</li>
+		<li class="post pingback">
+			<p>Pingback: <a href='http://www.aliog.com/57715.html' rel='external nofollow' class='url'>NoSQL数据库的分布式模型 &#045; 数据库 &#045; 阿里欧歌</a></p>
+		</li>
+            </ol>
+
+		            
+    </div></div><!--content-->
+<div id="sidebar-border">
+	<div id="rss_border">
+		<div class="rss_border">
+			<div id="rss_wrap">
+				<div class="rss_wrap">
+										<a class="rss rss_text" href="http://blog.me115.com/feed" rel="bookmark" title="RSS 订阅">RSS 订阅</a>
+																													</div>
+			</div>
+		</div>
+	</div>
+	<div id="sidebar">
+
+<div id="search-2" class="widget widget_search"><form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form></div>		<div id="recent-posts-2" class="widget widget_recent_entries">		<h3 class="widgettitle">近期文章</h3>		<ul>
+					<li>
+				<a href="http://blog.me115.com/2015/12/891" title="单线程你别阻塞，Redis时延问题分析及应对">单线程你别阻塞，Redis时延问题分析及应对</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/11/886" title="负载均衡的几种常用方案">负载均衡的几种常用方案</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/11/884" title="Redis哈希表的实现要点">Redis哈希表的实现要点</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/10/875" title="多线程和多进程模型的选用">多线程和多进程模型的选用</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/10/872" title="异步和非阻塞">异步和非阻塞</a>
+						</li>
+				</ul>
+		</div><div id="text-3" class="widget widget_text"><h3 class="widgettitle">广告</h3>			<div class="textwidget">本站使用digitalocean提供的VPS；<br/>
+访问速度可以通过<a href="http://blog.me115.com" target="_blank">大CC博客</a> 和<a href="http://www.me115.com" target="_blank">木书架网</a>体验；<br/>
+其中我的博客为直连digitalocean，
+而木书架网站采用了第三方CDN加速（安全宝）<br/><br/>
+
+从以下链接点击进入注册digitalocean，您将获取10美元(可免费使用2个月的VPS):<br/>
+
+<B><a href="https://www.digitalocean.com/?refcode=ee9c5a992d6f" target="_blank">DigitalOcean</a></B></div>
+		</div><div id="ds-recent-comments-2" class="widget ds-widget-recent-comments"><h3 class="widgettitle">近期评论</h3><ul class="ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-avatar-size="30" data-excerpt-length="70"></ul></div><script>
+if (typeof DUOSHUO !== 'undefined')
+	DUOSHUO.RecentComments && DUOSHUO.RecentComments('.ds-recent-comments');
+</script><div id="archives-3" class="widget widget_archive"><h3 class="widgettitle">文章归档</h3>		<ul>
+			<li><a href='http://blog.me115.com/date/2015/12' title='2015 年十二月'>2015 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/11' title='2015 年十一月'>2015 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/10' title='2015 年十月'>2015 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/09' title='2015 年九月'>2015 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/08' title='2015 年八月'>2015 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/06' title='2015 年六月'>2015 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/05' title='2015 年五月'>2015 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/04' title='2015 年四月'>2015 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/03' title='2015 年三月'>2015 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/02' title='2015 年二月'>2015 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/01' title='2015 年一月'>2015 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/11' title='2014 年十一月'>2014 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/10' title='2014 年十月'>2014 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/09' title='2014 年九月'>2014 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/08' title='2014 年八月'>2014 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/07' title='2014 年七月'>2014 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/06' title='2014 年六月'>2014 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/05' title='2014 年五月'>2014 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/04' title='2014 年四月'>2014 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/02' title='2014 年二月'>2014 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/12' title='2013 年十二月'>2013 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/11' title='2013 年十一月'>2013 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/10' title='2013 年十月'>2013 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/09' title='2013 年九月'>2013 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/06' title='2013 年六月'>2013 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/04' title='2013 年四月'>2013 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/03' title='2013 年三月'>2013 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/01' title='2013 年一月'>2013 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/12' title='2012 年十二月'>2012 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/10' title='2012 年十月'>2012 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/09' title='2012 年九月'>2012 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/08' title='2012 年八月'>2012 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/05' title='2012 年五月'>2012 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/04' title='2012 年四月'>2012 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/02' title='2012 年二月'>2012 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/11' title='2011 年十一月'>2011 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/10' title='2011 年十月'>2011 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/09' title='2011 年九月'>2011 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/07' title='2011 年七月'>2011 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/06' title='2011 年六月'>2011 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/05' title='2011 年五月'>2011 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/04' title='2011 年四月'>2011 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/03' title='2011 年三月'>2011 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/02' title='2011 年二月'>2011 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/01' title='2011 年一月'>2011 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/12' title='2010 年十二月'>2010 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/11' title='2010 年十一月'>2010 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/10' title='2010 年十月'>2010 年十月</a></li>
+		</ul>
+</div><div id="categories-2" class="widget widget_categories"><h3 class="widgettitle">分类目录</h3>		<ul>
+	<li class="cat-item cat-item-2"><a href="http://blog.me115.com/category/beautiful-life" title="查看 Beautiful Life 下的所有文章">Beautiful Life</a>
+</li>
+	<li class="cat-item cat-item-92"><a href="http://blog.me115.com/category/berkeley-db" title="查看 Berkeley DB 下的所有文章">Berkeley DB</a>
+</li>
+	<li class="cat-item cat-item-3"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98/c%e7%bc%96%e7%a8%8b" title="查看 C++编程 下的所有文章">C++编程</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84" title="查看 CC书评 下的所有文章">CC书评</a>
+</li>
+	<li class="cat-item cat-item-5"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91" title="查看 CC评网 下的所有文章">CC评网</a>
+</li>
+	<li class="cat-item cat-item-6"><a href="http://blog.me115.com/category/linuxunix" title="查看 Linux&amp;Unix 下的所有文章">Linux&amp;Unix</a>
+</li>
+	<li class="cat-item cat-item-90"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1" title="查看 Linux工具箱 下的所有文章">Linux工具箱</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="http://blog.me115.com/category/python" title="查看 Python 下的所有文章">Python</a>
+</li>
+	<li class="cat-item cat-item-93"><a href="http://blog.me115.com/category/redis" title="查看 Redis 下的所有文章">Redis</a>
+</li>
+	<li class="cat-item cat-item-8"><a href="http://blog.me115.com/category/web%e5%bc%80%e5%8f%91" title="查看 WEB开发 下的所有文章">WEB开发</a>
+</li>
+	<li class="cat-item cat-item-127"><a href="http://blog.me115.com/category/%e5%84%92%e9%87%8a%e9%81%93" title="查看 儒释道 下的所有文章">儒释道</a>
+</li>
+	<li class="cat-item cat-item-9"><a href="http://blog.me115.com/category/%e5%85%ac%e5%8f%b8%e7%ae%a1%e7%90%86" title="查看 公司管理 下的所有文章">公司管理</a>
+</li>
+	<li class="cat-item cat-item-10"><a href="http://blog.me115.com/category/%e5%b9%b6%e8%a1%8c%e8%ae%a1%e7%ae%97" title="查看 并行计算 下的所有文章">并行计算</a>
+</li>
+	<li class="cat-item cat-item-58"><a href="http://blog.me115.com/category/%e6%91%84%e5%bd%b1" title="查看 摄影 下的所有文章">摄影</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="http://blog.me115.com/category/%e6%97%b6%e9%97%b4%e7%ae%a1%e7%90%86" title="查看 时间管理 下的所有文章">时间管理</a>
+</li>
+	<li class="cat-item cat-item-1"><a href="http://blog.me115.com/category/uncategorized" title="查看 未分类 下的所有文章">未分类</a>
+</li>
+	<li class="cat-item cat-item-113"><a href="http://blog.me115.com/category/%e6%9e%b6%e6%9e%84" title="查看 架构 下的所有文章">架构</a>
+</li>
+	<li class="cat-item cat-item-12"><a href="http://blog.me115.com/category/%e7%a4%be%e4%bc%9a%e6%9d%82%e8%b0%88" title="查看 社会杂谈 下的所有文章">社会杂谈</a>
+</li>
+	<li class="cat-item cat-item-74"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98" title="查看 程序员 下的所有文章">程序员</a>
+</li>
+	<li class="cat-item cat-item-13"><a href="http://blog.me115.com/category/%e7%bb%8f%e6%b5%8e%e8%a7%82%e7%82%b9" title="查看 经济观点 下的所有文章">经济观点</a>
+</li>
+	<li class="cat-item cat-item-132"><a href="http://blog.me115.com/category/%e8%a7%82%e7%82%b9%e4%b8%8e%e6%84%9f%e6%83%b3" title="查看 观点与感想 下的所有文章">观点与感想</a>
+</li>
+	<li class="cat-item cat-item-14"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0" title="查看 读书笔记 下的所有文章">读书笔记</a>
+</li>
+	<li class="cat-item cat-item-15"><a href="http://blog.me115.com/category/%e9%a1%b9%e7%9b%ae%e7%ae%a1%e7%90%86" title="查看 项目管理 下的所有文章">项目管理</a>
+</li>
+		</ul>
+</div><div id="meta-2" class="widget widget_meta"><h3 class="widgettitle">功能</h3>			<ul>
+						<li><a href="http://blog.me115.com/wp-login.php">登录</a></li>
+			<li><a href="http://blog.me115.com/feed" title="使用 RSS 2.0 订阅本站点内容">文章 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://blog.me115.com/comments/feed" title="使用 RSS 订阅本站点的所有文章的近期评论">评论 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://cn.wordpress.org/" title="基于 WordPress，一个优美、先进的个人信息发布平台。">WordPress.org</a></li>
+						</ul>
+</div><div id="nav_menu-2" class="widget widget_nav_menu"><div class="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5-container"><ul id="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5" class="menu"><li id="menu-item-304" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-304"><a title="pongba,关注C++，心理学" href="http://mindhacks.cn/archives/">刘未鹏</a></li>
+<li id="menu-item-540" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-540"><a title="游走世界，精彩人生" href="http://www.purplexsu.net/">purplexsu</a></li>
+<li id="menu-item-348" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-348"><a href="http://coolshell.cn/">酷壳</a></li>
+<li id="menu-item-322" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-322"><a href="http://www.cppfans.org/">C++爱好者博客</a></li>
+<li id="menu-item-321" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-321"><a href="http://www.cnblogs.com/archy_yu/">Archy Yu</a></li>
+<li id="menu-item-305" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-305"><a href="http://www.shenlongbin.com/">申龙斌的程序人生</a></li>
+<li id="menu-item-324" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-324"><a href="http://www.rrgod.com">Eddy Blog</a></li>
+<li id="menu-item-340" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-340"><a href="http://www.wangyuxiong.com/">点滴–挖掘技术细节</a></li>
+<li id="menu-item-341" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-341"><a href="http://www.hiadmin.org/">Smart Testing</a></li>
+</ul></div></div><div id="text-2" class="widget widget_text"><h3 class="widgettitle">统计</h3>			<div class="textwidget"><script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_4893206'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/stat.php%3Fid%3D4893206%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script></div>
+		</div>
+
+	</div><!-- end: #sidebar -->
+</div><!-- end: #sidebar-border --></div><!--wrapper-->
+<div class="clear"></div>
+<div id="footer">
+	<div id="footer-inside">
+		<p>
+			版权所有 &copy; 2015 大CC			| 站点由 <a href="http://zww.me">zBench</a> 和 <a href="http://wordpress.org/">WordPress</a> 驱动		</p>
+		<span id="back-to-top">&uarr; <a href="#" rel="nofollow" title="Back to top">回到顶部</a></span>
+	</div>
+</div><!--footer-->
+</body>
+</html>
+<script  type="text/javascript">
+$(function(){
+    $("pre").addClass("prettyprint");
+    $(".entry").addClass("markdown-body");
+    prettyPrint();
+    var dirbef = '<div id="navCategory" class="dir"><h3>内容目录</h3><ul>', dirend = '</ul><//div>', dircontent = '';
+$('.entry h2').each( function(i,e){ dircontent += '<li><a href="#h2' + i + '">' + $(e).text() + "</a></li>"; $(this).attr('id', 'h2' + i);  } );$( dirbef + dircontent + dirend ).insertBefore( '.entry' );});
+</script>
+
+
+<!-- Dynamic page generated in 0.160 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2015-12-11 11:21:34 -->
+
+<!-- super cache -->

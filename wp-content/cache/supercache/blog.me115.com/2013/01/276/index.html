@@ -1,0 +1,477 @@
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/prettify.css" />
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/github.css"/>
+<script src="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/jquery.js" type="text/javascript"></script> 
+<script src="http://files.cnblogs.com/xguo/google-code-prettify.js"></script>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+<head profile="http://gmpg.org/xfn/11">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>WEB站点性能优化实践（加载速度提升2s）大CC | 大CC</title>
+	<link rel="stylesheet" type="text/css" media="all" href="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/style.css" />
+	<link rel="pingback" href="http://blog.me115.com/xmlrpc.php" />
+	<link rel="alternate" type="application/rss+xml" title="大CC &raquo; Feed" href="http://blog.me115.com/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; 评论 Feed" href="http://blog.me115.com/comments/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; WEB站点性能优化实践（加载速度提升2s） 评论 Feed" href="http://blog.me115.com/2013/01/276/feed" />
+<script type="text/javascript">
+var duoshuoQuery = {"short_name":"me115","sso":{"login":"http:\/\/blog.me115.com\/wp-login.php?action=duoshuo_login","logout":"http:\/\/blog.me115.com\/wp-login.php?action=logout&_wpnonce=8b6f347947"},"theme":"default","stylePatch":"wordpress\/zBench"};
+duoshuoQuery.sso.login += '&redirect_to=' + encodeURIComponent(window.location.href);
+duoshuoQuery.sso.logout += '&redirect_to=' + encodeURIComponent(window.location.href);
+</script>
+<script type="text/javascript" src="http://static.duoshuo.com/embed.js" charset="UTF-8" async="async"></script>
+<script type='text/javascript' src='http://blogcc.u.qiniudn.com/wp-includes/js/comment-reply.min.js?ver=3.5'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://blog.me115.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://blog.me115.com/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='Yii 的缓存（页面缓存配置实例）' href='http://blog.me115.com/2013/01/246' />
+<link rel='next' title='《哪来的天才》读书笔记' href='http://blog.me115.com/2013/01/290' />
+<meta name="generator" content="WordPress 3.5" />
+<link rel='shortlink' href='http://blog.me115.com/?p=276' />
+
+<!-- All in One SEO Pack 1.6.15.3 by Michael Torbert of Semper Fi Web Design[629,697] -->
+<link rel="canonical" href="http://blog.me115.com/2013/01/276" />
+<!-- /all in one seo pack -->
+</head>
+<body class="single single-post postid-276 single-format-standard">
+<div id="nav">
+	<div id="menus">
+		<ul><li><a href="http://blog.me115.com/">首页</a></li></ul>
+		<ul id="menu-linux-2" class="menu"><li id="menu-item-566" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-566"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1">Linux工具箱</a></li>
+<li id="menu-item-493" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-493"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84">书评和笔记</a>
+<ul class="sub-menu">
+	<li id="menu-item-495" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-495"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0">读书笔记</a></li>
+	<li id="menu-item-494" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-494"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91">CC评网</a></li>
+</ul>
+</li>
+<li id="menu-item-560" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-560"><a href="http://blog.me115.com/%e9%98%85%e8%af%bb%e8%ae%a1%e5%88%92">阅读计划</a></li>
+<li id="menu-item-461" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-461"><a href="http://blog.me115.com/%e5%85%b3%e4%ba%8e%e6%9c%a8%e4%b9%a6%e6%9e%b6">关于木书架</a></li>
+<li id="menu-item-462" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-462"><a href="http://blog.me115.com/sample-page">关于我</a></li>
+</ul>	</div>
+	<div id="search">
+		<form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form>	</div>
+</div>
+<div id="wrapper">
+	<div id="header">		<h1><a href="http://blog.me115.com/">大CC</a></h1>
+		<h2>关注 Nosql/架构/时间管理/阅读分享</h2>
+		<div class="clear"></div>
+			</div>
+<div id="content">
+		<div class="post-276 post type-post status-publish format-standard hentry category-web post-single" id="post-276"><!-- post div -->
+		<h2 class="title">WEB站点性能优化实践（加载速度提升2s）</h2>
+		<div class="post-info-top">
+			<span class="post-info-date">
+				作者: <a href="http://blog.me115.com/author/me115wp" title="查看 大CC 的所有文章" rel="author">大CC</a>
+				日期:				2013 年 1 月 24 日							</span>
+						<span class="addcomment"><a href="#respond"  rel="nofollow" title="发表评论？">发表评论</a><span class="ds-thread-count" data-thread-key="276" data-replace="1"> (9)</span></span>
+			<span class="gotocomments"><a href="#comments"  rel="nofollow" title="查看评论？">查看评论</a></span>
+					</div>
+		<div class="clear"></div>
+		<div class="entry">
+			<p><font size="3" face="华文中宋">&nbsp;&nbsp;&nbsp; 进行优化前，关键是剖析当前的web性能，找到性能瓶颈，从而确定最需改进的地方；如果精力有限，首先将精力放在能明显提升性能的改进点上；</font>
+<p><font size="3" face="华文中宋">《<a href="http://www.me115.com/book/102.html" target="_blank">高性能网站建设指南</a>》提出了一个性能黄金法则：</font>
+<p><font size="3" face="华文中宋">只有10%-20%的最终用户响应时间花在了下载HTML文档上；其余的80%-90%的时间花在了下载页面中的所有组件上。</font>
+<p><font size="3" face="华文中宋">由于本文将实施一个完整的优化流程，所以，我们还是从后台开始；</font>
+<p><font size="3" face="华文中宋"></font>&nbsp;
+<p><font color="#ff8000" size="3" face="华文中宋"><strong>案例说明：</strong></font>
+<p><font size="3" face="华文中宋">优化之前的网站规模：</font>
+<p><font size="3" face="华文中宋">2个js、一个页头、一个页脚；3个css；</font>
+<p><font size="3" face="华文中宋">类型：博客类站点；后台逻辑简单；首页不到10个sql查询；</font>
+<p><font size="3" face="华文中宋">首页html文档52kb;</font>
+<p><font size="3" face="华文中宋"></font>&nbsp;
+<p><font color="#ff8000" size="3" face="华文中宋"><strong>第一步：后台优化，启用页面缓存；</strong></font>
+<p><font size="3" face="华文中宋">实验站点首页后台逻辑并不复杂，不超过10个Sql查询，通过查看时间线，本站在获取HTML文档时，花费的时间不到总响应时间的20%，优化之前没有使用缓存，所有的数据都是从数据库读取，这里，我们使用静态页面缓存，将首页整个页面完全的存放在缓存中（关于YII静态页面缓存的使用，<strong><a href="http://blog.me115.com/2013/01/246" target="_blank">参考这里</a></strong>）；</font>
+<p><font size="3" face="华文中宋">通过查看html文档的生成时间来检测优化效果；</font>
+<p><font size="3" face="华文中宋">首字节时间为376ms；html生成的时间大大缩短，后台时间减少了一倍。</font>
+<p><font size="3" face="华文中宋">优化前：</font>
+<p><a href="http://blogcc.u.qiniudn.com/wp-content/uploads/2013/01/wps_clip_image20655.png"><font size="3" face="华文中宋"><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="wps_clip_image-20655" border="0" alt="wps_clip_image-20655" src="http://blogcc.u.qiniudn.com/wp-content/uploads/2013/01/wps_clip_image206552.png" width="640" height="120"></font></a>
+<p><font size="3" face="华文中宋">优化后：</font>
+<p><a href="http://blogcc.u.qiniudn.com/wp-content/uploads/2013/01/wps_clip_image4529.png"><font size="3" face="华文中宋"><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="wps_clip_image-4529" border="0" alt="wps_clip_image-4529" src="http://blogcc.u.qiniudn.com/wp-content/uploads/2013/01/wps_clip_image45292.png" width="640" height="72"></font></a>
+<p><font size="3" face="华文中宋"></font>&nbsp;
+<p><font color="#ff8000" size="3" face="华文中宋"><strong>第二步，DNS域名解析加速：</strong></font>
+<p><font size="3" face="华文中宋">DNS解析是用户访问站点的第一步，在此之前，你的网站无法做任何事情；</font>
+<p><font size="3" face="华文中宋">站点的DNS解析时间不应该超过500ms，如果站点原始DNS解析时间过长，就该考虑考虑使用第三方解析加速服务；</font>
+<p><font size="3" face="华文中宋">实验站点的原始DNS解析较慢，平均耗时1017ms，算是非常长的；对于DNS加速，可以使用DNS域名解析加速服务，本站点采用的国内的一款免费DNS加速服务DNSPOD，效果还不错，使用后平均耗时降到370ms；</font>
+<p><font size="3" face="华文中宋">加速前测试：</font>
+<p><a href="http://blogcc.u.qiniudn.com/wp-content/uploads/2013/01/wps_clip_image14761.png"><font size="3" face="华文中宋"><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="wps_clip_image-14761" border="0" alt="wps_clip_image-14761" src="http://blogcc.u.qiniudn.com/wp-content/uploads/2013/01/wps_clip_image147611.png" width="644" height="31"></font></a>
+<p><font size="3" face="华文中宋">使用DNS域名解析服务</font><font size="3" face="华文中宋">之后的测试：</font>
+<p><a href="http://blogcc.u.qiniudn.com/wp-content/uploads/2013/01/wps_clip_image16186.png"><font size="3" face="华文中宋"><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="wps_clip_image-16186" border="0" alt="wps_clip_image-16186" src="http://blogcc.u.qiniudn.com/wp-content/uploads/2013/01/wps_clip_image161861.png" width="644" height="28"></font></a>
+<p><font size="3" face="华文中宋"></font>&nbsp;
+<p><font color="#ff8000" size="3" face="华文中宋"><strong>第三步：使用CDN加速；</strong></font>
+<p><font size="3" face="华文中宋">采用第三方CDN加速，时间缩短到2.1s；从下图中看到主要的耗时在于并行下载的个数有些低，如果能够提升并行下载量的个数，那么整体加载时间就会降低；</font>
+<p><font size="3" face="华文中宋">注：个人建议，启用CDN最好放在最后一步，等将站点本身的优化都做完了之后，再启用CDN可以明显的看到优化效果。（开启CDN后，由于有CDN缓存的原因，观测站点的本身的优化就不是很方便了）；</font>
+<p><a href="http://blogcc.u.qiniudn.com/wp-content/uploads/2013/01/wps_clip_image15052.png"><font size="3" face="华文中宋"><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="wps_clip_image-15052" border="0" alt="wps_clip_image-15052" src="http://blogcc.u.qiniudn.com/wp-content/uploads/2013/01/wps_clip_image150521.png" width="644" height="326"></font></a>
+<p><font size="3" face="华文中宋"></font>&nbsp;
+<p><font color="#ff8000" size="3" face="华文中宋"><strong>第四步，采用多台服务器提高并行加载量：</strong></font>
+<p><font size="3" face="华文中宋">原理：一个浏览器对与同一域名的并行下载的个数默认是2个， HTTP.1.0中规定的是4个。这样，我们可以使用不同的域名来提升下载的速度；</font>
+<p><font size="3" face="华文中宋">观察上图中的下载数量，第一次并行下载的个数是4个，初始认为是浏览器对于同一个域名来源的下载所限导致；于是考虑将部分静态文件分别放在不同的服务器上；通过把css和js放在不同服务器上；结果并不理想，发现并未提高速度。</font>
+<p><font size="3" face="华文中宋">想到在哪曾看到过，浏览器必须得把放在页头的css和js下载完成了之后才会开始下载其它的静态组件；</font>
+<p><font size="3" face="华文中宋">关于并行下载这点上，后续将继续实验是否还有优化的空间。</font>
+<p><a href="http://blogcc.u.qiniudn.com/wp-content/uploads/2013/01/wps_clip_image21817.png"><font size="3" face="华文中宋"><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="wps_clip_image-21817" border="0" alt="wps_clip_image-21817" src="http://blogcc.u.qiniudn.com/wp-content/uploads/2013/01/wps_clip_image218171.png" width="644" height="375"></font></a>
+<p><font size="3" face="华文中宋"></font>&nbsp;
+<p><font color="#ff8000" size="3" face="华文中宋"><strong>第五步，合并脚本和样式表；</strong></font>
+<p><font size="3" face="华文中宋">&nbsp;&nbsp;&nbsp; 本站首页使用了2个js和3个css。如果采用朴素复制的方式，将js和css都分别整合到一个文件中，不但操作麻烦，而且不方便后期的管理。网络上有不少合并的工具，本站采用了CSS和JS合并优化工具-minify（下载地址：</font><a href="http://code.google.com/p/minify/"><font size="3" face="华文中宋">http://code.google.com/p/minify/</font></a><font size="3" face="华文中宋">）。如果使用的YII框架，更有YII整合版（</font><a href="https://bitbucket.org/TeamTPG/minscript/wiki/Home"><font size="3" face="华文中宋">minscript Extension</font></a><font size="3" face="华文中宋">），简单几步的配置，就自动将页面所有的js和css文件合并；</font>
+<p><font size="3" face="华文中宋">关于</font><a href="https://bitbucket.org/TeamTPG/minscript/wiki/Home"><font size="3" face="华文中宋">minscript Extension</font></a><font size="3" face="华文中宋">的使用，请参考：</font><a href="https://bitbucket.org/TeamTPG/minscript/wiki/Usage"><font size="3" face="华文中宋">https://bitbucket.org/TeamTPG/minscript/wiki/Usage</font></a>
+<p><font size="3" face="华文中宋"></font>&nbsp;
+<p><font color="#ff8000" size="3" face="华文中宋"><strong>第六步，压缩css/js/html/xml；</strong></font>
+<p><font size="3" face="华文中宋">不同的web服务器设置方式有所差别，本站使用的Linux/apache,</font>
+<p><font size="3" face="华文中宋">在web根目录下的.htaccess文件中添加以下代码即可：</font>
+<p><font size="3" face="华文中宋">#set compress</font>
+<p><font size="3" face="华文中宋">&lt;ifmodule mod_deflate.c&gt;</font>
+<p><font size="3" face="华文中宋">AddOutputFilter DEFLATE html xml php js css</font>
+<p><font size="3" face="华文中宋">&lt;/ifmodule&gt;</font>
+<p><font size="3" face="华文中宋">通过firefox工具可看到，压缩前，html文档的大小是25KB；合并后的js大小为138KB；</font>
+<p><a href="http://blogcc.u.qiniudn.com/wp-content/uploads/2013/01/wps_clip_image2227.png"><font size="3" face="华文中宋"><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="wps_clip_image-2227" border="0" alt="wps_clip_image-2227" src="http://blogcc.u.qiniudn.com/wp-content/uploads/2013/01/wps_clip_image22271.png" width="644" height="236"></font></a>
+<p><font size="3" face="华文中宋">压缩后，html文档大小为6.2KB。js大小为39.8KB；减少2/3的传输时间；</font>
+<p><a href="http://blogcc.u.qiniudn.com/wp-content/uploads/2013/01/wps_clip_image10096.png"><font size="3" face="华文中宋"><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="wps_clip_image-10096" border="0" alt="wps_clip_image-10096" src="http://blogcc.u.qiniudn.com/wp-content/uploads/2013/01/wps_clip_image100961.png" width="644" height="102"></font></a>
+<p><font size="3" face="华文中宋"></font>&nbsp;
+<p><font color="#ff8000" size="3" face="华文中宋"><strong>第六步，最大化的减少HTTP请求；</strong></font>
+<p><font size="3" face="华文中宋">添加Expires头, 启用静态内容缓存，将jpg、gif等文件缓存；</font>
+<p><font size="3" face="华文中宋">方法也是在.htaccess中添加：</font>
+<p><font size="3" face="华文中宋"># Image and Flash content Caching for One Month</font>
+<p><font size="3" face="华文中宋">&lt;FilesMatch &#8220;.(flv|gif|jpg|jpeg|png|ico|swf)$&#8221;&gt;</font>
+<p><font size="3" face="华文中宋">Header set Cache-Control &#8220;max-age=2592360&#8243;</font>
+<p><font size="3" face="华文中宋">&lt;/FilesMatch&gt;</font>
+<p><font size="3" face="华文中宋"></font>&nbsp;
+<p><font color="#ff8000" size="3" face="华文中宋"><strong>结论</strong></font>
+<p><font size="3" face="华文中宋">查看最终的测试结果，整体实现了较大的性能提升，最终页面展现时间为1.62s（测试使用的是一个第三方web测速工具，所有测试结果是在第三方本地无缓存的条件下进行）。仔细观察本站最后几个加载项：有一个第三方网站的广告（加载广告的时刻，页面已经全部呈现，对用户体验影响不大），以及cnzz的统计数据。这样看来，在第12项加载完后，整个页面就完整的呈现在用户面前，优化最终结果是1.1s，较优化前加载速度提升2s；由于物理条件（虚拟机、国外站点）所限，本次优化就到此为止（后续将在并行下载上做做文章，看是否有进一步提升空间）。</font>
+<p><a href="http://blogcc.u.qiniudn.com/wp-content/uploads/2013/01/wps_clip_image7016.png"><font size="3" face="华文中宋"><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="wps_clip_image-7016" border="0" alt="wps_clip_image-7016" src="http://blogcc.u.qiniudn.com/wp-content/uploads/2013/01/wps_clip_image70161.png" width="644" height="219"></font></a>
+<p><font size="3" face="华文中宋"></font>&nbsp;
+<p><font size="3" face="华文中宋">本次优化主要使用的是前端优化，其中大部分规则来自于这本书的指导《<a href="http://www.me115.com/book/102.html" target="_blank">高性能网站建设指南</a></font><font size="3" face="华文中宋"></font><font size="3" face="华文中宋">》；如果你的web前端部分还没有充分优化，强烈建议读读这本书；</font>
+<p><font size="3" face="华文中宋">这是一本你只需画上三小时就能看完，但收获价值远远大于付出的一本书。</font>
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="image" border="0" alt="image" src="http://blogcc.u.qiniudn.com/wp-content/uploads/2013/01/image2.png" width="194" height="262">
+<p><font size="3" face="华文中宋">附上本书的目录：</font>
+<p><font size="3" face="华文中宋">绪言A：前端性能的重要性</font>
+<p><font size="3" face="华文中宋">第1章：规则1——减少HTTP请求</font>
+<p><font size="3" face="华文中宋">第2章：规则2——使用内容发布网络</font>
+<p><font size="3" face="华文中宋">第3章：规则3——添加Expires头</font>
+<p><font size="3" face="华文中宋">第4章：规则4——压缩组件</font>
+<p><font size="3" face="华文中宋">第5章：规则5——将样式表放在顶部</font>
+<p><font size="3" face="华文中宋">第6章：规则6——将脚本放在底部</font>
+<p><font size="3" face="华文中宋">第7章：规则7——避免CSS表达式</font>
+<p><font size="3" face="华文中宋">第8章：规则8——使用外部JavaScript和CSS</font>
+<p><font size="3" face="华文中宋">第9章：规则9——减少DNS查找</font>
+<p><font size="3" face="华文中宋">第10章：规则10——精简JavaScript</font>
+<p><font size="3" face="华文中宋">第11章：规则11——避免重定向</font>
+<p><font size="3" face="华文中宋">第12章：规则12——移除重复脚本</font>
+<p><font size="3" face="华文中宋">第13章：规则13——配置ETag</font>
+<p><font size="3" face="华文中宋">第14章：规则14——使AjaX可缓存</font>
+<p><font size="3" face="华文中宋">第15章：析构十大网站</font>
+<p><font size="3" face="华文中宋">页面大小、响应时间、YSlow等级</font>
+<p><font size="3" face="华文中宋">如何进行测试</font>
+<p><font size="3" face="华文中宋"></font></p>
+<p>&nbsp;</p>
+<p><font color="#ff8000" size="3" face="华文中宋">如果您认为这篇博客让您有些收获，请点击右下角的【推荐】按钮。</font>
+<p><strong><font size="3" face="华文中宋">Posted by: 大CC | JAN24,2013</font></strong>
+<p><font size="3" face="华文中宋">博客：</font><a href="http://blog.me115.com/"><font size="3" face="华文中宋">blog.me115.com</font></a><font size="3"><font face="华文中宋"> <strong>[</strong></font></font><a href="http://feed.feedsky.com/me115"><strong><font size="3" face="华文中宋">订阅</font></strong></a><strong><font size="3" face="华文中宋">]</font></strong>
+<p><font size="3" face="华文中宋">微博：</font><a href="http://weibo.com/bigcc115"><font size="3" face="华文中宋">新浪微博</font></a></p>
+<div class="ujian-hook"></div>
+<div style='clear:both;'></div>
+<p>		<script type="text/javascript">
+		var ujian_config = {
+			'num':5,
+			'showType':2,
+			'bgColor':"",
+			'mouseoverColor':"#E6F3DE",
+			'textColor':"#333333",
+			'hoverTextColor':"#333333",
+			'borderColor':"#dddddd",
+			'picSize':96,
+			'target':1,
+			'textHeight':60,
+			'defaultPic':"",
+			'itemTitle':"您可能喜欢："
+		}</script><br />
+	<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js"></script></p>
+					</div><!-- END entry -->
+		<div class="add-info">
+					</div>
+		<div class="post-info-bottom">
+			<span class="post-info-category"><a href="http://blog.me115.com/category/web%e5%bc%80%e5%8f%91" title="查看 WEB开发 中的全部文章" rel="category tag">WEB开发</a></span><span class="post-info-tags"></span>
+		</div>
+		<div id="nav-below">
+			<div class="nav-previous"><a href="http://blog.me115.com/2013/01/246" rel="prev"><span class="meta-nav">&larr;</span> Yii 的缓存（页面缓存配置实例）</a></div>
+			<div class="nav-next"><a href="http://blog.me115.com/2013/01/290" rel="next">《哪来的天才》读书笔记 <span class="meta-nav">&rarr;</span></a></div>
+		</div><!-- #nav-below -->					
+	</div><!-- END post -->
+	<a name="comments"></a>
+
+<div class="ds-thread" data-thread-key="276" data-author-key="1" data-title="WEB站点性能优化实践（加载速度提升2s）" data-url="http://blog.me115.com/2013/01/276"></div>
+
+<script type="text/javascript">
+	if (typeof DUOSHUO !== 'undefined')
+		DUOSHUO.EmbedThread('.ds-thread');
+</script>
+	<div id="ds-ssr">
+
+		
+            <ol id="commentlist">
+                		<li class="comment even thread-even depth-1" id="li-comment-85">
+			<article id="comment-85" class="comment">
+				<footer class="comment-meta">
+					<cite class="comment-author vcard">
+						<span class="fn"><a href='http://manmanle.net/' rel='external nofollow' class='url'>海涛</a></span> on <a rel="nofollow" href="http://blog.me115.com/2013/01/276#comment-85"><time pubdate datetime="2013-01-26T03:54:28+00:00">2013 年 1 月 26 日 at 上午 3:54</time></a> <span class="says">said:</span>					</cite><!-- .comment-author .vcard -->
+				</footer>
+	
+				<div class="comment-content"><p>抢个沙发来坐坐<br />
+嘿嘿<br />
+期待博主回访哈</p>
+</div>
+				
+			</article><!-- #comment-## -->
+		</li>
+		<li class="comment odd alt thread-odd thread-alt depth-1" id="li-comment-86">
+			<article id="comment-86" class="comment">
+				<footer class="comment-meta">
+					<cite class="comment-author vcard">
+						<span class="fn"><a href='http://www.hezifei.com' rel='external nofollow' class='url'>禾子非</a></span> on <a rel="nofollow" href="http://blog.me115.com/2013/01/276#comment-86"><time pubdate datetime="2013-01-26T10:39:29+00:00">2013 年 1 月 26 日 at 上午 10:39</time></a> <span class="says">said:</span>					</cite><!-- .comment-author .vcard -->
+				</footer>
+	
+				<div class="comment-content"><p>技术文 前来支持博主</p>
+</div>
+				
+			</article><!-- #comment-## -->
+		</li>
+		<li class="comment even thread-even depth-1" id="li-comment-87">
+			<article id="comment-87" class="comment">
+				<footer class="comment-meta">
+					<cite class="comment-author vcard">
+						<span class="fn"><a href='http://www.52smile.cn' rel='external nofollow' class='url'>carl</a></span> on <a rel="nofollow" href="http://blog.me115.com/2013/01/276#comment-87"><time pubdate datetime="2013-01-26T11:53:57+00:00">2013 年 1 月 26 日 at 上午 11:53</time></a> <span class="says">said:</span>					</cite><!-- .comment-author .vcard -->
+				</footer>
+	
+				<div class="comment-content"><p>受益匪浅了，多谢博主的细心讲解 我也做一下页面的优化！</p>
+</div>
+				
+			</article><!-- #comment-## -->
+		</li>
+		<li class="post pingback">
+			<p>Pingback: <a href='http://bbs.isvoc.com/web%e7%ab%99%e7%82%b9%e6%80%a7%e8%83%bd%e4%bc%98%e5%8c%96%e5%ae%9e%e8%b7%b5%ef%bc%88%e5%8a%a0%e8%bd%bd%e9%80%9f%e5%ba%a6%e6%8f%90%e5%8d%872s%ef%bc%89.html' rel='external nofollow' class='url'>WEB站点性能优化实践（加载速度提升2s） &raquo; Information Security BBS</a></p>
+		</li>
+		<li class="comment odd alt thread-odd thread-alt depth-1" id="li-comment-93">
+			<article id="comment-93" class="comment">
+				<footer class="comment-meta">
+					<cite class="comment-author vcard">
+						<span class="fn"><a href='http://lilin.hn.cn' rel='external nofollow' class='url'>lilin</a></span> on <a rel="nofollow" href="http://blog.me115.com/2013/01/276#comment-93"><time pubdate datetime="2013-01-27T18:54:18+00:00">2013 年 1 月 27 日 at 下午 6:54</time></a> <span class="says">said:</span>					</cite><!-- .comment-author .vcard -->
+				</footer>
+	
+				<div class="comment-content"><p>转载了兄弟的文章，欢迎回访。</p>
+</div>
+				
+			</article><!-- #comment-## -->
+		</li>
+		<li class="comment even thread-even depth-1" id="li-comment-96">
+			<article id="comment-96" class="comment">
+				<footer class="comment-meta">
+					<cite class="comment-author vcard">
+						<span class="fn"><a href='http://www.bgmao.com' rel='external nofollow' class='url'>笨瓜猫</a></span> on <a rel="nofollow" href="http://blog.me115.com/2013/01/276#comment-96"><time pubdate datetime="2013-01-29T14:02:28+00:00">2013 年 1 月 29 日 at 下午 2:02</time></a> <span class="says">said:</span>					</cite><!-- .comment-author .vcard -->
+				</footer>
+	
+				<div class="comment-content"><p>厉害。 <img src='http://blogcc.u.qiniudn.com/wp-includes/images/smilies/icon_biggrin.gif' alt=':grin:' class='wp-smiley' />  网站加载加速一般都很难做到</p>
+</div>
+				
+			</article><!-- #comment-## -->
+		</li>
+		<li class="post pingback">
+			<p>Pingback: <a href='http://blog.me115.com/2014/04/534' rel='external nofollow' class='url'>《大型网站技术架构》读书笔记[2] &#8211; 架构的模式大CC | 大CC</a></p>
+		</li>
+		<li class="post pingback">
+			<p>Pingback: <a href='http://www.worldpillar.com/wordpress/?p=162' rel='external nofollow' class='url'>《大型网站技术架构》读书笔记[2-3] &#8211; 架构核心五要素 &laquo; Worldpillar</a></p>
+		</li>
+		<li class="post pingback">
+			<p>Pingback: <a href='http://www.litianhua.net/blog/web-pagefaster.html' rel='external nofollow' class='url'>WEB性能优化实践-页面访问提速(HttpWatch观测). | Sky&#039;blog</a></p>
+		</li>
+            </ol>
+
+		            
+    </div></div><!--content-->
+<div id="sidebar-border">
+	<div id="rss_border">
+		<div class="rss_border">
+			<div id="rss_wrap">
+				<div class="rss_wrap">
+										<a class="rss rss_text" href="http://blog.me115.com/feed" rel="bookmark" title="RSS 订阅">RSS 订阅</a>
+																													</div>
+			</div>
+		</div>
+	</div>
+	<div id="sidebar">
+
+<div id="search-2" class="widget widget_search"><form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form></div>		<div id="recent-posts-2" class="widget widget_recent_entries">		<h3 class="widgettitle">近期文章</h3>		<ul>
+					<li>
+				<a href="http://blog.me115.com/2016/01/926" title="从C++到GO">从C++到GO</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/12/924" title="网络编程中的关键问题总结">网络编程中的关键问题总结</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/12/907" title="Reactor事件驱动的两种实现：面向对象 VS 函数式编程">Reactor事件驱动的两种实现：面向对象 VS 函数式编程</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/12/891" title="单线程你别阻塞，Redis时延问题分析及应对">单线程你别阻塞，Redis时延问题分析及应对</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/11/886" title="负载均衡的几种常用方案">负载均衡的几种常用方案</a>
+						</li>
+				</ul>
+		</div><div id="text-3" class="widget widget_text"><h3 class="widgettitle">广告</h3>			<div class="textwidget">本站使用digitalocean提供的VPS；<br/>
+访问速度可以通过<a href="http://blog.me115.com" target="_blank">大CC博客</a> 和<a href="http://www.me115.com" target="_blank">木书架网</a>体验；<br/>
+其中我的博客为直连digitalocean，
+而木书架网站采用了第三方CDN加速（安全宝）<br/><br/>
+
+从以下链接点击进入注册digitalocean，您将获取10美元(可免费使用2个月的VPS):<br/>
+
+<B><a href="https://www.digitalocean.com/?refcode=ee9c5a992d6f" target="_blank">DigitalOcean</a></B></div>
+		</div><div id="ds-recent-comments-2" class="widget ds-widget-recent-comments"><h3 class="widgettitle">近期评论</h3><ul class="ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-avatar-size="30" data-excerpt-length="70"></ul></div><script>
+if (typeof DUOSHUO !== 'undefined')
+	DUOSHUO.RecentComments && DUOSHUO.RecentComments('.ds-recent-comments');
+</script><div id="archives-3" class="widget widget_archive"><h3 class="widgettitle">文章归档</h3>		<ul>
+			<li><a href='http://blog.me115.com/date/2016/01' title='2016 年一月'>2016 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/12' title='2015 年十二月'>2015 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/11' title='2015 年十一月'>2015 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/10' title='2015 年十月'>2015 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/09' title='2015 年九月'>2015 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/08' title='2015 年八月'>2015 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/06' title='2015 年六月'>2015 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/05' title='2015 年五月'>2015 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/04' title='2015 年四月'>2015 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/03' title='2015 年三月'>2015 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/02' title='2015 年二月'>2015 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/01' title='2015 年一月'>2015 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/11' title='2014 年十一月'>2014 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/10' title='2014 年十月'>2014 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/09' title='2014 年九月'>2014 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/08' title='2014 年八月'>2014 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/07' title='2014 年七月'>2014 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/06' title='2014 年六月'>2014 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/05' title='2014 年五月'>2014 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/04' title='2014 年四月'>2014 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/02' title='2014 年二月'>2014 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/12' title='2013 年十二月'>2013 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/11' title='2013 年十一月'>2013 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/10' title='2013 年十月'>2013 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/09' title='2013 年九月'>2013 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/06' title='2013 年六月'>2013 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/04' title='2013 年四月'>2013 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/03' title='2013 年三月'>2013 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/01' title='2013 年一月'>2013 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/12' title='2012 年十二月'>2012 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/10' title='2012 年十月'>2012 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/09' title='2012 年九月'>2012 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/08' title='2012 年八月'>2012 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/05' title='2012 年五月'>2012 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/04' title='2012 年四月'>2012 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/02' title='2012 年二月'>2012 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/11' title='2011 年十一月'>2011 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/10' title='2011 年十月'>2011 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/09' title='2011 年九月'>2011 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/07' title='2011 年七月'>2011 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/06' title='2011 年六月'>2011 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/05' title='2011 年五月'>2011 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/04' title='2011 年四月'>2011 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/03' title='2011 年三月'>2011 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/02' title='2011 年二月'>2011 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/01' title='2011 年一月'>2011 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/12' title='2010 年十二月'>2010 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/11' title='2010 年十一月'>2010 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/10' title='2010 年十月'>2010 年十月</a></li>
+		</ul>
+</div><div id="categories-2" class="widget widget_categories"><h3 class="widgettitle">分类目录</h3>		<ul>
+	<li class="cat-item cat-item-2"><a href="http://blog.me115.com/category/beautiful-life" title="查看 Beautiful Life 下的所有文章">Beautiful Life</a>
+</li>
+	<li class="cat-item cat-item-92"><a href="http://blog.me115.com/category/berkeley-db" title="查看 Berkeley DB 下的所有文章">Berkeley DB</a>
+</li>
+	<li class="cat-item cat-item-3"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98/c%e7%bc%96%e7%a8%8b" title="查看 C++编程 下的所有文章">C++编程</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84" title="查看 CC书评 下的所有文章">CC书评</a>
+</li>
+	<li class="cat-item cat-item-5"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91" title="查看 CC评网 下的所有文章">CC评网</a>
+</li>
+	<li class="cat-item cat-item-146"><a href="http://blog.me115.com/category/go%e8%af%ad%e8%a8%80" title="查看 GO语言 下的所有文章">GO语言</a>
+</li>
+	<li class="cat-item cat-item-6"><a href="http://blog.me115.com/category/linuxunix" title="查看 Linux&amp;Unix 下的所有文章">Linux&amp;Unix</a>
+</li>
+	<li class="cat-item cat-item-90"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1" title="查看 Linux工具箱 下的所有文章">Linux工具箱</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="http://blog.me115.com/category/python" title="查看 Python 下的所有文章">Python</a>
+</li>
+	<li class="cat-item cat-item-93"><a href="http://blog.me115.com/category/redis" title="查看 Redis 下的所有文章">Redis</a>
+</li>
+	<li class="cat-item cat-item-8"><a href="http://blog.me115.com/category/web%e5%bc%80%e5%8f%91" title="查看 WEB开发 下的所有文章">WEB开发</a>
+</li>
+	<li class="cat-item cat-item-127"><a href="http://blog.me115.com/category/%e5%84%92%e9%87%8a%e9%81%93" title="查看 儒释道 下的所有文章">儒释道</a>
+</li>
+	<li class="cat-item cat-item-9"><a href="http://blog.me115.com/category/%e5%85%ac%e5%8f%b8%e7%ae%a1%e7%90%86" title="查看 公司管理 下的所有文章">公司管理</a>
+</li>
+	<li class="cat-item cat-item-10"><a href="http://blog.me115.com/category/%e5%b9%b6%e8%a1%8c%e8%ae%a1%e7%ae%97" title="查看 并行计算 下的所有文章">并行计算</a>
+</li>
+	<li class="cat-item cat-item-58"><a href="http://blog.me115.com/category/%e6%91%84%e5%bd%b1" title="查看 摄影 下的所有文章">摄影</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="http://blog.me115.com/category/%e6%97%b6%e9%97%b4%e7%ae%a1%e7%90%86" title="查看 时间管理 下的所有文章">时间管理</a>
+</li>
+	<li class="cat-item cat-item-1"><a href="http://blog.me115.com/category/uncategorized" title="查看 未分类 下的所有文章">未分类</a>
+</li>
+	<li class="cat-item cat-item-113"><a href="http://blog.me115.com/category/%e6%9e%b6%e6%9e%84" title="查看 架构 下的所有文章">架构</a>
+</li>
+	<li class="cat-item cat-item-12"><a href="http://blog.me115.com/category/%e7%a4%be%e4%bc%9a%e6%9d%82%e8%b0%88" title="查看 社会杂谈 下的所有文章">社会杂谈</a>
+</li>
+	<li class="cat-item cat-item-74"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98" title="查看 程序员 下的所有文章">程序员</a>
+</li>
+	<li class="cat-item cat-item-13"><a href="http://blog.me115.com/category/%e7%bb%8f%e6%b5%8e%e8%a7%82%e7%82%b9" title="查看 经济观点 下的所有文章">经济观点</a>
+</li>
+	<li class="cat-item cat-item-137"><a href="http://blog.me115.com/category/%e7%bd%91%e7%bb%9c%e7%bc%96%e7%a8%8b" title="查看 网络编程 下的所有文章">网络编程</a>
+</li>
+	<li class="cat-item cat-item-132"><a href="http://blog.me115.com/category/%e8%a7%82%e7%82%b9%e4%b8%8e%e6%84%9f%e6%83%b3" title="查看 观点与感想 下的所有文章">观点与感想</a>
+</li>
+	<li class="cat-item cat-item-14"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0" title="查看 读书笔记 下的所有文章">读书笔记</a>
+</li>
+	<li class="cat-item cat-item-15"><a href="http://blog.me115.com/category/%e9%a1%b9%e7%9b%ae%e7%ae%a1%e7%90%86" title="查看 项目管理 下的所有文章">项目管理</a>
+</li>
+		</ul>
+</div><div id="meta-2" class="widget widget_meta"><h3 class="widgettitle">功能</h3>			<ul>
+						<li><a href="http://blog.me115.com/wp-login.php">登录</a></li>
+			<li><a href="http://blog.me115.com/feed" title="使用 RSS 2.0 订阅本站点内容">文章 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://blog.me115.com/comments/feed" title="使用 RSS 订阅本站点的所有文章的近期评论">评论 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://cn.wordpress.org/" title="基于 WordPress，一个优美、先进的个人信息发布平台。">WordPress.org</a></li>
+						</ul>
+</div><div id="nav_menu-2" class="widget widget_nav_menu"><div class="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5-container"><ul id="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5" class="menu"><li id="menu-item-304" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-304"><a title="pongba,关注C++，心理学" href="http://mindhacks.cn/archives/">刘未鹏</a></li>
+<li id="menu-item-540" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-540"><a title="游走世界，精彩人生" href="http://www.purplexsu.net/">purplexsu</a></li>
+<li id="menu-item-348" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-348"><a href="http://coolshell.cn/">酷壳</a></li>
+<li id="menu-item-322" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-322"><a href="http://www.cppfans.org/">C++爱好者博客</a></li>
+<li id="menu-item-321" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-321"><a href="http://www.cnblogs.com/archy_yu/">Archy Yu</a></li>
+<li id="menu-item-305" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-305"><a href="http://www.shenlongbin.com/">申龙斌的程序人生</a></li>
+<li id="menu-item-324" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-324"><a href="http://www.rrgod.com">Eddy Blog</a></li>
+<li id="menu-item-340" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-340"><a href="http://www.wangyuxiong.com/">点滴–挖掘技术细节</a></li>
+<li id="menu-item-341" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-341"><a href="http://www.hiadmin.org/">Smart Testing</a></li>
+</ul></div></div><div id="text-2" class="widget widget_text"><h3 class="widgettitle">统计</h3>			<div class="textwidget"><script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_4893206'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/stat.php%3Fid%3D4893206%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script></div>
+		</div>
+
+	</div><!-- end: #sidebar -->
+</div><!-- end: #sidebar-border --></div><!--wrapper-->
+<div class="clear"></div>
+<div id="footer">
+	<div id="footer-inside">
+		<p>
+			版权所有 &copy; 2016 大CC			| 站点由 <a href="http://zww.me">zBench</a> 和 <a href="http://wordpress.org/">WordPress</a> 驱动		</p>
+		<span id="back-to-top">&uarr; <a href="#" rel="nofollow" title="Back to top">回到顶部</a></span>
+	</div>
+</div><!--footer-->
+</body>
+</html>
+<script  type="text/javascript">
+$(function(){
+    $("pre").addClass("prettyprint");
+    $(".entry").addClass("markdown-body");
+    prettyPrint();
+    var dirbef = '<div id="navCategory" class="dir"><h3>内容目录</h3><ul>', dirend = '</ul><//div>', dircontent = '';
+$('.entry h2').each( function(i,e){ dircontent += '<li><a href="#h2' + i + '">' + $(e).text() + "</a></li>"; $(this).attr('id', 'h2' + i);  } );$( dirbef + dircontent + dirend ).insertBefore( '.entry' );});
+</script>
+
+
+<!-- Dynamic page generated in 3.403 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2016-05-14 23:55:32 -->
+
+<!-- super cache -->

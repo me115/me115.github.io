@@ -1,0 +1,566 @@
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/prettify.css" />
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/github.css"/>
+<script src="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/jquery.js" type="text/javascript"></script> 
+<script src="http://files.cnblogs.com/xguo/google-code-prettify.js"></script>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+<head profile="http://gmpg.org/xfn/11">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>[译]2010新版STL修订内容（VC2010）大CC | 大CC</title>
+	<link rel="stylesheet" type="text/css" media="all" href="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/style.css" />
+	<link rel="pingback" href="http://blog.me115.com/xmlrpc.php" />
+	<link rel="alternate" type="application/rss+xml" title="大CC &raquo; Feed" href="http://blog.me115.com/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; 评论 Feed" href="http://blog.me115.com/comments/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; [译]2010新版STL修订内容（VC2010） 评论 Feed" href="http://blog.me115.com/2010/11/34/feed" />
+<script type="text/javascript">
+var duoshuoQuery = {"short_name":"me115","sso":{"login":"http:\/\/blog.me115.com\/wp-login.php?action=duoshuo_login","logout":"http:\/\/blog.me115.com\/wp-login.php?action=logout&_wpnonce=faaada404e"},"theme":"default","stylePatch":"wordpress\/zBench"};
+duoshuoQuery.sso.login += '&redirect_to=' + encodeURIComponent(window.location.href);
+duoshuoQuery.sso.logout += '&redirect_to=' + encodeURIComponent(window.location.href);
+</script>
+<script type="text/javascript" src="http://static.duoshuo.com/embed.js" charset="UTF-8" async="async"></script>
+<script type='text/javascript' src='http://blogcc.u.qiniudn.com/wp-includes/js/comment-reply.min.js?ver=3.5'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://blog.me115.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://blog.me115.com/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='从央行加息说起' href='http://blog.me115.com/2010/10/31' />
+<link rel='next' title='动态生成JS 实现 .NET 网站广告管理' href='http://blog.me115.com/2010/11/46' />
+<meta name="generator" content="WordPress 3.5" />
+<link rel='shortlink' href='http://blog.me115.com/?p=34' />
+
+<!-- All in One SEO Pack 1.6.15.3 by Michael Torbert of Semper Fi Web Design[629,686] -->
+<meta name="keywords" content="c++0x,stl,修订" />
+<link rel="canonical" href="http://blog.me115.com/2010/11/34" />
+<!-- /all in one seo pack -->
+</head>
+<body class="single single-post postid-34 single-format-standard">
+<div id="nav">
+	<div id="menus">
+		<ul><li><a href="http://blog.me115.com/">首页</a></li></ul>
+		<ul id="menu-linux-2" class="menu"><li id="menu-item-566" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-566"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1">Linux工具箱</a></li>
+<li id="menu-item-493" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-493"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84">书评和笔记</a>
+<ul class="sub-menu">
+	<li id="menu-item-495" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-495"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0">读书笔记</a></li>
+	<li id="menu-item-494" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-494"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91">CC评网</a></li>
+</ul>
+</li>
+<li id="menu-item-560" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-560"><a href="http://blog.me115.com/%e9%98%85%e8%af%bb%e8%ae%a1%e5%88%92">阅读计划</a></li>
+<li id="menu-item-461" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-461"><a href="http://blog.me115.com/%e5%85%b3%e4%ba%8e%e6%9c%a8%e4%b9%a6%e6%9e%b6">关于木书架</a></li>
+<li id="menu-item-462" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-462"><a href="http://blog.me115.com/sample-page">关于我</a></li>
+</ul>	</div>
+	<div id="search">
+		<form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form>	</div>
+</div>
+<div id="wrapper">
+	<div id="header">		<h1><a href="http://blog.me115.com/">大CC</a></h1>
+		<h2>关注 Nosql/架构/时间管理/阅读分享</h2>
+		<div class="clear"></div>
+			</div>
+<div id="content">
+		<div class="post-34 post type-post status-publish format-standard hentry category-c tag-c0x tag-stl tag-49 post-single" id="post-34"><!-- post div -->
+		<h2 class="title">[译]2010新版STL修订内容（VC2010）</h2>
+		<div class="post-info-top">
+			<span class="post-info-date">
+				作者: <a href="http://blog.me115.com/author/me115wp" title="查看 大CC 的所有文章" rel="author">大CC</a>
+				日期:				2010 年 11 月 1 日							</span>
+						<span class="addcomment"><a href="#respond"  rel="nofollow" title="发表评论？">发表评论</a><span class="ds-thread-count" data-thread-key="34" data-replace="1"> (0)</span></span>
+			<span class="gotocomments"><a href="#comments"  rel="nofollow" title="查看评论？">查看评论</a></span>
+					</div>
+		<div class="clear"></div>
+		<div class="entry">
+			<p>揭示STL重要更改 </p>
+<p>预备知识: </p>
+<p>l 理解标准C++ 0x 的concepts，例如：auto 关键字，lambda 表达式、右值引用等。 </p>
+<p>l 熟练使用STL。熟悉2个及以上STL容器的使用。 </p>
+<p>l 你手上必须有有VC2010的编译器，或者其它支持最新的C++标准和更新Stl的编译器。</p>
+<p>这篇文章介绍了新版STL修订内容。这些变化是TR1中最为关注的内容（译注1）；以下是STL的新增特性： </p>
+<p>l Constant迭代器 </p>
+<p>l array类 </p>
+<p>l tuple类 </p>
+<p>l &lt;algorithm&gt;中新增函数 </p>
+<p>l 随机生成器类(&lt;random&gt;) </p>
+<p>l 对sets及无序sets容器的改进 </p>
+<p>l 对maps及无序maps的改进 </p>
+<p>l 正则表达式 </p>
+<p>l 功能的改进及实用的头文件 </p>
+<p>l 加强指针管理类</p>
+<p><font color="#ff8040"><b>Constant </b><b>迭代器</b><b></b> </font></p>
+<p>首先说明，constant迭代器并不等于const迭代器。constant迭代器是const_iterator。 将const关键字加在 iterator前时，其所指的变量是无法修改的。而const_iterator则在首次赋值后不再可指向其它变量（类似：常量指针和指向常量的指针）看了下面代码后，你应该会有一个清晰的认识：</p>
+<pre>using namespace std;
+vector&lt;int&gt; IntVector;
+...
+// Normal iterator
+vector&lt;int&gt;::iterator iter_nc = IntVector.begin();
+*iter_nc = 100; // Valid
+iter_nc = IntVector.end(); // Valid
+
+// Constant Iterator
+vector&lt;int&gt;::const_iterator iter_c = IntVector.begin();
+*iter_c = 100; // INVALID!
+iter_c = IntVector.end(); // Valid
+
+// The 'const' iterator
+const vector&lt;int&gt;::iterator iter_const = IntVector.begin();
+*iter_const = 100; // Valid
+iter_const = IntVector.end(); // Invalid (Why? Learn C++!)
+
+// The 'const' Constant Iterator
+const vector&lt;int&gt;::const_iterator iter_const_c = IntVector.begin();
+*iter_const_c = 100; // Invalid!
+iter_const_c = IntVector.end(); // Invalid</pre>
+<p><b>新特性</b> </p>
+<p>容器中新增函数可以明确返回Constant迭代器。在此之前，我们先了解一下迭代器返回规则： </p>
+<p>1. 如果容器是constant，或者类方法前申明const，则将返回const_iterator。 </p>
+<p>2. 如果左值是const_iterator,普通的iterator将被返回，但会向下转型为const_iterator； </p>
+<p>3. 其它情况，将返回普通iterator； </p>
+<p>注：大多数迭代器访问方法（eg：begin，end）有相应的重载版本以返回constant 或non-const迭代器 ； </p>
+<p>因此，你可明确指明返回的是constant还是普通迭代器； </p>
+<p>以下为新增方法： </p>
+<table cellspacing="0" cellpadding="0" border="1">
+<tbody>
+<tr>
+<td valign="top" width="106">
+<p>访问方法</p>
+</td>
+<td valign="top" width="560">
+<p><b>含义</b></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="106">
+<p><b>cbegin</b></p>
+</td>
+<td valign="top" width="560">
+<p>返回容器第一个元素的const_iterator .</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="106">
+<p>cend</p>
+</td>
+<td valign="top" width="560">
+<p>返回容器最后一个元素后一位的 const_iterator .</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="106">
+<p><b>crbegin</b></p>
+</td>
+<td valign="top" width="560">
+<p>返回rbegin 的 const_iterator 。即最后一个元素的constant迭代器. </p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="106">
+<p><b>crend</b></p>
+</td>
+<td valign="top" width="560">
+<p>返回rend的 const_iterator 。即第一个元素前一位的constant迭代器.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>以上所有方法都在相应的容器类中申明为const。 </p>
+<p><b></b></p>
+<p><b>为什么要引入这些方法？</b> </p>
+<p>你当然可以指定你需要那种迭代器，可能你根本就不需要这些新的方法； </p>
+<p>加入这些方法的主要原因是因为新修订的auto关键词的引入；如果你已经了解auto关键词的含义，你应该知道我们可以在变量申明时不用明确指定类型。编译器会根据表达式的右值推导变量类型；当有如下调用：</p>
+<pre>auto iter = IntVector.begin();</pre>
+<p>可以指定是普通还是constant迭代器被返回。因此，为了返回一个constant迭代器（const_iterator），你可以使用：</p>
+<pre>auto iter = IntVector.cbegin(); // cbegin
+// The return type is: vector&lt;int&gt;::const_iterator</pre>
+<p>这样，这个迭代器以只读模式遍历vector，可以写出如下代码：</p>
+<pre>for(auto iter = IntVector.cbegin(); iter != IntVector.cend(); ++iter) { }</pre>
+<p>需要说明的是，constant迭代器可以访问 非const成员方法（我不敢保证，我只是在源码中看到）。因此，最好使用cend来代替end检查有效性。 </p>
+<p><b></b></p>
+<p><b>在sets和maps集合中又是如何？</b> </p>
+<p>对于所有的集合类（set,multiset, unordered_set, and unordered_multiset),其迭代器总是constant的。也就是说，当调用方法begin/end,find 以及下标操作符[]，都是返回的constant 迭代器。像begin,find这些方法，虽然它们返回的数据类型都是非constant迭代器，但其行为是constant迭代器。 </p>
+<p>看以下代码：</p>
+<pre>set&lt;int&gt; is;
+is.insert(10);
+
+*is.begin() = 120;
+
+wcout &lt;&lt; is.count(10) &lt;&lt; &quot;, &quot; &lt;&lt; is.count(120);</pre>
+<p>以上例子首先插入10到set中，然后试图修改第一个元素的值。 </p>
+<p>因为只有一个元素插入进来，begin将返回指向该元素的迭代器；在vc9及之前的编译器中，可成功修改值为120； </p>
+<p>但从vc10开始，第三行将不能编译通过，编译器报错为： </p>
+<p>error C3892: &#8216;std::**::begin&#8217; : you cannot assign to a variable that is const </p>
+<p>对于map，键不可修改，值可修改。以下是代码示例： </p>
+<pre>map&lt;int, int&gt; imap; 
+imap.insert( make_pair( 1, 1028 ));
+imap.insert( make_pair( 2, 2048 ));
+imap.find(1)-&gt;second = 1024; // Compiles
+imap.find(2)-&gt;first = 4; // Error
+
+imap[2] = 2000;
+*imap.begin()-&gt;first = 10; // Error
+*imap.begin()-&gt;second= 10; // Compiles
+
+*imap.cbegin()-&gt;second= 10;
+// Error on VC10, since iterator is constant. NA for VC9 </pre>
+<p><font color="#ff8040"><b>数组类</b><b>array</b> </font></p>
+<p>array类是STL新增容器类，用于在存储一个固定大小的数组。数组大小与数据元素类型一同由模版参数指出。其指定的大小数值必须是一个常量运行时的（与其它C/c++数组一样）。不像其它容器能够增加或减少容器大小，array支持其它标准方法-如迭代，随机访问，交换数据，赋值等。 </p>
+<p>头文件：&lt;array&gt; </p>
+<p>命名空间：tr1.但由于&#8217;using tr1::array&#8217; 已被头文件包含。所有，在使用中，申明std就可以了。 </p>
+<p>示例： </p>
+<p>array&lt;int, 64&gt; IntArray; </p>
+<p>第一个参数指定模版数据类型，第二个是一个常量编译时的整型。定义之后，IntArray的大小不能再改变。当然，除了int，可以使用其它的基本数据类型。如果要使用自定义类，则要实现复制构造函数，重载赋值操作符，比较操作符。同时，默认构造函数必须为公有。 </p>
+<p>这个类的引入是为了和其它STL容器进行无缝整合。例如，你使用vector或list，需要调用begin/end方法来访问元素。当你想将其作为普通数组使用时，代码会编译失败。这必须改变。用array类，你可以同时获得STL的灵活性和普通数据的性能。 </p>
+<p>依据最近的编译器报告（tr1 增刊），可以使用以下方式来初始化array: </p>
+<p>array&lt;int, 64&gt; IntArray; </p>
+<p>如果忽略1个或多个元素没赋值，它们将被置为0. </p>
+<p>如果对array没有做任何初始化操作，其所有元素处于未初始化状态。 </p>
+<p>array类支持以下STL标准方法： </p>
+<blockquote>
+<p>l at, operator [] &#8211; 返回指定位置元素引用. </p>
+<p>l back, front &#8211; 各自返回第一及最后一个元素位置引用； </p>
+<p>l begin, cbegin, rbegin, crbegin -返回第一个元素迭代器； </p>
+<p>l end, cend, rend, crend &#8211; 返回最后一个元素后一位的迭代器； </p>
+<p>l empty &#8211; 判断容器是否为空。仅当数组大小为0时返回true； </p>
+<p>l size, max_size &#8211; 返回array对象大小，该大小在编译期间确定； </p>
+</blockquote>
+<p>以下方法需要重点说明： </p>
+<p><b>array::assign</b> 和 <b>array:fill</b> </p>
+<p>这2个方法功能相同，实现将array所有元素赋值为一个给定值。此方法也可用来通过指定值替换array对象的所有元素。例如： </p>
+<pre>array&lt;int,10&gt; MyArray;
+MyArray.fill(40); // or 'assign'
+
+for_each(MyArray.cbegin(), MyArray.cend(), 
+[](int n) { std::wcout &lt;&lt; n &lt;&lt; &quot;t&quot;;} ); </pre>
+<p>将10个元素赋值为40，之后输出到控制台。 </p>
+<p><b>array::data</b> </p>
+<p>此方法返回数组第一个元素地址。与普通数组相比（eg：int_array[N]),此方法类似于表达式&amp;int_array[0] 或者int_array。 此方法是由指针直接操作。const及非const方法都可用。例如： </p>
+<pre>int* pArray = MyArray.data();
+// Or
+auto pArray = MyArray.data(); </pre>
+<p><b>array::swap(array&amp;)</b> 和swap(array&amp;, array&amp;) </p>
+<p>交换两个数组大小和类型相同的array对象。第一个方法是非静态方法，实现将本数组内容与参数中的指定数组交换。第二个方法，携带2个array&amp;参数，互换内容。例如： </p>
+<pre>typedef array&lt;int,10&gt; MyArrayType;
+MyArrayType Array1 = {1,2,4,8,16};
+MyArrayType Array2;
+Array2.assign(64);
+Array1.swap(Array2);
+// Or - swap(Array1, Array2);
+
+// Array1 - 64, 64...64
+// Array2 - 1,2,4,....0 </pre>
+<p>如果试图交换不同类型数组，编译器会报错： </p>
+<pre>array&lt;int,5&gt; IntArrayOf5 = {1,2,3,4,5};
+array&lt;int,4&gt; IntArrayOf4 = {10,20,40};
+array&lt;float,4&gt; FloatArrayOf4; 
+IntArrayOf5.swap(IntArrayOf4); // ERROR! 
+swap(IntArrayOf4, FloatArrayOf4); // ERROR! </pre>
+<p>六种比较操作符 </p>
+<p>作为全局函数的==, !=, &lt;, &gt;, &lt;=, 及&gt;=可用来比较2个相同类型的数组对象： </p>
+<pre>typedef array&lt;int,10&gt; MyArrayType;
+MyArrayType Array1 = {1,2,4,8,16};
+MyArrayType Array2;
+Array2.assign(64);
+if (Array2 == Array1)
+wcout &lt;&lt; &quot;Same&quot;;
+else
+wcout &lt;&lt; &quot;Not Same&quot;; </pre>
+<p>结果输出&quot;Not Same&quot; . </p>
+<p><font color="#ff8040"><b>元组类</b><b>tuple </b><b></b></font></p>
+<p>STL程序员都知道pair 结构，它用来包装2个任意类型的元素。除了maps，在其它地方这个结构也非常有用，我们可以用来包装2个元素，而不用定义一个结构体。我们可通过first、 second变量取得这2个元素的值。 </p>
+<pre>pair&lt;string,int&gt; NameAndAge;
+NameAndAge.first = &quot;Intel&quot;;
+NameAndAge.second = 40; </pre>
+<p>程序员经常typedef 它们，这样变量就可以容易的申明并可将pair 传给函数。 </p>
+<p>但是，如果你需要保证多于2个的元素，该怎么做呢？ </p>
+<p>通常，你会定义一个结构体，或使用多重pair。这样的格式并不能与STL无缝整合。 </p>
+<p><b>tuple</b> 类就是为此而生。这个类允许将2至10个元素包装在一起。 </p>
+<p>所有元素类型都可不同，如果要加入自定义，其依赖的操作必须事先定义。tuple类通过模版重载具体如何工作，已超出我的理解，这里我只说明它可以完成什么，以及我们可以在哪里使用。 </p>
+<p>l 头文件: &lt;tuple&gt; </p>
+<p>l 命名空间: tr1. &#8216;using tr1::tuple&#8217; 已包含在 std . </p>
+<p>申明2个元素元组： </p>
+<p>tuple&lt;int,int&gt; TwoElements; </p>
+<p>在构造函数中初始化： </p>
+<p>tuple&lt;int,int&gt; TwoElement (400, 800); </p>
+<p>如果初始化，则必须初始化所有元素，以下方式报错： </p>
+<p>tuple&lt;int,int&gt; TwoElement (400); <i>// Second initializer missing</i> </p>
+<p>这个错误可能不那么明显，但是你应该明白这个原则：必须初始化所有成员。 </p>
+<p>构造之后的初始化并不简单。在pair中，有make_pair 来辅助pair的初始化。自然的，tuple也有相应的辅助函数make_tuple。如果你已经读过或将要读VC2010并行编程，你会发现C++库中类似的完成类似的功能有其它新的make_函数。（译注2：并行编程地址） </p>
+<p>下面例子说明如何初始化tuple对象： </p>
+<pre>TwoElement = make_tuple(400, 800); </pre>
+<p>跟tuple模版类一样，make_tuple 有传入2至10个参数的重载函数版本。make_tuple充分利用C++0x中右值引用的思想，完美的支持STL新特性。它允许复用同一对象而不是调用复制构造函数和赋值操作，以此提升整体性能。 </p>
+<p>我们可以结合make_tuple和auto关键词来灵活的定义一个tuple： </p>
+<pre>auto Elements = make_tuple(20, 'X', 3.14159);
+// Eq: tuple&lt;int, char, double&gt; Elements(20, 'X', 3.14159); </pre>
+<p>如何访问tuple中的元素？ </p>
+<p>对于pair对象，我们都是简单的使用其内部定义的变量first/second来访问元素。但是tuple类中并没有定义这样的变量，我们需要通过辅助函数get来访问这些未命名变量。例如： </p>
+<pre>tuple&lt;string, int, char&gt; NameAgeGender(&quot;Gandhi&quot;, 52, 'M');
+int nAge = get&lt;1&gt;(NameAgeGender); </pre>
+<p>get&lt;index&gt;()中的可用索引必须在对象初始化的元素范围之内。索引以0为起点。在上述例子中，索引范围为[0,2]，get&lt;1&gt;用于访问NameAgeGender对象中的第二个元素，返回一个整型给nAge。 </p>
+<p>get函数的索引必须是一个常量编译时的整型并在有效范围内。返回类型的推导也是常量时；以下代码编译器会报错： </p>
+<pre>int nAge = get&lt;0&gt;(NameAgeGender);
+// ERROR - cannot convert from 'string' to 'int' </pre>
+<p>这样也有助与发现潜在的代码缺陷： </p>
+<pre>char cGender = get&lt;1&gt;(NameAgeGender); // Leve 4 C4244 warning - 'int' to 'char'
+// Should be get&lt;2&gt; </pre>
+<p>更重要的是，get可以赋值给auto关键词： </p>
+<pre>auto sName = get&lt;0&gt;(NameAgeGender); // Type deduction - 'string' </pre>
+<p>对于非const类型tuple对象，返回类型为元组元素的引用，这样，可以修改元素值： </p>
+<pre>// Modify Age
+get&lt;1&gt;(NameAgeGender) = 79; </pre>
+<p>也可以将这个返回类型放在另一个引用中，并在之后修改。使用auto关键词也可行： </p>
+<pre>auto &amp; rnAge = get&lt;1&gt;(NameAgeGender) ;
+rnAge = 79 </pre>
+<p>需要指出的是，get函数同样适用于array类： </p>
+<pre>array&lt;char, 5&gt; Vowels = {'A','E','I','o','U'};
+char c = get&lt;1&gt;(Vowels); // 'E'
+get&lt;3&gt;(Vowels) = 'O'; // Modify
+get&lt;10&gt;&lt;Vowels); // ERROR - Out of range! </pre>
+<p><strong>tie函数 </strong></p>
+<p>这个函数实现make_tuple函数的逆操作。使用这个函数，你可以用一个tuple对象来初始化一组变量。看例子： </p>
+<pre>tuple&lt;string, int, char&gt; NameAgeGender(&quot;Gandhi&quot;, 52, 'M');
+string sName;
+int nAge;
+char cSex;
+tie(sName, nAge, cSex) = NameAgeGender; </pre>
+<p>以上代码将这3个变量对应的设置为值 &quot;Gandhi&quot;, 52, and &#8216;M&#8217;。我想tie是否可以用于取代make_tuple？结果证明不行： </p>
+<pre>tuple&lt;string, int, char&gt; NameAgeGender;
+NameAgeGender = tie(&quot;Gates&quot;, 46, 'M'); // make_tuple
+
+string sName; int nAge; char cSex;
+make_tuple(sName, nAge, cSex) = NameAgeGender; // NO error. See below. </pre>
+<p>tie函数返回tuple对象的引用；make_tuple则是创建一个对象，返回的并非引用。上面最后一行试图修改一个临时创建的tuple对象,编译器不报错，却并不能得到正确结果。因此，最好还是按照它们设计的功能来使用这2个函数。 </p>
+<p><b>六种关系操作符</b> </p>
+<p>与array类一样，tuple类中同样实现了6种操作符的功能。所有的重载版本都要求作关系操作的两个tuple对象必须是同类型的（所包含的元素的对应位置的类型必须相同）。 </p>
+<p>（未完待续） </p>
+<p>【注1】TR1: </p>
+<p>C++ Technical Report 1 (TR1)是ISO/IEC TR 19768, C++ Library Extensions（函式库扩充）的一般名称。TR1是一份文件，内容提出了对C++标准函式库的追加项目。这些追加项目包括了正则表达式、智能指针、哈希表、随机数生成器等。TR1自己并非标准，他是一份草稿文件。然而他所提出的项目很有可能成为下次的官方标准。这份文件的目标在于「为扩充的C++标准函式库建立更为广泛的现成实作品」。 </p>
+<p>原文：<a href="http://www.codeproject.com/KB/stl/stl2010.aspx">http://www.codeproject.com/KB/stl/stl2010.aspx</a></p>
+<div class="ujian-hook"></div>
+<div style='clear:both;'></div>
+<p>		<script type="text/javascript">
+		var ujian_config = {
+			'num':5,
+			'showType':2,
+			'bgColor':"",
+			'mouseoverColor':"#E6F3DE",
+			'textColor':"#333333",
+			'hoverTextColor':"#333333",
+			'borderColor':"#dddddd",
+			'picSize':96,
+			'target':1,
+			'textHeight':60,
+			'defaultPic':"",
+			'itemTitle':"您可能喜欢："
+		}</script><br />
+	<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js"></script></p>
+					</div><!-- END entry -->
+		<div class="add-info">
+					</div>
+		<div class="post-info-bottom">
+			<span class="post-info-category"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98/c%e7%bc%96%e7%a8%8b" title="查看 C++编程 中的全部文章" rel="category tag">C++编程</a></span><span class="post-info-tags"><a href="http://blog.me115.com/tag/c0x" rel="tag">C++0x</a>, <a href="http://blog.me115.com/tag/stl" rel="tag">STL</a>, <a href="http://blog.me115.com/tag/%e4%bf%ae%e8%ae%a2" rel="tag">修订</a></span>
+		</div>
+		<div id="nav-below">
+			<div class="nav-previous"><a href="http://blog.me115.com/2010/10/31" rel="prev"><span class="meta-nav">&larr;</span> 从央行加息说起</a></div>
+			<div class="nav-next"><a href="http://blog.me115.com/2010/11/46" rel="next">动态生成JS 实现 .NET 网站广告管理 <span class="meta-nav">&rarr;</span></a></div>
+		</div><!-- #nav-below -->					
+	</div><!-- END post -->
+	<a name="comments"></a>
+
+<div class="ds-thread" data-thread-key="34" data-author-key="1" data-title="[译]2010新版STL修订内容（VC2010）" data-url="http://blog.me115.com/2010/11/34"></div>
+
+<script type="text/javascript">
+	if (typeof DUOSHUO !== 'undefined')
+		DUOSHUO.EmbedThread('.ds-thread');
+</script>
+	<div id="ds-ssr">
+
+		
+            <ol id="commentlist">
+                            </ol>
+
+		            
+    </div></div><!--content-->
+<div id="sidebar-border">
+	<div id="rss_border">
+		<div class="rss_border">
+			<div id="rss_wrap">
+				<div class="rss_wrap">
+										<a class="rss rss_text" href="http://blog.me115.com/feed" rel="bookmark" title="RSS 订阅">RSS 订阅</a>
+																													</div>
+			</div>
+		</div>
+	</div>
+	<div id="sidebar">
+
+<div id="search-2" class="widget widget_search"><form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form></div>		<div id="recent-posts-2" class="widget widget_recent_entries">		<h3 class="widgettitle">近期文章</h3>		<ul>
+					<li>
+				<a href="http://blog.me115.com/2015/12/891" title="单线程你别阻塞，Redis时延问题分析及应对">单线程你别阻塞，Redis时延问题分析及应对</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/11/886" title="负载均衡的几种常用方案">负载均衡的几种常用方案</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/11/884" title="Redis哈希表的实现要点">Redis哈希表的实现要点</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/10/875" title="多线程和多进程模型的选用">多线程和多进程模型的选用</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/10/872" title="异步和非阻塞">异步和非阻塞</a>
+						</li>
+				</ul>
+		</div><div id="text-3" class="widget widget_text"><h3 class="widgettitle">广告</h3>			<div class="textwidget">本站使用digitalocean提供的VPS；<br/>
+访问速度可以通过<a href="http://blog.me115.com" target="_blank">大CC博客</a> 和<a href="http://www.me115.com" target="_blank">木书架网</a>体验；<br/>
+其中我的博客为直连digitalocean，
+而木书架网站采用了第三方CDN加速（安全宝）<br/><br/>
+
+从以下链接点击进入注册digitalocean，您将获取10美元(可免费使用2个月的VPS):<br/>
+
+<B><a href="https://www.digitalocean.com/?refcode=ee9c5a992d6f" target="_blank">DigitalOcean</a></B></div>
+		</div><div id="ds-recent-comments-2" class="widget ds-widget-recent-comments"><h3 class="widgettitle">近期评论</h3><ul class="ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-avatar-size="30" data-excerpt-length="70"></ul></div><script>
+if (typeof DUOSHUO !== 'undefined')
+	DUOSHUO.RecentComments && DUOSHUO.RecentComments('.ds-recent-comments');
+</script><div id="archives-3" class="widget widget_archive"><h3 class="widgettitle">文章归档</h3>		<ul>
+			<li><a href='http://blog.me115.com/date/2015/12' title='2015 年十二月'>2015 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/11' title='2015 年十一月'>2015 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/10' title='2015 年十月'>2015 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/09' title='2015 年九月'>2015 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/08' title='2015 年八月'>2015 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/06' title='2015 年六月'>2015 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/05' title='2015 年五月'>2015 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/04' title='2015 年四月'>2015 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/03' title='2015 年三月'>2015 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/02' title='2015 年二月'>2015 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/01' title='2015 年一月'>2015 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/11' title='2014 年十一月'>2014 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/10' title='2014 年十月'>2014 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/09' title='2014 年九月'>2014 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/08' title='2014 年八月'>2014 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/07' title='2014 年七月'>2014 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/06' title='2014 年六月'>2014 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/05' title='2014 年五月'>2014 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/04' title='2014 年四月'>2014 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/02' title='2014 年二月'>2014 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/12' title='2013 年十二月'>2013 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/11' title='2013 年十一月'>2013 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/10' title='2013 年十月'>2013 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/09' title='2013 年九月'>2013 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/06' title='2013 年六月'>2013 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/04' title='2013 年四月'>2013 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/03' title='2013 年三月'>2013 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/01' title='2013 年一月'>2013 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/12' title='2012 年十二月'>2012 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/10' title='2012 年十月'>2012 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/09' title='2012 年九月'>2012 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/08' title='2012 年八月'>2012 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/05' title='2012 年五月'>2012 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/04' title='2012 年四月'>2012 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/02' title='2012 年二月'>2012 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/11' title='2011 年十一月'>2011 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/10' title='2011 年十月'>2011 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/09' title='2011 年九月'>2011 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/07' title='2011 年七月'>2011 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/06' title='2011 年六月'>2011 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/05' title='2011 年五月'>2011 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/04' title='2011 年四月'>2011 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/03' title='2011 年三月'>2011 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/02' title='2011 年二月'>2011 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/01' title='2011 年一月'>2011 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/12' title='2010 年十二月'>2010 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/11' title='2010 年十一月'>2010 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/10' title='2010 年十月'>2010 年十月</a></li>
+		</ul>
+</div><div id="categories-2" class="widget widget_categories"><h3 class="widgettitle">分类目录</h3>		<ul>
+	<li class="cat-item cat-item-2"><a href="http://blog.me115.com/category/beautiful-life" title="查看 Beautiful Life 下的所有文章">Beautiful Life</a>
+</li>
+	<li class="cat-item cat-item-92"><a href="http://blog.me115.com/category/berkeley-db" title="查看 Berkeley DB 下的所有文章">Berkeley DB</a>
+</li>
+	<li class="cat-item cat-item-3"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98/c%e7%bc%96%e7%a8%8b" title="查看 C++编程 下的所有文章">C++编程</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84" title="查看 CC书评 下的所有文章">CC书评</a>
+</li>
+	<li class="cat-item cat-item-5"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91" title="查看 CC评网 下的所有文章">CC评网</a>
+</li>
+	<li class="cat-item cat-item-6"><a href="http://blog.me115.com/category/linuxunix" title="查看 Linux&amp;Unix 下的所有文章">Linux&amp;Unix</a>
+</li>
+	<li class="cat-item cat-item-90"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1" title="查看 Linux工具箱 下的所有文章">Linux工具箱</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="http://blog.me115.com/category/python" title="查看 Python 下的所有文章">Python</a>
+</li>
+	<li class="cat-item cat-item-93"><a href="http://blog.me115.com/category/redis" title="查看 Redis 下的所有文章">Redis</a>
+</li>
+	<li class="cat-item cat-item-8"><a href="http://blog.me115.com/category/web%e5%bc%80%e5%8f%91" title="查看 WEB开发 下的所有文章">WEB开发</a>
+</li>
+	<li class="cat-item cat-item-127"><a href="http://blog.me115.com/category/%e5%84%92%e9%87%8a%e9%81%93" title="查看 儒释道 下的所有文章">儒释道</a>
+</li>
+	<li class="cat-item cat-item-9"><a href="http://blog.me115.com/category/%e5%85%ac%e5%8f%b8%e7%ae%a1%e7%90%86" title="查看 公司管理 下的所有文章">公司管理</a>
+</li>
+	<li class="cat-item cat-item-10"><a href="http://blog.me115.com/category/%e5%b9%b6%e8%a1%8c%e8%ae%a1%e7%ae%97" title="查看 并行计算 下的所有文章">并行计算</a>
+</li>
+	<li class="cat-item cat-item-58"><a href="http://blog.me115.com/category/%e6%91%84%e5%bd%b1" title="查看 摄影 下的所有文章">摄影</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="http://blog.me115.com/category/%e6%97%b6%e9%97%b4%e7%ae%a1%e7%90%86" title="查看 时间管理 下的所有文章">时间管理</a>
+</li>
+	<li class="cat-item cat-item-1"><a href="http://blog.me115.com/category/uncategorized" title="查看 未分类 下的所有文章">未分类</a>
+</li>
+	<li class="cat-item cat-item-113"><a href="http://blog.me115.com/category/%e6%9e%b6%e6%9e%84" title="查看 架构 下的所有文章">架构</a>
+</li>
+	<li class="cat-item cat-item-12"><a href="http://blog.me115.com/category/%e7%a4%be%e4%bc%9a%e6%9d%82%e8%b0%88" title="查看 社会杂谈 下的所有文章">社会杂谈</a>
+</li>
+	<li class="cat-item cat-item-74"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98" title="查看 程序员 下的所有文章">程序员</a>
+</li>
+	<li class="cat-item cat-item-13"><a href="http://blog.me115.com/category/%e7%bb%8f%e6%b5%8e%e8%a7%82%e7%82%b9" title="查看 经济观点 下的所有文章">经济观点</a>
+</li>
+	<li class="cat-item cat-item-132"><a href="http://blog.me115.com/category/%e8%a7%82%e7%82%b9%e4%b8%8e%e6%84%9f%e6%83%b3" title="查看 观点与感想 下的所有文章">观点与感想</a>
+</li>
+	<li class="cat-item cat-item-14"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0" title="查看 读书笔记 下的所有文章">读书笔记</a>
+</li>
+	<li class="cat-item cat-item-15"><a href="http://blog.me115.com/category/%e9%a1%b9%e7%9b%ae%e7%ae%a1%e7%90%86" title="查看 项目管理 下的所有文章">项目管理</a>
+</li>
+		</ul>
+</div><div id="meta-2" class="widget widget_meta"><h3 class="widgettitle">功能</h3>			<ul>
+						<li><a href="http://blog.me115.com/wp-login.php">登录</a></li>
+			<li><a href="http://blog.me115.com/feed" title="使用 RSS 2.0 订阅本站点内容">文章 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://blog.me115.com/comments/feed" title="使用 RSS 订阅本站点的所有文章的近期评论">评论 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://cn.wordpress.org/" title="基于 WordPress，一个优美、先进的个人信息发布平台。">WordPress.org</a></li>
+						</ul>
+</div><div id="nav_menu-2" class="widget widget_nav_menu"><div class="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5-container"><ul id="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5" class="menu"><li id="menu-item-304" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-304"><a title="pongba,关注C++，心理学" href="http://mindhacks.cn/archives/">刘未鹏</a></li>
+<li id="menu-item-540" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-540"><a title="游走世界，精彩人生" href="http://www.purplexsu.net/">purplexsu</a></li>
+<li id="menu-item-348" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-348"><a href="http://coolshell.cn/">酷壳</a></li>
+<li id="menu-item-322" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-322"><a href="http://www.cppfans.org/">C++爱好者博客</a></li>
+<li id="menu-item-321" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-321"><a href="http://www.cnblogs.com/archy_yu/">Archy Yu</a></li>
+<li id="menu-item-305" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-305"><a href="http://www.shenlongbin.com/">申龙斌的程序人生</a></li>
+<li id="menu-item-324" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-324"><a href="http://www.rrgod.com">Eddy Blog</a></li>
+<li id="menu-item-340" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-340"><a href="http://www.wangyuxiong.com/">点滴–挖掘技术细节</a></li>
+<li id="menu-item-341" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-341"><a href="http://www.hiadmin.org/">Smart Testing</a></li>
+</ul></div></div><div id="text-2" class="widget widget_text"><h3 class="widgettitle">统计</h3>			<div class="textwidget"><script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_4893206'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/stat.php%3Fid%3D4893206%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script></div>
+		</div>
+
+	</div><!-- end: #sidebar -->
+</div><!-- end: #sidebar-border --></div><!--wrapper-->
+<div class="clear"></div>
+<div id="footer">
+	<div id="footer-inside">
+		<p>
+			版权所有 &copy; 2015 大CC			| 站点由 <a href="http://zww.me">zBench</a> 和 <a href="http://wordpress.org/">WordPress</a> 驱动		</p>
+		<span id="back-to-top">&uarr; <a href="#" rel="nofollow" title="Back to top">回到顶部</a></span>
+	</div>
+</div><!--footer-->
+</body>
+</html>
+<script  type="text/javascript">
+$(function(){
+    $("pre").addClass("prettyprint");
+    $(".entry").addClass("markdown-body");
+    prettyPrint();
+    var dirbef = '<div id="navCategory" class="dir"><h3>内容目录</h3><ul>', dirend = '</ul><//div>', dircontent = '';
+$('.entry h2').each( function(i,e){ dircontent += '<li><a href="#h2' + i + '">' + $(e).text() + "</a></li>"; $(this).attr('id', 'h2' + i);  } );$( dirbef + dircontent + dirend ).insertBefore( '.entry' );});
+</script>
+
+
+<!-- Dynamic page generated in 0.139 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2015-12-18 10:11:07 -->
+
+<!-- super cache -->

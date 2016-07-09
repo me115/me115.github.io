@@ -1,0 +1,439 @@
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/prettify.css" />
+<link rel="stylesheet" href="http://files.cnblogs.com/xguo/github.css"/>
+<script src="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/jquery.js" type="text/javascript"></script> 
+<script src="http://files.cnblogs.com/xguo/google-code-prettify.js"></script>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN">
+<head profile="http://gmpg.org/xfn/11">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>《多核程序设计》Part 6：OpenMP 一种可移植的多线程解决方案（2）大CC | 大CC</title>
+	<link rel="stylesheet" type="text/css" media="all" href="http://blogcc.u.qiniudn.com/wp-content/themes/zbench/style.css" />
+	<link rel="pingback" href="http://blog.me115.com/xmlrpc.php" />
+	<link rel="alternate" type="application/rss+xml" title="大CC &raquo; Feed" href="http://blog.me115.com/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; 评论 Feed" href="http://blog.me115.com/comments/feed" />
+<link rel="alternate" type="application/rss+xml" title="大CC &raquo; 《多核程序设计》Part 6：OpenMP 一种可移植的多线程解决方案（2） 评论 Feed" href="http://blog.me115.com/2011/02/106/feed" />
+<script type="text/javascript">
+var duoshuoQuery = {"short_name":"me115","sso":{"login":"http:\/\/blog.me115.com\/wp-login.php?action=duoshuo_login","logout":"http:\/\/blog.me115.com\/wp-login.php?action=logout&_wpnonce=c7b4bab775"},"theme":"default","stylePatch":"wordpress\/zBench"};
+duoshuoQuery.sso.login += '&redirect_to=' + encodeURIComponent(window.location.href);
+duoshuoQuery.sso.logout += '&redirect_to=' + encodeURIComponent(window.location.href);
+</script>
+<script type="text/javascript" src="http://static.duoshuo.com/embed.js" charset="UTF-8" async="async"></script>
+<script type='text/javascript' src='http://blogcc.u.qiniudn.com/wp-includes/js/comment-reply.min.js?ver=3.5'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://blog.me115.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://blog.me115.com/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='《JS高级程序设计》PART 1 What&#8217;s JavaScript' href='http://blog.me115.com/2011/02/100' />
+<link rel='next' title='《JS高级程序设计》PART 2.ECMASCript基础' href='http://blog.me115.com/2011/02/110' />
+<meta name="generator" content="WordPress 3.5" />
+<link rel='shortlink' href='http://blog.me115.com/?p=106' />
+
+<!-- All in One SEO Pack 1.6.15.3 by Michael Torbert of Semper Fi Web Design[629,730] -->
+<meta name="keywords" content="openmp" />
+<link rel="canonical" href="http://blog.me115.com/2011/02/106" />
+<!-- /all in one seo pack -->
+</head>
+<body class="single single-post postid-106 single-format-standard">
+<div id="nav">
+	<div id="menus">
+		<ul><li><a href="http://blog.me115.com/">首页</a></li></ul>
+		<ul id="menu-linux-2" class="menu"><li id="menu-item-566" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-566"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1">Linux工具箱</a></li>
+<li id="menu-item-493" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-493"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84">书评和笔记</a>
+<ul class="sub-menu">
+	<li id="menu-item-495" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-495"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0">读书笔记</a></li>
+	<li id="menu-item-494" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-494"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91">CC评网</a></li>
+</ul>
+</li>
+<li id="menu-item-560" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-560"><a href="http://blog.me115.com/%e9%98%85%e8%af%bb%e8%ae%a1%e5%88%92">阅读计划</a></li>
+<li id="menu-item-461" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-461"><a href="http://blog.me115.com/%e5%85%b3%e4%ba%8e%e6%9c%a8%e4%b9%a6%e6%9e%b6">关于木书架</a></li>
+<li id="menu-item-462" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-462"><a href="http://blog.me115.com/sample-page">关于我</a></li>
+</ul>	</div>
+	<div id="search">
+		<form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form>	</div>
+</div>
+<div id="wrapper">
+	<div id="header">		<h1><a href="http://blog.me115.com/">大CC</a></h1>
+		<h2>关注 Nosql/架构/时间管理/阅读分享</h2>
+		<div class="clear"></div>
+			</div>
+<div id="content">
+		<div class="post-106 post type-post status-publish format-standard hentry category-10 category-14 tag-openmp post-single" id="post-106"><!-- post div -->
+		<h2 class="title">《多核程序设计》Part 6：OpenMP 一种可移植的多线程解决方案（2）</h2>
+		<div class="post-info-top">
+			<span class="post-info-date">
+				作者: <a href="http://blog.me115.com/author/me115wp" title="查看 大CC 的所有文章" rel="author">大CC</a>
+				日期:				2011 年 2 月 8 日							</span>
+						<span class="addcomment"><a href="#respond"  rel="nofollow" title="发表评论？">发表评论</a><span class="ds-thread-count" data-thread-key="106" data-replace="1"> (0)</span></span>
+			<span class="gotocomments"><a href="#comments"  rel="nofollow" title="查看评论？">查看评论</a></span>
+					</div>
+		<div class="clear"></div>
+		<div class="entry">
+			<p><font face="华文中宋" size="2">OpenMP对于循环语句中的循环有如下约束：</font></p>
+<p><font face="华文中宋" size="2">1.循环语句中的循环变量必须是有符号整型，对于无符号整型，将无法使用。（OpenMP2.5. 在3.0中将被取消）</font></p>
+<p><font face="华文中宋" size="2">2.循环语句中的比较操作必须是这样形式：&lt; , &lt;= , &gt; ,&gt;=</font></p>
+<p><font face="华文中宋" size="2">3.循环语句中的第3个表达式必须是整数加或者整数减操作，加减的数值必须是一个循环不变量。</font></p>
+<p><font face="华文中宋" size="2">4.如果比较操作是&lt; , &lt;=，那么寻找变量的值在每次迭代的时候都必须增加；相反，如果比较操作是&gt;,&gt;=，那么循环变量的值在每次迭代时都必须减少。</font></p>
+<p><font face="华文中宋" size="2">5.循环必须是单入口，单出口的。（如果使用了goto或break语句，那么它们的跳转范围必须在循环之内，不能跳出循环。exit是个例外）</font></p>
+<p><font face="华文中宋" size="2"><strong>数据竞争：</strong></font></p>
+<p><font face="华文中宋" size="2">使用OpenMP时，很容易忽视数据竞争的存在。使用Intel线程检测器（Intel VTune(TM)性能分析工具的一个插件），可以辅助找到数据竞争。</font></p>
+<p><font face="华文中宋" size="2">默认情况，并行区中的所有变量都是共享的 ，但3种情况例外：</font></p>
+<p><font face="华文中宋" size="2">1.在paraller for循环中，循环索引是私有的；</font></p>
+<p><font face="华文中宋" size="2">2.并行区中的局部变量是私有的；</font></p>
+<p><font face="华文中宋" size="2">3.所有在private、firstprivate、lastprivate或reduction子句中列出的变量是私有的；</font></p>
+<p><font face="华文中宋" size="2">每当使用OpenMP并行化一个循环之前，应该仔细检查所有的存储访问，包括有被调用函数所发出的访存。</font></p>
+<p>
+<p><a href="http://blog.csdn.net/drzhouweiming/archive/2007/10/26/1844762.aspx"><font face="华文中宋" size="2"></font></a></p>
+<p>   <font face="华文中宋" size="2"><strong>数据规约（reduction)：</strong></font></p>
+<p><a href="http://www.cnblogs.com/me115/archive/2011/01/27/1946129.html"><font face="华文中宋" size="2">http://www.cnblogs.com/me115/archive/2011/01/27/1946129.html</font></a></p>
+<p><font face="华文中宋" size="2"><strong>降低线程开销：</strong></font></p>
+<p><font face="华文中宋" size="2">#pragma omp parallel for</font></p>
+<p><font face="华文中宋" size="2">for(k = 0 ;k &lt; m ; i++){</font></p>
+<p><font face="华文中宋" size="2">fun1(k);</font></p>
+<p><font face="华文中宋" size="2">}</font></p>
+<p><font face="华文中宋" size="2">#pragma omp parallel for</font></p>
+<p><font face="华文中宋" size="2">for(k = 0 ;k &lt; m ; i++){</font></p>
+<p><font face="华文中宋" size="2">fun2(k);</font></p>
+<p><font face="华文中宋" size="2">}</font></p>
+<p><font face="华文中宋" size="2">以上需要进入并行区2次，增大了线程开销，像这种相邻的，可进一步优化：</font></p>
+<p><font face="华文中宋" size="2">#pragma omp parallel</font></p>
+<p><font face="华文中宋" size="2">{</font></p>
+<p><font face="华文中宋" size="2">#pragma omp for</font></p>
+<p><font face="华文中宋" size="2">for(k = 0 ;k &lt; m ; i++){</font></p>
+<p><font face="华文中宋" size="2">fun1(k);</font></p>
+<p><font face="华文中宋" size="2">}</font></p>
+<p><font face="华文中宋" size="2">#pragma omp for</font></p>
+<p><font face="华文中宋" size="2">for(k = 0 ;k &lt; m ; i++){</font></p>
+<p><font face="华文中宋" size="2">fun2(k);</font></p>
+<p><font face="华文中宋" size="2">}</font></p>
+<p><font face="华文中宋" size="2">}</font></p>
+<p><font face="华文中宋" size="2">这样，会运行的更快，因为它只包含一次进入并行区域的开销。</font></p>
+<p><font face="华文中宋" size="2"><strong>提高程序性能的设计方法</strong></font></p>
+<p><font face="华文中宋" size="2">使用Barrier和nowait</font></p>
+<p><font face="华文中宋" size="2">线程遇到栅障必须等待，直到并行区中的所有线程都到达同一点，再继续向下执行。在parallel/for/sections/single的结构的最后，会有一个隐式的栅障。可使用nowait子句除去这个隐式的栅障。</font></p>
+<p><font face="华文中宋" size="2">#pragma omp parallel for nowait </font></p>
+<p><font face="华文中宋" size="2">OpenMP也支持使用barrier编译指导显式的使用栅障，</font></p>
+<p><font face="华文中宋" size="2">#pragma omp barrier</font></p>
+<p><font face="华文中宋" size="2">但线程和多线程交错执行：</font></p>
+<p><font face="华文中宋" size="2">int x[100];</font></p>
+<p><font face="华文中宋" size="2">#pragma omp parallel </font></p>
+<p><font face="华文中宋" size="2">{</font></p>
+<p><font face="华文中宋" size="2">//每个线程都调用这个函数</font></p>
+<p><font face="华文中宋" size="2">int tid = omp_get_thread_num();</font></p>
+<p><font face="华文中宋" size="2">//这个循环被划分到多个线程上</font></p>
+<p><font face="华文中宋" size="2">#pragma omp for nowait</font></p>
+<p><font face="华文中宋" size="2">for(int k = 0; k &lt; 100 ;i++)</font></p>
+<p><font face="华文中宋" size="2">x[k] = fn1(tid);</font></p>
+<p><font face="华文中宋" size="2">//上面这个循环的结束处不存在使所有线程进行同步的隐式栅障</font></p>
+<p><font face="华文中宋" size="2">#pragma omp master</font></p>
+<p><font face="华文中宋" size="2">y = fn_input_only();//只有主线程会调用这个函数，添加一个显式的栅障对所有的线程进行同步，从而确保x[0-99]处于就绪状态</font></p>
+<p><font face="华文中宋" size="2">#pragma omp barrier</font></p>
+<p><font face="华文中宋" size="2">//这个循环也被分到多个线程上</font></p>
+<p><font face="华文中宋" size="2">#pragma omp for nowait</font></p>
+<p><font face="华文中宋" size="2">for(k = 0; k &lt; 100; k++)</font></p>
+<p><font face="华文中宋" size="2">x[k] = y + fn2(x[k] );</font></p>
+<p><font face="华文中宋" size="2">//上面的这个循环没有栅障，所有线程不会相互等待</font></p>
+<p><font face="华文中宋" size="2">// 某个线程（假设为第一个线程）在执行完上面的代码后将继续执行后续的代码</font></p>
+<p><font face="华文中宋" size="2">#pragma omp single</font></p>
+<p><font face="华文中宋" size="2">fn_single_print(y);//只有一个线程会调用这个函数</font></p>
+<p><font face="华文中宋" size="2">//上面这个single结构会有一个隐式栅障，所以会进行线程同步</font></p>
+<p><font face="华文中宋" size="2">#pragma omp master</font></p>
+<p><font face="华文中宋" size="2">fn_print_array(x);//只有一个线程会打印x[];</font></p>
+<p><font face="华文中宋" size="2">}</font></p>
+<p><font face="华文中宋" size="2"><strong>数据的copy-in和copy-out</strong></font><br />
+<table cellspacing="0" cellpadding="0" border="1">
+<tbody>
+<tr>
+<td valign="top" width="105">
+<p><font face="华文中宋" size="2">firstprivate</font></p>
+</td>
+<td valign="top" width="649">
+<p><font face="华文中宋" size="2">使用变量在主线程的值对其在每个线程的对应私有变量进行初始化。</font></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="105">
+<p><font face="华文中宋" size="2">lastprivate</font></p>
+</td>
+<td valign="top" width="649">
+<p><font face="华文中宋" size="2">将最后一次迭代块中计算出来的私有变量复制出来，到主线程中。</font></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="105">
+<p><font face="华文中宋" size="2">copyin</font></p>
+</td>
+<td valign="top" width="649">
+<p><font face="华文中宋" size="2">将主线程的threadprivate变量的值复制到执行并行区的每个线程的threadprivate变量中。</font></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="105">
+<p><font face="华文中宋" size="2">copyprivate</font></p>
+</td>
+<td valign="top" width="649">
+<p><font face="华文中宋" size="2">使用一个私有变量将某个值从一个成员线程广播到执行并行区的其它线程。</font></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><font face="华文中宋" size="2"><strong>保护变量的更新操作：</strong></font></p>
+<p><font face="华文中宋" size="2">用到的关键词：critical、atomic编译指导，用于保护共享变量的更新，避免数据竞争。</font></p>
+<p><font face="华文中宋" size="2">Intel OpenMP任务队列扩展：</font></p>
+<p><font face="华文中宋" size="2">Intel OpenMP任务队列扩展允许程序员对诸如递归函数、动态树搜索和指针跟踪这样的控制结构进行并行化。</font></p>
+<p><font face="华文中宋" size="2">#pragma omp parallel taskq shared(p)</font></p>
+<p><font face="华文中宋" size="2">#pragma intell omp task captureprivate(p)</font></p>
+<p><font face="华文中宋" size="2"><strong>OpenMP代码调试：</strong></font></p>
+<p><font face="华文中宋" size="2">并行程序的调试关键是将问题定位到引发问题的较小代码段中。</font></p>
+<p><font face="华文中宋" size="2">调试OpenMP的一般指导性步骤：</font></p>
+<p><font face="华文中宋" size="2">1.通过启用和禁用程序中的OpenMP编译指导，使用二分搜索法找出引发故障的并行结构；</font></p>
+<p><font face="华文中宋" size="2">2.关闭/Qopenmp编译开关，使用/Qopenmp_stub 开关来编译引发错误的子程序；然后检查代码中的故障是否发生在串行执行的过程中；如果是，则进行串行代码调试，如果不是，继续；</font></p>
+<p><font face="华文中宋" size="2">3.使用/Qopenmp开关编译引发错误的子程序，并设置环境变量OMP_NUM_THREADS=1，然后检查多线程代码是否在串行执行的时候发生故障。如果是，则进行多线程代码的单线程调试；如果不是，继续；</font></p>
+<p><font face="华文中宋" size="2">4.使用/Qopenmp以及/OD、/O1、/O2、/O3或/Oipo中的某一个编译开关编译代码，在最低优化等级上找出故障场景。</font></p>
+<p><font face="华文中宋" size="2">5.检查引起错误的代码段，查找诸如并行化后数据相关性被破坏、数据竞争、死锁、缺少栅障和变量未初始化之类的问题。如果还没找到，继续；</font></p>
+<p><font face="华文中宋" size="2">6.使用/Qtcheck开关进行OpenMP代码插桩，并在Intel线程检查工具中运行插桩后的代码。</font></p>
+<p><font face="华文中宋" size="2"><strong>错误分析：</strong></font></p>
+<p><font face="华文中宋" size="2">1.问题一般都是由数据竞争引起的。大多数数据竞争的产生是因为某些共享变量本来应该被声明为私有变量、规约变量或线程私有变量。</font></p>
+<p><font face="华文中宋" size="2">默认情况下，在栈结构中声明的变量是私有的，但c/c++关键字static可以将变量放置在全局堆中，并因此成为OpenMP循环中的共享变量。</font></p>
+<p><font face="华文中宋" size="2">使用default（none）子句可以帮助找到那些难以定位的变量。如果指定了default(none)，那么每个变量都必须使用一条数据共享属性子句来声明。</font></p>
+<p><font face="华文中宋" size="2">#pragma omp parallel for default(none) private(x,y) shared(a,b)</font></p>
+<p><font face="华文中宋" size="2">2.另一种常见错误就是变量未初始化。记住，默认，进入或退出并行区中的变量都是未定义的。</font></p>
+<p><font face="华文中宋" size="2">3.可能因为并行成分太多引起错误。禁用某些并行代码，让其串行执行也是很有用的。使并行区以串行方式执行的一种简单方式就是使用if子句，该子句可以加到任何并行结构上：</font></p>
+<p><font face="华文中宋" size="2">#pragma omp parallel for if(0)</font></p>
+<p><font face="华文中宋" size="2">printf(&quot;&quot;);</font></p>
+<p><font face="华文中宋" size="2">#pragma omp parallel for if(n&gt;=16)</font></p>
+<p><font face="华文中宋" size="2">for(k = 0; k&lt; n;k++) fn2(k);</font></p>
+<p><font face="华文中宋" size="2">在迭代次数小于16时，以上代码将串行执行。</font></p>
+<p><font face="华文中宋" size="2">4.其它方法：找出包含错误的那部分代码，并将其放入一个临界段、一个single结构或一个master结构中。然后找出临界段中可以正确执行，在临界段外或单线程执行的时候就会出错的代码。</font></p>
+<p><font face="华文中宋" size="2">OpenMP提供了在不重写代码的情况下进行代码测试的可能性。而windows api或pthread所使用的标准程序设计技术则将代码局限于某种多线程模型，从而调试更加困难。</font></p>
+<div class="ujian-hook"></div>
+<div style='clear:both;'></div>
+<p>		<script type="text/javascript">
+		var ujian_config = {
+			'num':5,
+			'showType':2,
+			'bgColor':"",
+			'mouseoverColor':"#E6F3DE",
+			'textColor':"#333333",
+			'hoverTextColor':"#333333",
+			'borderColor':"#dddddd",
+			'picSize':96,
+			'target':1,
+			'textHeight':60,
+			'defaultPic':"",
+			'itemTitle':"您可能喜欢："
+		}</script><br />
+	<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js"></script></p>
+					</div><!-- END entry -->
+		<div class="add-info">
+					</div>
+		<div class="post-info-bottom">
+			<span class="post-info-category"><a href="http://blog.me115.com/category/%e5%b9%b6%e8%a1%8c%e8%ae%a1%e7%ae%97" title="查看 并行计算 中的全部文章" rel="category tag">并行计算</a>, <a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0" title="查看 读书笔记 中的全部文章" rel="category tag">读书笔记</a></span><span class="post-info-tags"><a href="http://blog.me115.com/tag/openmp" rel="tag">OpenMP</a></span>
+		</div>
+		<div id="nav-below">
+			<div class="nav-previous"><a href="http://blog.me115.com/2011/02/100" rel="prev"><span class="meta-nav">&larr;</span> 《JS高级程序设计》PART 1 What&#8217;s JavaScript</a></div>
+			<div class="nav-next"><a href="http://blog.me115.com/2011/02/110" rel="next">《JS高级程序设计》PART 2.ECMASCript基础 <span class="meta-nav">&rarr;</span></a></div>
+		</div><!-- #nav-below -->					
+	</div><!-- END post -->
+	<a name="comments"></a>
+
+<div class="ds-thread" data-thread-key="106" data-author-key="1" data-title="《多核程序设计》Part 6：OpenMP 一种可移植的多线程解决方案（2）" data-url="http://blog.me115.com/2011/02/106"></div>
+
+<script type="text/javascript">
+	if (typeof DUOSHUO !== 'undefined')
+		DUOSHUO.EmbedThread('.ds-thread');
+</script>
+	<div id="ds-ssr">
+
+		
+            <ol id="commentlist">
+                            </ol>
+
+		            
+    </div></div><!--content-->
+<div id="sidebar-border">
+	<div id="rss_border">
+		<div class="rss_border">
+			<div id="rss_wrap">
+				<div class="rss_wrap">
+										<a class="rss rss_text" href="http://blog.me115.com/feed" rel="bookmark" title="RSS 订阅">RSS 订阅</a>
+																													</div>
+			</div>
+		</div>
+	</div>
+	<div id="sidebar">
+
+<div id="search-2" class="widget widget_search"><form id="searchform" method="get" action="http://blog.me115.com/">
+<input type="text" value="站内搜索" onfocus="if (this.value == '站内搜索') {this.value = '';}" onblur="if (this.value == '') {this.value = '站内搜索';}" size="35" maxlength="50" name="s" id="s" />
+<input type="submit" id="searchsubmit" value="搜索" />
+</form></div>		<div id="recent-posts-2" class="widget widget_recent_entries">		<h3 class="widgettitle">近期文章</h3>		<ul>
+					<li>
+				<a href="http://blog.me115.com/2015/12/891" title="单线程你别阻塞，Redis时延问题分析及应对">单线程你别阻塞，Redis时延问题分析及应对</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/11/886" title="负载均衡的几种常用方案">负载均衡的几种常用方案</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/11/884" title="Redis哈希表的实现要点">Redis哈希表的实现要点</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/10/875" title="多线程和多进程模型的选用">多线程和多进程模型的选用</a>
+						</li>
+					<li>
+				<a href="http://blog.me115.com/2015/10/872" title="异步和非阻塞">异步和非阻塞</a>
+						</li>
+				</ul>
+		</div><div id="text-3" class="widget widget_text"><h3 class="widgettitle">广告</h3>			<div class="textwidget">本站使用digitalocean提供的VPS；<br/>
+访问速度可以通过<a href="http://blog.me115.com" target="_blank">大CC博客</a> 和<a href="http://www.me115.com" target="_blank">木书架网</a>体验；<br/>
+其中我的博客为直连digitalocean，
+而木书架网站采用了第三方CDN加速（安全宝）<br/><br/>
+
+从以下链接点击进入注册digitalocean，您将获取10美元(可免费使用2个月的VPS):<br/>
+
+<B><a href="https://www.digitalocean.com/?refcode=ee9c5a992d6f" target="_blank">DigitalOcean</a></B></div>
+		</div><div id="ds-recent-comments-2" class="widget ds-widget-recent-comments"><h3 class="widgettitle">近期评论</h3><ul class="ds-recent-comments" data-num-items="5" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-avatar-size="30" data-excerpt-length="70"></ul></div><script>
+if (typeof DUOSHUO !== 'undefined')
+	DUOSHUO.RecentComments && DUOSHUO.RecentComments('.ds-recent-comments');
+</script><div id="archives-3" class="widget widget_archive"><h3 class="widgettitle">文章归档</h3>		<ul>
+			<li><a href='http://blog.me115.com/date/2015/12' title='2015 年十二月'>2015 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/11' title='2015 年十一月'>2015 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/10' title='2015 年十月'>2015 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/09' title='2015 年九月'>2015 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/08' title='2015 年八月'>2015 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/06' title='2015 年六月'>2015 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/05' title='2015 年五月'>2015 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/04' title='2015 年四月'>2015 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/03' title='2015 年三月'>2015 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/02' title='2015 年二月'>2015 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2015/01' title='2015 年一月'>2015 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/11' title='2014 年十一月'>2014 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/10' title='2014 年十月'>2014 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/09' title='2014 年九月'>2014 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/08' title='2014 年八月'>2014 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/07' title='2014 年七月'>2014 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/06' title='2014 年六月'>2014 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/05' title='2014 年五月'>2014 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/04' title='2014 年四月'>2014 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2014/02' title='2014 年二月'>2014 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/12' title='2013 年十二月'>2013 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/11' title='2013 年十一月'>2013 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/10' title='2013 年十月'>2013 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/09' title='2013 年九月'>2013 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/06' title='2013 年六月'>2013 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/04' title='2013 年四月'>2013 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/03' title='2013 年三月'>2013 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2013/01' title='2013 年一月'>2013 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/12' title='2012 年十二月'>2012 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/10' title='2012 年十月'>2012 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/09' title='2012 年九月'>2012 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/08' title='2012 年八月'>2012 年八月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/05' title='2012 年五月'>2012 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/04' title='2012 年四月'>2012 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2012/02' title='2012 年二月'>2012 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/11' title='2011 年十一月'>2011 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/10' title='2011 年十月'>2011 年十月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/09' title='2011 年九月'>2011 年九月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/07' title='2011 年七月'>2011 年七月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/06' title='2011 年六月'>2011 年六月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/05' title='2011 年五月'>2011 年五月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/04' title='2011 年四月'>2011 年四月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/03' title='2011 年三月'>2011 年三月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/02' title='2011 年二月'>2011 年二月</a></li>
+	<li><a href='http://blog.me115.com/date/2011/01' title='2011 年一月'>2011 年一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/12' title='2010 年十二月'>2010 年十二月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/11' title='2010 年十一月'>2010 年十一月</a></li>
+	<li><a href='http://blog.me115.com/date/2010/10' title='2010 年十月'>2010 年十月</a></li>
+		</ul>
+</div><div id="categories-2" class="widget widget_categories"><h3 class="widgettitle">分类目录</h3>		<ul>
+	<li class="cat-item cat-item-2"><a href="http://blog.me115.com/category/beautiful-life" title="查看 Beautiful Life 下的所有文章">Beautiful Life</a>
+</li>
+	<li class="cat-item cat-item-92"><a href="http://blog.me115.com/category/berkeley-db" title="查看 Berkeley DB 下的所有文章">Berkeley DB</a>
+</li>
+	<li class="cat-item cat-item-3"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98/c%e7%bc%96%e7%a8%8b" title="查看 C++编程 下的所有文章">C++编程</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="http://blog.me115.com/category/cc%e4%b9%a6%e8%af%84" title="查看 CC书评 下的所有文章">CC书评</a>
+</li>
+	<li class="cat-item cat-item-5"><a href="http://blog.me115.com/category/cc%e8%af%84%e7%bd%91" title="查看 CC评网 下的所有文章">CC评网</a>
+</li>
+	<li class="cat-item cat-item-6"><a href="http://blog.me115.com/category/linuxunix" title="查看 Linux&amp;Unix 下的所有文章">Linux&amp;Unix</a>
+</li>
+	<li class="cat-item cat-item-90"><a href="http://blog.me115.com/category/linux%e5%b7%a5%e5%85%b7%e7%ae%b1" title="查看 Linux工具箱 下的所有文章">Linux工具箱</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="http://blog.me115.com/category/python" title="查看 Python 下的所有文章">Python</a>
+</li>
+	<li class="cat-item cat-item-93"><a href="http://blog.me115.com/category/redis" title="查看 Redis 下的所有文章">Redis</a>
+</li>
+	<li class="cat-item cat-item-8"><a href="http://blog.me115.com/category/web%e5%bc%80%e5%8f%91" title="查看 WEB开发 下的所有文章">WEB开发</a>
+</li>
+	<li class="cat-item cat-item-127"><a href="http://blog.me115.com/category/%e5%84%92%e9%87%8a%e9%81%93" title="查看 儒释道 下的所有文章">儒释道</a>
+</li>
+	<li class="cat-item cat-item-9"><a href="http://blog.me115.com/category/%e5%85%ac%e5%8f%b8%e7%ae%a1%e7%90%86" title="查看 公司管理 下的所有文章">公司管理</a>
+</li>
+	<li class="cat-item cat-item-10"><a href="http://blog.me115.com/category/%e5%b9%b6%e8%a1%8c%e8%ae%a1%e7%ae%97" title="查看 并行计算 下的所有文章">并行计算</a>
+</li>
+	<li class="cat-item cat-item-58"><a href="http://blog.me115.com/category/%e6%91%84%e5%bd%b1" title="查看 摄影 下的所有文章">摄影</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="http://blog.me115.com/category/%e6%97%b6%e9%97%b4%e7%ae%a1%e7%90%86" title="查看 时间管理 下的所有文章">时间管理</a>
+</li>
+	<li class="cat-item cat-item-1"><a href="http://blog.me115.com/category/uncategorized" title="查看 未分类 下的所有文章">未分类</a>
+</li>
+	<li class="cat-item cat-item-113"><a href="http://blog.me115.com/category/%e6%9e%b6%e6%9e%84" title="查看 架构 下的所有文章">架构</a>
+</li>
+	<li class="cat-item cat-item-12"><a href="http://blog.me115.com/category/%e7%a4%be%e4%bc%9a%e6%9d%82%e8%b0%88" title="查看 社会杂谈 下的所有文章">社会杂谈</a>
+</li>
+	<li class="cat-item cat-item-74"><a href="http://blog.me115.com/category/%e7%a8%8b%e5%ba%8f%e5%91%98" title="查看 程序员 下的所有文章">程序员</a>
+</li>
+	<li class="cat-item cat-item-13"><a href="http://blog.me115.com/category/%e7%bb%8f%e6%b5%8e%e8%a7%82%e7%82%b9" title="查看 经济观点 下的所有文章">经济观点</a>
+</li>
+	<li class="cat-item cat-item-132"><a href="http://blog.me115.com/category/%e8%a7%82%e7%82%b9%e4%b8%8e%e6%84%9f%e6%83%b3" title="查看 观点与感想 下的所有文章">观点与感想</a>
+</li>
+	<li class="cat-item cat-item-14"><a href="http://blog.me115.com/category/%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0" title="查看 读书笔记 下的所有文章">读书笔记</a>
+</li>
+	<li class="cat-item cat-item-15"><a href="http://blog.me115.com/category/%e9%a1%b9%e7%9b%ae%e7%ae%a1%e7%90%86" title="查看 项目管理 下的所有文章">项目管理</a>
+</li>
+		</ul>
+</div><div id="meta-2" class="widget widget_meta"><h3 class="widgettitle">功能</h3>			<ul>
+						<li><a href="http://blog.me115.com/wp-login.php">登录</a></li>
+			<li><a href="http://blog.me115.com/feed" title="使用 RSS 2.0 订阅本站点内容">文章 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://blog.me115.com/comments/feed" title="使用 RSS 订阅本站点的所有文章的近期评论">评论 <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://cn.wordpress.org/" title="基于 WordPress，一个优美、先进的个人信息发布平台。">WordPress.org</a></li>
+						</ul>
+</div><div id="nav_menu-2" class="widget widget_nav_menu"><div class="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5-container"><ul id="menu-%e5%8f%8b%e6%83%85%e9%93%be%e6%8e%a5" class="menu"><li id="menu-item-304" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-304"><a title="pongba,关注C++，心理学" href="http://mindhacks.cn/archives/">刘未鹏</a></li>
+<li id="menu-item-540" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-540"><a title="游走世界，精彩人生" href="http://www.purplexsu.net/">purplexsu</a></li>
+<li id="menu-item-348" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-348"><a href="http://coolshell.cn/">酷壳</a></li>
+<li id="menu-item-322" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-322"><a href="http://www.cppfans.org/">C++爱好者博客</a></li>
+<li id="menu-item-321" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-321"><a href="http://www.cnblogs.com/archy_yu/">Archy Yu</a></li>
+<li id="menu-item-305" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-305"><a href="http://www.shenlongbin.com/">申龙斌的程序人生</a></li>
+<li id="menu-item-324" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-324"><a href="http://www.rrgod.com">Eddy Blog</a></li>
+<li id="menu-item-340" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-340"><a href="http://www.wangyuxiong.com/">点滴–挖掘技术细节</a></li>
+<li id="menu-item-341" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-341"><a href="http://www.hiadmin.org/">Smart Testing</a></li>
+</ul></div></div><div id="text-2" class="widget widget_text"><h3 class="widgettitle">统计</h3>			<div class="textwidget"><script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_4893206'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/stat.php%3Fid%3D4893206%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script></div>
+		</div>
+
+	</div><!-- end: #sidebar -->
+</div><!-- end: #sidebar-border --></div><!--wrapper-->
+<div class="clear"></div>
+<div id="footer">
+	<div id="footer-inside">
+		<p>
+			版权所有 &copy; 2015 大CC			| 站点由 <a href="http://zww.me">zBench</a> 和 <a href="http://wordpress.org/">WordPress</a> 驱动		</p>
+		<span id="back-to-top">&uarr; <a href="#" rel="nofollow" title="Back to top">回到顶部</a></span>
+	</div>
+</div><!--footer-->
+</body>
+</html>
+<script  type="text/javascript">
+$(function(){
+    $("pre").addClass("prettyprint");
+    $(".entry").addClass("markdown-body");
+    prettyPrint();
+    var dirbef = '<div id="navCategory" class="dir"><h3>内容目录</h3><ul>', dirend = '</ul><//div>', dircontent = '';
+$('.entry h2').each( function(i,e){ dircontent += '<li><a href="#h2' + i + '">' + $(e).text() + "</a></li>"; $(this).attr('id', 'h2' + i);  } );$( dirbef + dircontent + dirend ).insertBefore( '.entry' );});
+</script>
+
+
+<!-- Dynamic page generated in 0.134 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2015-12-15 01:44:50 -->
+
+<!-- super cache -->
