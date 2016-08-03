@@ -102,5 +102,5 @@ disqus_username: me115
 skill_software_keywords: [C++, Python, Golang, Design Patterns]
 skill_mobile_app_keywords: [Android, Reverse Engineering]
 skill_windows_keywords: [Win32 SDK, DuiLib, WTL, COM, WinDbg]
-popular_repos: ['chinese-copywriting-guidelines','android-reverse-engineering', 'csdncommenter', 'mzlogin.github.io', 'vim-markdown-toc']
-contribute_repos: ['sparanoid/chinese-copywriting-guidelines', 'waylife/RentCrawer']
+popular_repos: ['me115/linuxtools_rst','me115/design_patterns', 'csdncommenter', 'me115/design_patterns' ]
+contribute_repos: ['']

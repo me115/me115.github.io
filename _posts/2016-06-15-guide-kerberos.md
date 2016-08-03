@@ -41,14 +41,14 @@ KDC 包含两部分：
 - klist # 查看已授权列表
 
 ```shell
-liudong@n6-131-078:~$ klist
+colin@n6-131-078:~$ klist
 Ticket cache: FILE:/tmp/krb5cc_1098
-Default principal: liudong@BYTEDANCE.COM
+Default principal: colin@xxx.COM
 
 Valid starting       Expires              Service principal
-06/21/2016 11:43:29  06/22/2016 11:43:26  krbtgt/BYTEDANCE.COM@BYTEDANCE.COM # TGT
+06/21/2016 11:43:29  06/22/2016 11:43:26  krbtgt/xxx.COM@xxx.COM # TGT
 06/21/2016 11:43:45  06/22/2016 11:43:26  host/10.6.26.137@       # host service ticket
-06/21/2016 11:43:45  06/22/2016 11:43:26  host/10.6.26.137@BYTEDANCE.COM
+06/21/2016 11:43:45  06/22/2016 11:43:26  host/10.6.26.137@xxx.COM
 ```
 
 
