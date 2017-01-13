@@ -46,7 +46,7 @@ A --> Alt
 
 1. 如何解决 Mac OS X 下安装的是 Java 1.8，运行 Eclipse 时提示「您需要安装旧 Java SE 6 运行环境才能打开「Eclipse.app」。」的问题？
 
-   ![](./images/eclipse-need-java6.png)
+   ![](/images/wiki/eclipse-need-java6.png)
 
    更改 /Library/Java/JavaVirtualMachines/jdk1.8.0_45.jdk/Contents/Info.plist 文件里的 JVMCapabilities 段如下（默认只有 `CommandLine`）：
 
