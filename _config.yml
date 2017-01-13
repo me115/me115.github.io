@@ -5,8 +5,8 @@ baseurl:
 url: http://blog.me115.com
 date_format: "ordinal"
 title: 大CC
-subtitle: "嘿！北京"
-description: "大CC的个人博客"
+subtitle: ""
+description: ""
 keywords: 大CC,博客,计算机,互联网,创业,时间管理,个人提升,木书架网
 favicon: /favicon.ico
 timezone: Asia/Shanghai

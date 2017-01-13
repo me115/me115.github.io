@@ -10,6 +10,25 @@ permalink: /wiki/
 
 > 记多少快捷键会让脑袋爆炸呢？
 
+## python
+<ul class="listing">
+{% for wiki in site.wiki %}
+{% if wiki.categories = "python" %}
+<li class="listing-item"><a href="{{ wiki.url }}">{{ wiki.title }}</a></li>
+{% endif %}
+{% endfor %}
+</ul>
+
+## tools
+<ul class="listing">
+{% for wiki in site.wiki %}
+{% if wiki.categories = "tools" %}
+<li class="listing-item"><a href="{{ wiki.url }}">{{ wiki.title }}</a></li>
+{% endif %}
+{% endfor %}
+</ul>
+
+## all of them
 <ul class="listing">
 {% for wiki in site.wiki %}
 {% if wiki.title != "Wiki Template" %}
