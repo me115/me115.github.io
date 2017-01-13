@@ -5,3 +5,5 @@ _site/
 *~
 .DS_Store
 Gemfile.lock
+_posts/images/posts
+_wiki/images/wiki
