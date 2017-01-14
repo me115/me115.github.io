@@ -14,7 +14,7 @@ permalink: /wiki/
 <ul class="listing">
 {% for wiki in site.wiki %}
 
-{% if wiki.categories == 'Python' or wiki.categories == 'python' %}
+{% if wiki.categories contains  'Python' or wiki.categories contains  'python' %}
 <li class="listing-item"><a href="{{ wiki.url }}">{{ wiki.title }}</a></li>
 {% endif %}
 {% endfor %}
@@ -23,7 +23,7 @@ permalink: /wiki/
 ## tools
 <ul class="listing">
 {% for wiki in site.wiki %}
-{% if wiki.categories == "tools" %}
+{% if wiki.categories contains  "tools" %}
 <li class="listing-item"><a href="{{ wiki.url }}">{{ wiki.title }}</a></li>
 {% endif %}
 {% endfor %}
