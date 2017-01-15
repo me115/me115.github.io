@@ -10,7 +10,7 @@ permalink: /wiki/
 
 > 记多少快捷键会让脑袋爆炸呢？
 
-## python
+## Python
 <ul class="listing">
 {% for wiki in site.wiki %}
 
@@ -20,7 +20,7 @@ permalink: /wiki/
 {% endfor %}
 </ul>
 
-## tools
+## Tools
 <ul class="listing">
 {% for wiki in site.wiki %}
 {% if wiki.categories contains  "tools" %}
