@@ -76,7 +76,9 @@ def reverse_str( s ):
 ```
 
 
+
 ##字符串格式化
+
 ```python
 print "Hello %(name)s !" % {'name': 'James'}
 Hello James !
@@ -91,6 +93,7 @@ print '{}employees/{}/'.format(RATAK_API, email)
 ```
 
 format字符串格式化代码
+
 >
 > 格式	描述
 > %%	百分号标记
@@ -112,5 +115,6 @@ format字符串格式化代码
 
 ## 其他
 100个空格的字符串：
+```python
 spaces = 100 * " "
-
+```

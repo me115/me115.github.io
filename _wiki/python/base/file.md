@@ -30,7 +30,7 @@ for line in list_of_all_lines;
 f = open('datafile','r')
 s = f.read()
 >> s
-"test line1\n test line2 \n end:
+"test line1\n test line2 \n end:"
 
 # 读取二进制文件
 with open('/root/client.conf', mode='rb') as file:

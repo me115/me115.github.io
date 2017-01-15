@@ -45,6 +45,7 @@ week = datetime.strptime(i,'%Y-%m-%d').isocalendar()
 ```
 
 格式化代码参考
+
 >
 > %a 星期几的简写
 > %A 星期几的全称
@@ -83,8 +84,11 @@ week = datetime.strptime(i,'%Y-%m-%d').isocalendar()
 > %z，%Z 时区名称，如果不能得到时区名称则返回空字符。
 > %% 百分号
 
+
 ## Django 中的日期
+
 ### 获取当前日期
+
 ```python
 # 在settings.py 中社会当前时区：
 TIME_ZONE = 'Asia/Shanghai'
@@ -135,6 +139,7 @@ DB shows：2016-11-21 10:17:15.686597
 ```
 
 ## 睡眠
+
 ```python
 # 睡眠5秒
 import time
