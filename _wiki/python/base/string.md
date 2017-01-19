@@ -77,7 +77,7 @@ def reverse_str( s ):
 
 
 
-##字符串格式化
+## 字符串格式化
 
 ```python
 print "Hello %(name)s !" % {'name': 'James'}
