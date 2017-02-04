@@ -1,3 +1,11 @@
+---
+layout: post
+title: 玩转 Ceph 的正确姿势
+categories: [ceph]
+description: some word here
+keywords: ceph
+---
+
 # 玩转 Ceph 的正确姿势
 本文先介绍 Ceph， 然后会聊到一些正确使用 Ceph 的姿势；在集群规模小的时候，Ceph 怎么玩都没问题；但集群大了（到PB级别），这些准则可是保证集群健康运行的不二法门；
 
