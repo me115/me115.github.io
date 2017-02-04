@@ -7,6 +7,7 @@ keywords: docker, docker cli
 ---
 
 # Docker 1.13 管理命令
+![](/images/posts/9-1.png)
 
 ## 1.12 CLI 的问题
 
@@ -53,52 +54,52 @@ docker container run -d -p 8091-8094:8091-8094 -p 11210:11210 arungupta/couchbas
 ```
 
 ## 原有命令和新管理命令之间的映射
-| 1.12      | 1.13                | PURPOSE                                  |
-| --------- | ------------------- | ---------------------------------------- |
-| `attach`  | `container attach`  | Attach to a running container            |
-| `build`   | `image build`       | Build an image from a Dockerfile         |
-| `commit`  | `container commit`  | Create a new image from a container’s changes |
-| `cp`      | `container cp`      | Copy files/folders between a container and the local filesystem |
-| `create`  | `container create`  | Create a new container                   |
-| `diff`    | `container diff`    | Inspect changes on a container’s filesystem |
-| `events`  | `system events`     | Get real time events from the server     |
-| `exec`    | `container exec`    | Run a command in a running container     |
-| `export`  | `container export`  | Export a container’s filesystem as a tar archive |
-| `history` | `image history`     | Show the history of an image             |
-| `images`  | `image ls`          | List images                              |
-| `import`  | `image import`      | Import the contents from a tarball to create a filesystem image |
-| `info`    | `system info`       | Display system-wide information          |
-| `inspect` | `container inspect` | Return low-level information on a container, image or task |
-| `kill`    | `container kill`    | Kill one or more running containers      |
-| `load`    | `image load`        | Load an image from a tar archive or STDIN |
-| `login`   | `login`             | Log in to a Docker registry.             |
-| `logout`  | `logout`            | Log out from a Docker registry.          |
-| `logs`    | `container logs`    | Fetch the logs of a container            |
-| `network` | `network`           | Manage Docker networks                   |
-| `node`    | `node`              | Manage Docker Swarm nodes                |
-| `pause`   | `container pause`   | Pause all processes within one or more containers |
-| `port`    | `container port`    | List port mappings or a specific mapping for the container |
-| `ps`      | `container ls`      | List containers                          |
-| `pull`    | `image pull`        | Pull an image or a repository from a registry |
-| `push`    | `image push`        | Push an image or a repository to a registry |
-| `rename`  | `container rename`  | Rename a container                       |
-| `restart` | `container restart` | Restart a container                      |
-| `rm`      | `container rm`      | Remove one or more containers            |
-| `rmi`     | `image rm`          | Remove one or more images                |
-| `run`     | `container run`     | Run a command in a new container         |
-| `save`    | `image save`        | Save one or more images to a tar archive (streamed to STDOUT by default) |
-| `search`  | `search`            | Search the Docker Hub for images         |
-| `service` | `service`           | Manage Docker services                   |
-| `start`   | `container start`   | Start one or more stopped containers     |
-| `stats`   | `container stats`   | Display a live stream of container(s) resource usage statistics |
-| `stop`    | `container stop`    | Stop one or more running containers      |
-| `swarm`   | `swarm`             | Manage Docker Swarm                      |
-| `tag`     | `image tag`         | Tag an image into a repository           |
-| `top`     | `container top`     | Display the running processes of a container |
-| `unpause` | `container unpause` | Unpause all processes within one or more containers |
-| `update`  | `container update`  | Update configuration of one or more containers |
-| `version` | `version`           | Show the Docker version information      |
-| `volume`  | `volume`            | Manage Docker volumes                    |
-| `wait`    | `container wait`    | Block until a container stops, then print its exit code |
+| 1.12      | 1.13                | PURPOSE               |
+| --------- | ------------------- | --------------------- |
+| `attach`  | `container attach`  | 登录到一个运行的容器中           |
+| `build`   | `image build`       | 从 Dockerfile 构建镜像     |
+| `commit`  | `container commit`  | 根据 container’s 变更创建镜像 |
+| `cp`      | `container cp`      | 在容器和本地文件系统之间复制文件/文件夹  |
+| `create`  | `container create`  | 创建一个新的容器              |
+| `diff`    | `container diff`    | 查看容器的变更详情             |
+| `events`  | `system events`     | 获取服务端的实时事件            |
+| `exec`    | `container exec`    | 在一个运行的容器中运行命令         |
+| `export`  | `container export`  | 将容器的文件系统导出            |
+| `history` | `image history`     | 查看镜像历史                |
+| `images`  | `image ls`          | 列出所有镜像                |
+| `import`  | `image import`      | 从本地文件系统导入镜像           |
+| `info`    | `system info`       | 显示系统信息                |
+| `inspect` | `container inspect` | 查看容器详情                |
+| `kill`    | `container kill`    | 强杀运行中的容器              |
+| `load`    | `image load`        | 从备份中加载镜像              |
+| `login`   | `login`             | 登录到 Docker registry.  |
+| `logout`  | `logout`            | 退出 Docker registry.   |
+| `logs`    | `container logs`    | 查看容器日志                |
+| `network` | `network`           | 管理容器网络                |
+| `node`    | `node`              | 管理docker Swarm 节点     |
+| `pause`   | `container pause`   | 暂时容器内进程               |
+| `port`    | `container port`    | 列出容器的所有的端口映射          |
+| `ps`      | `container ls`      | 列出所有容器                |
+| `pull`    | `image pull`        | 从 仓库中拉取镜像             |
+| `push`    | `image push`        | 推送镜像到仓库               |
+| `rename`  | `container rename`  | 重命名容器                 |
+| `restart` | `container restart` | 重启容器                  |
+| `rm`      | `container rm`      | 删除容器                  |
+| `rmi`     | `image rm`          | 删除镜像                  |
+| `run`     | `container run`     | 在容器中运行命令              |
+| `save`    | `image save`        | 将镜像保存为tar 备份文件        |
+| `search`  | `search`            | 在仓库中搜素镜像              |
+| `service` | `service`           | 管理 Docker 服务          |
+| `start`   | `container start`   | 启动容器                  |
+| `stats`   | `container stats`   | 实时查看容器统计信息            |
+| `stop`    | `container stop`    | 停止容器                  |
+| `swarm`   | `swarm`             | 管理 Docker Swarm       |
+| `tag`     | `image tag`         | 给镜像打标签                |
+| `top`     | `container top`     | 查看容器的运行进程             |
+| `unpause` | `container unpause` | 恢复暂停的进程               |
+| `update`  | `container update`  | 更新容器配置                |
+| `version` | `version`           | 查看 Docker 版本信息        |
+| `volume`  | `volume`            | 管理 Docker 卷           |
+| `wait`    | `container wait`    | 阻塞等待容器停止，然后打印退出码      |
 
 英文原文：http://blog.arungupta.me/docker-1-13-management-commands/
