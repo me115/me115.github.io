@@ -11,7 +11,7 @@ Ceph 最初的目标是做一个分布式文件系统，直到现在这个目标
 Ceph 支持三种存储接口：对象存储 RGW(rados gateway)、块存储 RBD(rados block device) 和文件存储 CephFS;
 
 这三个接口只是在客户端的封装库不同，到服务端了都是对象存储；
-![Ceph 架构](./images/posts/1-2.jpg)
+![Ceph 架构](/images/posts/1-2.jpg)
 
 ### 对象存储（RGW:RADOS gateway）
 Ceph 对象存储服务提供了 REST 风格的 API ，它有与 Amazon S3 和 OpenStack Swift 兼容的接口。也就是通常意义的键值存储，其接口就是简单的GET、PUT、DEL和其他扩展;
@@ -43,7 +43,7 @@ eg：使用RGW接口，存放一个1G的文件，在用户接口看到的就是�
 
 ## Ceph 服务端
 
-![Ceph 服务端架构](./images/posts/1-3.png)
+![Ceph 服务端架构](/images/posts/1-3.png)
 
 服务端 RADOS 集群主要由两种节点组成：一种是为数众多的、负责完成数据存储和维护功能的OSD（Object Storage Device），另一种则是若干个负责完成系统状态检测和维护的monitor。
 
@@ -62,7 +62,7 @@ OSD是负责物理存储的进程，一般配置成和磁盘一一对应，一�
 - 一个PG里包含一堆对象；一个对象只能属于一个PG；
 - PG有主从之分，一个PG分布在不同的OSD上（针对三副本类型）
 
-![](./images/posts/1-4.jpg)
+![](/images/posts/1-4.jpg)
 
 
 **讲究的PG**
