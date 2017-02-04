@@ -54,9 +54,10 @@ $redis-cli -h 10.3.23.35  -p 3920 CLUSTER COUNTKEYSINSLOT 11587
 $ redis-cli -h 10.3.21.50  -p 3920 CLUSTER SETSLOT  11587 NODE  f68aa3484f2340a9586632b2696f5a8fe0b30f40
 ```
 
-## 迁移节点
+## 迁移 slots
 
 ```shell
 $ ./redis-trib.rb reshard 10.3.23.27:3920
 ```
 
+ref: [https://redis.io/commands/cluster-setslot](https://redis.io/commands/cluster-setslot)
