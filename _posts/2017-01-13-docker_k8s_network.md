@@ -14,6 +14,9 @@ bridge模式由以下几个部分实现：
    其中，veth设备对在新建的容器一侧的虚拟网卡接口被命名为eth0；
 
 ### 容器间如何相互访问？
+
+![](/images/posts/10-1.jpg)
+
 比如上图中，ip1为物理节点网卡ip：10.6.26.137，
 ip2 为 docker0 的ip：172.17.42.1
 ip3 为 容器 eth0的 ip：172.17.0.19
@@ -31,6 +34,9 @@ kubernetes 在容器和docker0之间加了一层抽象-- pod； docker的原生�
 这样，同一个pod内的容器可以通过localhost来访问到其他容器内的服务；
 
 #### 容器间如何访问
+
+![](/images/posts/10-2.jpg)
+
 如上图所示，container1 和container2 同属于一个pod中，共享同一个网络命名空间，共用同一个ip（ip3）；
 所以 container1 中用到的端口，container2就不能使用；container1 和container2 通过localhost能访问彼此容器中的应用；
 container1 和 container3 之间跨 pod了，它们属于同一节点上的不同pod，由于通过同一个 docker0 网桥相连，所以 它们能通过 ip 相互通信；

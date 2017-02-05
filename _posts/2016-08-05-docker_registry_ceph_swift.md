@@ -1,3 +1,10 @@
+---
+layout: post
+title: docker registry 后端存储接入ceph object gateway（RGW）
+categories: [docker,ceph]
+description: 
+keywords: ceph,docker
+---
 
 # docker registry 后端存储接入ceph object gateway（RGW）
 docker registry 后端存储支持多种存储，默认是本地的文件系统；registry 作为 docker image的存储，对容量的要求很大，一般生产使用都需要接入分布式文件系统；

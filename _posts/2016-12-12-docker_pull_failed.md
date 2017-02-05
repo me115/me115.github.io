@@ -1,3 +1,11 @@
+---
+layout: post
+title: 修复docker pull image failed
+categories: docker
+description: 
+keywords: docker
+---
+
 # 修复docker pull image failed
 
 ## docker pull报错
