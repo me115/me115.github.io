@@ -1,3 +1,11 @@
+---
+layout: post
+title: docker和kubernetes网络方案
+categories: [docker]
+description: 
+keywords: docker
+---
+
 # docker和kubernetes网络方案
 
 ## docker的网络实现方案（bridge模式）
