@@ -1,65 +1,25 @@
 ---
 layout: wiki
-title: Redis 命令
+title: Redis Cluster 命令
 categories: [redis]
 description: some word here
 keywords: keyword1, keyword2
 ---
 
-## redis 命令
-### 常用命令查询
-[Redis命令参考](http://redisdoc.com/)
 
-### 主从设置
-```shell
-slaveof 10.4.44.71 3904
-slaveof no one
-# 设置从可写 /不可写
-config set slave-read-only yes
-config set slave-read-only no 
-```
-
-### 运维工具
-查看当前的连接到服务器的客户端的列表：
-```shell
-client list
-127.0.0.1:6379> client list
-addr=127.0.0.1:52555 fd=5 name= age=855 idle=0 flags=N db=0 sub=0 psub=0 multi=-1 qbuf=0 qbuf-free=32768 obl=0 oll=0 omem=0 events=r cmd=client
-addr=127.0.0.1:52787 fd=6 name= age=6 idle=5 flags=N db=0 sub=0 psub=0 multi=-1 qbuf=0 qbuf-free=0 obl=0 oll=0 omem=0 events=r cmd=ping
-```
-每一行表示一个连接的各项信息：
-
-addr: 客户端的TCP地址，包括IP和端口
-fd: 客户端连接 socket 对应的文件描述符句柄号
-name: 连接的名字，默认为空，可以通过 CLIENT SETNAME 设置
-age: 客户端存活的秒数
-idle: 客户端空闲的秒数
-flags: 客户端的类型  (N 表示普通客户端，更多类型见 http://redis.io/commands/client-list)
-omem: 输出缓冲区的大小
-cmd: 最后执行的命令名称
-
-查看当前正在执行的命令：
-```shell
->monitor
-```
-
-## 
-
-## redis cluster
-
-### 查看 cluster nodes 拓扑分布
+## 查看 cluster nodes 拓扑分布
 ```shell
 redis-cli -h 10.3.23.27 -p 3920 cluster nodes
 ```
 
-### 将一个新节点加入到现有集群中
+## 将一个新节点加入到现有集群中
 选择原有集群中的任意一个节点（10.3.23.35:3920），加入新的节点：10.3.20.213:3920
 
 ```shell
 redis-cli -h 10.3.23.35 -p 3920 CLUSTER MEET 10.3.20.213 3920
 ```
 
-### 设置从节点
+## 设置从节点
 设置10.3.20.213 3920 为 node-id （fd276dc8e818f53239f988dc2bb3ec85504f9096）的从节点：
 
 ```shell
@@ -67,7 +27,7 @@ redis-cli -h 10.3.20.213 -p 3920
 >CLUSTER REPLICATE fd276dc8e818f53239f988dc2bb3ec85504f9096
 ```
 
-### 从集群中重置一个节点
+## 从集群中重置一个节点
 首先从集群拓扑中删除该节点，然后清空重置该节点数据，最后再加入到集群中；
 eg: 要操作的节点 为10.3.20.213:3920 ，其node-id为fd276dc8e818f53239f988dc2bb3ec85504f9096
 
@@ -83,18 +43,18 @@ $redis-cli -h 10.3.20.213 -p 3920
 redis-cli -h 10.3.1.1 -p 3920 CLUSTER MEET 10.3.20.213 3920
 ```
 
-### 查看集群中指定slot 中的key的数量
+## 查看集群中指定slot 中的key的数量
 
 ```shell
 $redis-cli -h 10.3.23.35  -p 3920 CLUSTER COUNTKEYSINSLOT 11587
 ```
 
-### 设置 slot 在特定节点上
+## 设置 slot 在特定节点上
 ```shell
 $ redis-cli -h 10.3.21.50  -p 3920 CLUSTER SETSLOT  11587 NODE  f68aa3484f2340a9586632b2696f5a8fe0b30f40
 ```
 
-### 迁移 slots
+## 迁移 slots
 
 ```shell
 $ ./redis-trib.rb reshard 10.3.23.27:3920
