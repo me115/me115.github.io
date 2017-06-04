@@ -6,9 +6,10 @@ description: some word here
 keywords: keyword1, keyword2
 ---
 
-## redis 命令
+## redis 命令及配置
 ### 常用命令查询
 [Redis命令参考](http://redisdoc.com/)
+[redis info 状态说明](http://redisdoc.com/server/info.html)
 
 ### 主从设置
 ```shell
@@ -101,3 +102,57 @@ $ ./redis-trib.rb reshard 10.3.23.27:3920
 ```
 
 ref: [https://redis.io/commands/cluster-setslot](https://redis.io/commands/cluster-setslot)
+
+### cluster failover
+主从都为存活状态，将 slave 切换为 master：
+```shell
+slave-node-cli> CLUSTER FAILOVER
+```
+
+master 挂掉，将 slave 切换为 master：
+```shell
+slave-node-cli>CLUSTER FAILOVER [FORCE|TAKEOVER]
+```
+FORCE选项： 不与master握手，广播信息，与其集群其它 master 通信，获取授权投票成为新的master；
+TAKEOVER选项：不与 master 握手，也不需获取其他 master 投票通过，直接提升为master （应用场景eg：数据中心切换时将大量的slave 设置为 master ，但此时 大多数 master都不可用，或者发生了脑裂）
+
+注：TAKEOVER violates the last-failover-wins principle of Redis Cluster
+
+
+###  slot 迁移过程
+
+1. 设置目标节点为  importing state：
+```shell
+    CLUSTER SETSLOT <slot> IMPORTING <source-node-id>.
+```
+2. 设置源节点为 migrating state :  
+```shell
+CLUSTER SETSLOT <slot> MIGRATING <destination-node-id>.
+```
+
+3. 从源节点循环读取出key , 然后将他们转移到目标节点：
+```shell
+CLUSTER GETKEYSINSLOT
+MIGRATE host port key "" destination-db timeout REPLACE KEYS key [key ...]]
+```
+4. 设置slots状态为正常：
+```shell
+ CLUSTER SETSLOT <slot> NODE <destination-node-id> # in the source or destination 
+```
+
+注：如果迁移过程中断，修改状态，对带修复的节点执行：
+```shell
+redis-cli  -h <host> -p <port> cluster setslot <slot-num> stable
+```
+
+## 配置
+### 内存回收策略
+当maxmemory限制到达的时候，Redis将采取的准确行为是由maxmemory-policy配置指令配置的。
+以下策略可用：
+- noeviction：当到达内存限制时返回错误。当客户端尝试执行命令时会导致更多内存占用(大多数写命令，除了DEL和一些例外)。
+- allkeys-lru：回收最近最少使用(LRU)的键，为新数据腾出空间。
+- volatile-lru：回收最近最少使用(LRU)的键，但是只回收有设置过期的键，为新数据腾出空间。
+- allkeys-random：回收随机的键，为新数据腾出空间。
+- volatile-random：回收随机的键，但是只回收有设置过期的键，为新数据腾出空间。
+- volatile-ttl：回收有设置过期的键，尝试先回收离TTL最短时间的键，为新数据腾出空间。
+
