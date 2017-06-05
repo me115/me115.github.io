@@ -59,7 +59,7 @@ return HttpResponse(json_format, content_type='application/json')
 
 完成跨域请求；
 
-## extra：url 解析支持跨域的解析
+## extra: url解析支持跨域的解析
 使用django的template编写的页面逻辑中，需要访问的动态url，地址通过url revert规则生成：
 
 ```python
