@@ -96,13 +96,13 @@ def slave_url(shortcut, *args):
 
 ### 前端模版页面
 ```python
-{% extends 'base.html' %}
-{% load staticfiles %}
-{% load slave_urls %}
-{% load extras %}
+{ extends 'base.html' }
+{ load staticfiles }
+{ load slave_urls }
+{ load extras }
 
 # 调用
-<a href="{% slave_url 'metrics:info' instance.id %}">更新信息</a>
+<a href="{ slave_url 'metrics:info' instance.id }">更新信息</a>
 ```
 
 ## ref
