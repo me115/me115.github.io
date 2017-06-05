@@ -63,7 +63,7 @@ return HttpResponse(json_format, content_type='application/json')
 使用django的template编写的页面逻辑中，需要访问的动态url，地址通过url revert规则生成：
 
 ```python
-<a href="{% url'caching:update_instance' instance.id %}">更新信息</a>
+<a href="{ url 'caching:update_instance' instance.id }">更新信息</a>
 
 ```
 
